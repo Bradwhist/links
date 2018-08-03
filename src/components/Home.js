@@ -72,7 +72,7 @@ import {
                />
                <Header
                  as='h2'
-                 content='Do whatever you want when you want to.'
+                 content='WE ARE THE GREATEST'
                  inverted
                  style={{
                    fontSize: '1.7em',
