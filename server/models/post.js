@@ -28,25 +28,27 @@ const PostSchema = new mongoose.Schema({
     }],
     default: [],
   },
-  Upvotes: {
+  upvotes: {
     type: [{
       type: ObjectId,
       ref: "users"
     }],
     default: [],
   },
-  Downvotes: {
+  downvotes: {
       type: [{
         type: ObjectId,
         ref: "users"
       }],
       default: [],
 },
-  Sub: {
+  sub: {
+    title: String,
+    id: {
     type: ObjectId,
     ref: "sub",
-  },
-  Flair: {
+  }},
+  flair: {
     type: String,
     default: '',
   }

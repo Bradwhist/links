@@ -14,23 +14,27 @@ const router = new express.Router();
 // API Routes
 // Create new post
 router.post('/post', function(req, res) {
+  Sub.findById(req.body.sub).exec()
+  .then(sub => {
   var currentTime = new Date();
   var newPost = new Post({
    author: {
-     name: req.user.name,
-     id: req.user
+     id: req.body.id,
+     name: req.body.name,
    },
    content: req.body.content,
-   sub: req.body.sub,
+   sub: {
+     id: req.body.sub,
+     title: sub.title,
+   },
    createdAt: currentTime,
-   // upVotes: [],
-   // downVotes: [],
    flair: '',
  })
-
 newPost.save()
     .then(response => res.json(newPost))
     .catch(err => res.send(err))
+  })
+  .catch(err => res.send(err))
 })
 //
 // Create new Sub
@@ -109,7 +113,34 @@ newComment.save()
   })
   .catch(err => res.send(err))
 })
-
+//
+// Get all posts
+router.get('/post', function(req, res) {
+Post.find().exec()
+.then(posts => res.json(posts))
+.catch(err => res.send(err))
+})
+//
+// Get Posts by Subscriptions
+router.get('/post/bySub/:sub', function(req, res) {
+Post.find({"sub.id": req.params.sub }).exec()
+.then(posts => res.json(posts))
+.catch(err => res.send(err))
+})
+//
+//Get posts by users
+router.get('/post/byUser/:user', function(req, res) {
+Post.find({"author.id": req.params.user }).exec()
+.then(posts => res.json(posts))
+.catch(err => res.send(err))
+})
+//
+//Get post by post id
+router.get('/post/byPost/:post', function(req, res) {
+Post.findById(req.params.post).exec()
+.then(post => res.json(post))
+.catch(err => res.send(err))
+})
 //Test Dashboard
 router.get('/dashboard', (req, res) => {
   res.status(200).json({

@@ -6,6 +6,7 @@ var ObjectId = Schema.ObjectId
 const SubSchema = new mongoose.Schema({
   title: {
     type: String,
+    index: { unique: true }
   },
   founder: {
     name: String,
