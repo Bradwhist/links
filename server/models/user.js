@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-
+var Schema = mongoose.Schema
+var ObjectId = Schema.ObjectId
 // define the User model schema
 const UserSchema = new mongoose.Schema({
   email: {
@@ -8,7 +9,16 @@ const UserSchema = new mongoose.Schema({
     index: { unique: true }
   },
   password: String,
-  name: String
+  name: {
+    type: String,
+  },
+  posts: {
+    type: [{
+      type: ObjectId,
+      ref: "users"
+    }],
+    default: [],
+  },
 });
 
 
