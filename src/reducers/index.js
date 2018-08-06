@@ -1,20 +1,13 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import ReduxThunk from 'redux-thunk'
+import HoverReducer from './HoverReducer'
+import authReducer from './authReducer'
 
-const initialState = {}
-
-const AppReducer = (state=initialState, action) => {
-  switch (action.type) {
-    case 'ACTION':
-      return state
-    default:
-      return state
-  }
-}
 
 export default createStore(
   combineReducers({
-    app: AppReducer
+    hover: HoverReducer,
+    auth: authReducer
   }),
   applyMiddleware(
     ReduxThunk

@@ -141,6 +141,18 @@ Post.findById(req.params.post).exec()
 .then(post => res.json(post))
 .catch(err => res.send(err))
 })
+//
+router.post('/post/edit/', function(req, res) {
+  Post.findById(req.body.id).exec()
+  .then(post => {
+    post.content = req.body.content;
+    post.save();
+  })
+})
+// Test logged inspect
+router.get('/currentUser', (req, res) => {
+  res.json(req.user);
+})
 //Test Dashboard
 router.get('/dashboard', (req, res) => {
   res.status(200).json({

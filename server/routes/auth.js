@@ -88,7 +88,10 @@ function validateLoginForm(payload) {
   };
 }
 
+
+
 router.post('/signup', (req, res, next) => {
+  console.log(req.body);
   const validationResult = validateSignupForm(req.body);
   if (!validationResult.success) {
     return res.status(400).json({
@@ -157,9 +160,11 @@ router.post('/login', (req, res, next) => {
       success: true,
       message: 'You have successfully logged in!',
       token,
-      user: userData
+      user: userData,
     });
   })(req, res, next);
 });
+
+
 
 module.exports = router;
