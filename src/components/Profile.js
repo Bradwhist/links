@@ -34,10 +34,11 @@ import {
    }
 
    render() {
-     let props = this.props;
+     console.log('rendering profile', this.props);
+
      return (
        <div>
-       <button onClick={this.logout}>Logout</button>
+        <button onClick={this.logout}>Logout</button>
        </div>
      )
    }
@@ -45,8 +46,14 @@ import {
 
 
 Profile.propTypes = {
+  logout: PropTypes.func,
 };
 
+const mapStateToProps = ({auth}) => {
+  return {
+    auth,
+  }
+}
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout())
@@ -54,6 +61,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(Profile)

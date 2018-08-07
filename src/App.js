@@ -6,6 +6,8 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import Home from './components/Home'
 import Login from './components/Login'
 import Profile from './components/Profile'
+import PrivateRoute from './components/PrivateRoute'
+import { BrowserRouter as Router } from 'react-router-dom'
 import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
 import { fetchUser } from './actions'
 
@@ -16,33 +18,28 @@ class App extends Component {
   render() {
     console.log(this.props.auth);
     return (
+      <Router>
       <div className="App">
-        <Switch>
-          <Route exact path = '/' component = {Home} />
-          <PrivateRoute path = '/profile' component = {Profile} />
-        </Switch>
-    </div>
-  );
-}
+      <Switch>
+
+      {this.props.auth ?
+        <div>
+        <Redirect from='/' to='/profile'/>
+        <Route path = '/profile' component={Profile} />
+        </div>
+        :
+        <div>
+        <Redirect from='profile' to='/'/>
+        <Route exact path = '/' component = {Home} />
+        </div>
+      }
+      </Switch>
+      </div>
+      </Router>
+    );
+  }
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      props.auth ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: "/",
-            state: { from: props.location }
-          }}
-        />
-      )
-    }
-  />
-);
 
 const mapStateToProps = ({auth}) => {
   return {

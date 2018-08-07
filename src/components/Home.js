@@ -37,13 +37,7 @@ import {
      let props = this.props;
      return (
        <div>
-       {props.auth ?
-         <Redirect
-           to={{
-             pathname: "/profile"
-           }}
-         />
-       :
+
        <Responsive minWidth={Responsive.onlyTablet.minWidth}>
         <Visibility
            once={false}
@@ -106,7 +100,7 @@ import {
                </Segment>
              </Visibility>
            </Responsive>
-     }
+
           </div>
      )
    }
@@ -117,13 +111,13 @@ Home.propTypes = {
     fixed: PropTypes.bool,
     onHideFixedMenu: PropTypes.func,
     onShowFixedMenu: PropTypes.func,
-    auth: PropTypes.bool
+    auth: PropTypes.object
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({fixed, auth}) => {
   return {
-    fixed: state.fixed,
-    auth: state.auth
+    fixed,
+    auth,
   };
 }
 
