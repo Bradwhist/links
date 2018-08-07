@@ -151,6 +151,7 @@ router.post('/post/edit/', function(req, res) {
 })
 // Test logged inspect
 router.get('/currentUser', (req, res) => {
+  console.log('req.user in current user', req.user);
   res.json(req.user);
 })
 //Test Dashboard

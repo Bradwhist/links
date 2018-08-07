@@ -130,6 +130,7 @@ router.post('/signup', (req, res, next) => {
 });
 
 router.post('/login', (req, res, next) => {
+  console.log('in login', req.body);
   const validationResult = validateLoginForm(req.body);
   if (!validationResult.success) {
     return res.status(400).json({
@@ -155,13 +156,18 @@ router.post('/login', (req, res, next) => {
       });
     }
 
-
-    return res.json({
-      success: true,
-      message: 'You have successfully logged in!',
-      token,
-      user: userData,
-    });
+    console.log('local-login, req.user', req.user);
+    req.login(userData.name, err => {if (!err) {
+      return res.json({
+        success: true,
+        message: 'You have successfully logged in!',
+        token,
+        user: req.user,
+      });
+    } else {
+      console.log('req.login error: ', err)
+    }
+  })
   })(req, res, next);
 });
 

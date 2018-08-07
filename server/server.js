@@ -9,6 +9,8 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const cookieParser = require('cookie-parser');
 mongoose.connect(process.env.MONGODB_URI);
+var cors = require('cors');
+app.options('*', cors());
 
 app.get('/', (req, res) => res.send('Server on'))
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,12 +25,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Passport Serialize
 passport.serializeUser(function(user, done){
+  console.log('serialize user: user', user);
   done(null, user._id);
 });
 // Passport Deserialize
 
 passport.deserializeUser(function(id, done) {
   Models.User.findById(id, function(err, user) {
+    console.log('deserialize user: user', user);
     done(err, user);
   });
 });
