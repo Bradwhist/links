@@ -2,8 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
-import Login from './Login'
-import Signup from './Signup'
+import { logout } from '../actions'
 import {
   Button,
   Container,
@@ -24,31 +23,37 @@ import {
 /* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
  * such things.
  */
- const Profile = (props) => (
-   <div>MEOW</div>
-)
+ class Profile extends Component {
+
+   logout = () => {
+   this.props.logout();
+ }
+
+   componentDidMount() {
+
+   }
+
+   render() {
+     let props = this.props;
+     return (
+       <div>
+       <button onClick={this.logout}>Logout</button>
+       </div>
+     )
+   }
+ }
 
 
 Profile.propTypes = {
-    fixed: PropTypes.bool,
-    onHideFixedMenu: PropTypes.func,
-    onShowFixedMenu: PropTypes.func
 };
-
-const mapStateToProps = (state) => {
-  return {
-    fixed: state.fixed
-  };
-}
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onHideFixedMenu: () => dispatch({type: 'HIDE_FIXED'}),
-    onShowFixedMenu: () => dispatch({type: 'SHOW_FIXED'})
+    logout: () => dispatch(logout())
   };
 }
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
 )(Profile)

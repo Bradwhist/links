@@ -14,6 +14,7 @@
 const express = require('express');
 const validator = require('validator');
 const passport = require('passport');
+const User = require('../models/User')
 
 const router = new express.Router();
 
@@ -25,6 +26,7 @@ const router = new express.Router();
  *                   errors tips, and a global message for the whole form.
  */
 function validateSignupForm(payload) {
+  console.log(payload);
   const errors = {};
   let isFormValid = true;
   let message = '';
@@ -47,7 +49,7 @@ function validateSignupForm(payload) {
   if (!isFormValid) {
     message = 'Check the form for errors.';
   }
-
+  console.log('errors: ', errors);
   return {
     success: isFormValid,
     message,
@@ -94,6 +96,7 @@ router.post('/signup', (req, res, next) => {
   console.log(req.body);
   const validationResult = validateSignupForm(req.body);
   if (!validationResult.success) {
+    console.log('validationresult not success');
     return res.status(400).json({
       success: false,
       message: validationResult.message,
@@ -104,6 +107,7 @@ router.post('/signup', (req, res, next) => {
 
   return passport.authenticate('local-signup', (err) => {
     if (err) {
+      console.log(err);
       if (err.name === 'MongoError' && err.code === 11000) {
         // the 11000 Mongo code is for a duplication email error
         // the 409 HTTP status code is for conflict error
@@ -157,17 +161,30 @@ router.post('/login', (req, res, next) => {
     }
 
     console.log('local-login, req.user', req.user);
-    req.login(userData.name, err => {if (!err) {
-      return res.json({
-        success: true,
-        message: 'You have successfully logged in!',
-        token,
-        user: req.user,
-      });
-    } else {
-      console.log('req.login error: ', err)
-    }
+  //   req.login(userData.name, err => {if (!err) {
+  //     return res.json({
+  //       success: true,
+  //       message: 'You have successfully logged in!',
+  //       token,
+  //       user: req.user,
+  //     });
+  //   } else {
+  //     console.log('req.login error: ', err)
+  //   }
+  // })
+  console.log('token: ', token, 'userData.id: ', userData.name._id);
+  User.findById(userData.name._id)
+  .then(user => {
+    user.token = token;
+    user.save();
+        return res.json({
+          success: true,
+          message: 'You have successfully logged in!',
+          token,
+          user: req.user,
+        });
   })
+  .catch(err => console.log(err))
   })(req, res, next);
 });
 

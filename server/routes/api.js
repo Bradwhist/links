@@ -7,6 +7,7 @@
 //
 // return router;
 const express = require('express');
+const User = require('../models/User')
 const Post = require('../models/Post');
 const Sub = require('../models/Sub');
 const Comment = require('../models/Comment');
@@ -153,6 +154,13 @@ router.post('/post/edit/', function(req, res) {
 router.get('/currentUser', (req, res) => {
   console.log('req.user in current user', req.user);
   res.json(req.user);
+})
+// Token check user
+router.get('/checkUser/:token', (req, res) => {
+  console.log('token in checkuser route', req.params.token);
+  User.findOne({token: req.params.token})
+  .then(user => res.json(user))
+  .catch(err => console.log(err))
 })
 //Test Dashboard
 router.get('/dashboard', (req, res) => {

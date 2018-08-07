@@ -1,4 +1,4 @@
-import { FETCH_USER, LOGIN } from "../actions/types";
+import { FETCH_USER, LOGIN, LOGOUT } from "../actions/types";
 
 export default function(state = null, action) {
   console.log(action);
@@ -11,6 +11,8 @@ export default function(state = null, action) {
       return action.payload || false;
     case LOGIN:
       return action.payload || false;
+    case LOGOUT:
+      return false;
     default:
       return state;
   }

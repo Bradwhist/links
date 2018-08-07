@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { logout } from '../actions'
 import { Route, Link, Redirect } from 'react-router-dom'
 import Login from './Login'
 import Signup from './Signup'
@@ -29,17 +30,14 @@ import {
  class Home extends Component {
 
    componentDidMount() {
-     const user = localStorage.getItem('user');
-    axios.get('http://localhost:8080/api/currentUser')
-      .then(response => console.log(response))
-      .catch(error => console.log(error))
+
    }
 
    render() {
      let props = this.props;
      return (
        <div>
-       {this.props.auth ?
+       {props.auth ?
          <Redirect
            to={{
              pathname: "/profile"
