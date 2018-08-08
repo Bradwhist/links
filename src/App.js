@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import logo from './logo.svg'
 import './App.css'
 import { connect } from 'react-redux'
 import { Route, Switch, Redirect } from 'react-router-dom'
@@ -19,8 +18,8 @@ class App extends Component {
       <div className="App">
         <Switch>
           <Route exact path = '/' component = {Home} />
-          <PrivateRoute path = '/profile' component = {Profile} />
-        </Switch>
+          <PrivateRoute path = '/profile' component = {Profile} /> 
+         </Switch>
     </div>
   );
 }

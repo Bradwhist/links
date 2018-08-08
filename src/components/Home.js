@@ -10,6 +10,7 @@ import axios from 'axios'
 import {
   Button,
   Container,
+  Input,
   Divider,
   Grid,
   Header,
@@ -43,10 +44,26 @@ import {
              pathname: "/profile"
            }}
          />
-       :
-       <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-        <Visibility
-           once={false}
+       : <div style = {{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <div style = {{border: '3px solid black', width: '50%', textAlign: 'center', borderRadius: '2.5%'}}>
+            <h1> Welcome to the *insert app name here* </h1>
+              <Input icon="mail" iconPosition='left' type='text' placeholder='Email' />
+              <Input type='password' placeholder='Create a password' />
+            <div>
+            <Button animated basic color = "teal">
+              <Button.Content visible>Sign up!</Button.Content>
+              <Button.Content hidden>
+                <Icon name='arrow right' />
+              </Button.Content>
+            </Button>
+          </div>
+            <h3> OR </h3>
+            <Button color="teal">Login </Button>
+
+          </div>
+          {/* <Responsive minWidth={Responsive.onlyTablet.minWidth}> */}
+          {/* <Visibility
+            once={false}
            onBottomPassed={props.onShowFixedMenu}
            onBottomPassedReverse={props.onHideFixedMenu}
            >
@@ -104,8 +121,9 @@ import {
                    </Button>
                  </Container>
                </Segment>
-             </Visibility>
-           </Responsive>
+             </Visibility> */}
+           {/* // </Responsive> */}
+         </div>
      }
           </div>
      )
