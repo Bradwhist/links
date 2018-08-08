@@ -37,18 +37,22 @@ import {
    render() {
      let props = this.props;
      return (
-       <div>
+       <div className="register">
        {props.auth ?
          <Redirect
            to={{
              pathname: "/profile"
            }}
          />
-       : <div style = {{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <div style = {{border: '3px solid black', width: '50%', textAlign: 'center', borderRadius: '2.5%'}}>
-            <h1> Welcome to the *insert app name here* </h1>
-              <Input icon="mail" iconPosition='left' type='text' placeholder='Email' />
-              <Input type='password' placeholder='Create a password' />
+         : <div>
+         <h1 style = {{color: 'white'}}> WELCOME </h1>
+          <div className = "registerBox">
+              <div>
+              <Input className = "emailInput" focus icon="mail" iconPosition='left' type='text' placeholder='Email' />
+              </div>
+              <div>
+              <Input className = "pwdInput" focus type='password' placeholder='Create a password' />
+              </div>
             <div>
             <Button animated basic color = "teal">
               <Button.Content visible>Sign up!</Button.Content>
@@ -56,74 +60,22 @@ import {
                 <Icon name='arrow right' />
               </Button.Content>
             </Button>
-          </div>
+            </div>
             <h3> OR </h3>
-            <Button color="teal">Login </Button>
 
-          </div>
-          {/* <Responsive minWidth={Responsive.onlyTablet.minWidth}> */}
-          {/* <Visibility
-            once={false}
-           onBottomPassed={props.onShowFixedMenu}
-           onBottomPassedReverse={props.onHideFixedMenu}
-           >
-             <Segment
-               inverted
-               textAlign='center'
-               style={{ minHeight: 700, padding: '1em 0em' }}
-               vertical
-               >
-                 <Menu
-                   fixed={props.fixed ? 'top' : null}
-                   inverted={!props.fixed}
-                   pointing={!props.fixed}
-                   secondary={!props.fixed}
-                   size='large'
-                   >
-                     <Container>
-                       <Menu.Item as='a' active>
-                         Home
-                       </Menu.Item>
-                       <Menu.Item as='a'>Work</Menu.Item>
-                       <Menu.Item as='a'>Company</Menu.Item>
-                       <Menu.Item as='a'>Careers</Menu.Item>
-                       <Menu.Item position='right'>
+
+
+
+          {/*
                          <Login fixed = {props.fixed}/>
                          <Signup fixed = {props.fixed}/>
-                     </Menu.Item>
-                   </Container>
-                 </Menu>
-                 <Container text>
-                   <Header
-                     as='h1'
-                     content='DANKO'
-                     inverted
-                     style={{
-                       fontSize: '4em',
-                       fontWeight: 'normal',
-                       marginBottom: 0,
-                       marginTop: '3em',
-                     }}
-                   />
-                   <Header
-                     as='h2'
-                     content='Do whatever you want when you want to.'
-                     inverted
-                     style={{
-                       fontSize: '1.7em',
-                       fontWeight: 'normal',
-                       marginTop: '1.5em',
-                     }}
-                   />
-                   <Button primary size='huge'>
-                     Get Started
-                     <Icon name='right arrow' />
-                   </Button>
-                 </Container>
-               </Segment>
-             </Visibility> */}
-           {/* // </Responsive> */}
-         </div>
+
+                   */}
+          </div>
+          <div className = "loginBox">
+              <Button color="teal">Login </Button>
+          </div>
+        </div>
      }
           </div>
      )

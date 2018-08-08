@@ -3,3 +3,63 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.register {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 100px;
+}
+
+.register:before {
+  animation: fade-slide-down 2s cubic-bezier(0, 0.5, 0, 1) forwards;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.8)), url('https://images.unsplash.com/photo-1432821596592-e2c18b78144f?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=e4bbb31a47384880bb5d5c292e4b401d&auto=format&fit=crop&w=1950&q=80')
+  no-repeat bottom;
+  background-size: cover;
+  content: "";
+  position: absolute;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+ z-index: -1;
+}
+
+.registerBox {
+  background-color: white;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  width: 500px;
+  text-align: center;
+  border-top-left-radius: 2.5%;
+  border-top-right-radius: 2.5%;
+}
+
+.pwdInput {
+  width: 400px;
+  padding-bottom: 3%;
+  padding-top: 3%;
+}
+
+.emailInput {
+  width: 400px;
+}
+
+.loginBox {
+  padding: 5%;
+  background-color: #d9dce0;
+  border-bottom-right-radius: 5%;
+  border-bottom-left-radius: 5%;
+}
+
+@keyframes fade-slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-4rem);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
