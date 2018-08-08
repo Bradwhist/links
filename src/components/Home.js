@@ -48,10 +48,13 @@ import {
          <h1 style = {{color: 'white'}}> WELCOME </h1>
           <div className = "registerBox">
               <div>
-              <Input className = "emailInput" focus icon="mail" iconPosition='left' type='text' placeholder='Email' />
+              <Input className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
               </div>
               <div>
-              <Input className = "pwdInput" focus type='password' placeholder='Create a password' />
+              <Input className = "usernameInput" focus icon="user" iconPosition='left' type='text' placeholder='Create a username' />
+              </div>
+              <div>
+              <Input className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Create a password' />
               </div>
             <div>
             <Button animated basic color = "teal">
@@ -62,18 +65,9 @@ import {
             </Button>
             </div>
             <h3> OR </h3>
-
-
-
-
-          {/*
-                         <Login fixed = {props.fixed}/>
-                         <Signup fixed = {props.fixed}/>
-
-                   */}
           </div>
-          <div className = "loginBox">
-              <Button color="teal">Login </Button>
+          <div className = "loginBtnBox">
+              <Button onClick = {() => this.props.history.push('/login')} color="teal">Login</Button>
           </div>
         </div>
      }
@@ -83,28 +77,4 @@ import {
 }
 
 
-Home.propTypes = {
-    fixed: PropTypes.bool,
-    onHideFixedMenu: PropTypes.func,
-    onShowFixedMenu: PropTypes.func,
-    auth: PropTypes.bool
-};
-
-const mapStateToProps = (state) => {
-  return {
-    fixed: state.fixed,
-    auth: state.auth
-  };
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onHideFixedMenu: () => dispatch({type: 'HIDE_FIXED'}),
-    onShowFixedMenu: () => dispatch({type: 'SHOW_FIXED'})
-  };
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Home)
+export default Home;

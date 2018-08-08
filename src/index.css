@@ -4,6 +4,8 @@ body {
   font-family: sans-serif;
 }
 
+/* HOME COMPONENT */
+
 .register {
   height: 100vh;
   display: flex;
@@ -28,12 +30,21 @@ body {
 
 .registerBox {
   background-color: white;
-  padding-top: 5%;
+  padding-top: 10%;
   padding-bottom: 5%;
   width: 500px;
   text-align: center;
   border-top-left-radius: 2.5%;
   border-top-right-radius: 2.5%;
+}
+
+.emailInput {
+  width: 400px;
+}
+
+.usernameInput {
+  margin-top: 3%;
+  width: 400px;
 }
 
 .pwdInput {
@@ -42,15 +53,11 @@ body {
   padding-top: 3%;
 }
 
-.emailInput {
-  width: 400px;
-}
-
-.loginBox {
+.loginBtnBox {
   padding: 5%;
   background-color: #d9dce0;
-  border-bottom-right-radius: 5%;
-  border-bottom-left-radius: 5%;
+  border-bottom-right-radius: 10%;
+  border-bottom-left-radius: 10%;
 }
 
 @keyframes fade-slide-down {
@@ -62,4 +69,26 @@ body {
     opacity: 1;
     transform: none;
   }
+}
+
+@media (max-width: 430px) {
+  .registerBox {
+    width: 250px;
+  }
+  .emailInput, .usernameInput, .pwdInput {
+    width: 150px;
+  }
+}
+
+/* LOGIN COMPONENT */
+.login {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 100px;
+}
+
+.msgBox {
+  padding-top: 5%;
 }
