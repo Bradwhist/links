@@ -10,6 +10,7 @@ import axios from 'axios'
 import {
   Button,
   Container,
+  Input,
   Divider,
   Grid,
   Header,
@@ -36,99 +37,44 @@ import {
    render() {
      let props = this.props;
      return (
-       <div>
-
-       <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-        <Visibility
-           once={false}
-           onBottomPassed={props.onShowFixedMenu}
-           onBottomPassedReverse={props.onHideFixedMenu}
-           >
-             <Segment
-               inverted
-               textAlign='center'
-               style={{ minHeight: 700, padding: '1em 0em' }}
-               vertical
-               >
-                 <Menu
-                   fixed={props.fixed ? 'top' : null}
-                   inverted={!props.fixed}
-                   pointing={!props.fixed}
-                   secondary={!props.fixed}
-                   size='large'
-                   >
-                     <Container>
-                       <Menu.Item as='a' active>
-                         Home
-                       </Menu.Item>
-                       <Menu.Item as='a'>Work</Menu.Item>
-                       <Menu.Item as='a'>Company</Menu.Item>
-                       <Menu.Item as='a'>Careers</Menu.Item>
-                       <Menu.Item position='right'>
-                         <Login fixed = {props.fixed}/>
-                         <Signup fixed = {props.fixed}/>
-                     </Menu.Item>
-                   </Container>
-                 </Menu>
-                 <Container text>
-                   <Header
-                     as='h1'
-                     content='FUCK DANKO'
-                     inverted
-                     style={{
-                       fontSize: '4em',
-                       fontWeight: 'normal',
-                       marginBottom: 0,
-                       marginTop: '3em',
-                     }}
-                   />
-                   <Header
-                     as='h2'
-                     content='Do whatever you want when you want to.'
-                     inverted
-                     style={{
-                       fontSize: '1.7em',
-                       fontWeight: 'normal',
-                       marginTop: '1.5em',
-                     }}
-                   />
-                   <Button primary size='huge'>
-                     Get Started
-                     <Icon name='right arrow' />
-                   </Button>
-                 </Container>
-               </Segment>
-             </Visibility>
-           </Responsive>
-
+       <div className="register">
+       {props.auth ?
+         <Redirect
+           to={{
+             pathname: "/profile"
+           }}
+         />
+         : <div>
+         <h1 style = {{color: 'white'}}> WELCOME </h1>
+          <div className = "registerBox">
+              <div>
+              <Input className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
+              </div>
+              <div>
+              <Input className = "usernameInput" focus icon="user" iconPosition='left' type='text' placeholder='Create a username' />
+              </div>
+              <div>
+              <Input className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Create a password' />
+              </div>
+            <div>
+            <Button animated basic color = "teal">
+              <Button.Content visible>Sign up!</Button.Content>
+              <Button.Content hidden>
+                <Icon name='arrow right' />
+              </Button.Content>
+            </Button>
+            </div>
+            <h3> OR </h3>
+          </div>
+          <div className = "loginBtnBox">
+              <Button onClick = {() => this.props.history.push('/login')} color="teal">Login</Button>
+          </div>
+        </div>
+     }
           </div>
      )
    }
 }
 
 
-Home.propTypes = {
-    fixed: PropTypes.bool,
-    onHideFixedMenu: PropTypes.func,
-    onShowFixedMenu: PropTypes.func,
-    auth: PropTypes.object
-};
-
-const mapStateToProps = ({fixed, auth}) => {
-  return {
-    fixed,
-    auth,
-  };
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onHideFixedMenu: () => dispatch({type: 'HIDE_FIXED'}),
-    onShowFixedMenu: () => dispatch({type: 'SHOW_FIXED'})
-  };
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Home)
+export default Home;

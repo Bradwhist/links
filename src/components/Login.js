@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Button, Header, Image, Icon, Modal, Input } from 'semantic-ui-react'
+import { Button, Header, Image, Icon, Modal, Input, Message } from 'semantic-ui-react'
+import { Route, Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { login } from '../actions'
 
@@ -17,6 +18,7 @@ class Login extends Component {
       email: e.target.value
     })
   }
+
   setPassword = (e) => {
     this.setState({
       password: e.target.value
@@ -28,29 +30,32 @@ class Login extends Component {
     let {email, password} = this.state;
 
     return (
-      <Modal trigger={<Button as='a' inverted={!this.props.fixed}>
-        Log in
-      </Button>}>
-        <Modal.Header style={{textAlign: 'center'}}>Login</Modal.Header>
-        <Modal.Content image>
-          <Image wrapped size='medium' src='https://www.xmple.com/wallpaper/checkered-black-blue-squares-1920x1080-c2-000000-6495ed-l-240-a-75-f-2.svg' />
-          <Modal.Description>
-            <Header>Welcome!</Header>
-            <div style = {{marginBottom: '4%'}}>
-              <Input focus placeholder='Email' onChange={e => this.setEmail(e)} value={email}/>
-            </div>
-            <div style = {{marginBottom: '4%'}}>
-              <Input focus placeholder='Password' type = 'password' onChange={e => this.setPassword(e)} value={password}/>
-            </div>
+      <div className = "login">
+        <div>
+        <h1 style = {{color: '#0ccece'}}> Log-in</h1>
+        <div className = "loginBox">
+          <div>
+            <Input onChange = {(e) => this.setEmail(e)} className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
+          </div>
+          <div>
+            <Input onChange = {(e) => this.setPassword(e)} className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Password' />
+          </div>
+          <div>
             <Button onClick = {this.login} animated basic color = "teal">
               <Button.Content visible>Login</Button.Content>
               <Button.Content hidden>
                 <Icon name='arrow right' />
               </Button.Content>
             </Button>
-          </Modal.Description>
-        </Modal.Content>
-      </Modal>
+          </div>
+          </div>
+          <div className = "msgBox">
+            <Message floating>
+              <p> New to us?<Link to = '/'> Sign Up </Link></p>
+            </Message>
+          </div>
+          </div>
+        </div>
     )
   }
 
