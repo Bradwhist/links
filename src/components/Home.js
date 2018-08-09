@@ -3,8 +3,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { logout } from '../actions'
 import { Route, Link, Redirect } from 'react-router-dom'
+import { signup } from '../actions'
 import Login from './Login'
-import Signup from './Signup'
 //import Feed from './Feed'
 import axios from 'axios'
 import {
@@ -29,9 +29,29 @@ import {
  */
 
  class Home extends Component {
+   constructor(props) {
+     super(props);
+     this.state = {
+       email: '',
+       name: '',
+       password: '',
+     };
+   }
 
-   componentDidMount() {
-
+   setName = (e) => {
+     this.setState({
+       name: e.target.value
+     })
+   }
+   setEmail = (e) => {
+     this.setState({
+       email: e.target.value
+     })
+   }
+   setPassword = (e) => {
+     this.setState({
+       password: e.target.value
+     })
    }
 
    render() {
@@ -48,16 +68,16 @@ import {
          <h1 style = {{color: 'white'}}> WELCOME </h1>
           <div className = "registerBox">
               <div>
-              <Input className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
+              <Input onChange= {e => this.setEmail(e)} className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
               </div>
               <div>
-              <Input className = "usernameInput" focus icon="user" iconPosition='left' type='text' placeholder='Create a username' />
+              <Input onChange={e => this.setName(e)} className = "usernameInput" focus icon="user" iconPosition='left' type='text' placeholder='Create a username' />
               </div>
               <div>
-              <Input className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Create a password' />
+              <Input onChange={e => this.setPassword(e)} className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Create a password' />
               </div>
             <div>
-            <Button animated basic color = "teal">
+            <Button onClick = {this.login} animated basic color = "teal">
               <Button.Content visible>Sign up!</Button.Content>
               <Button.Content hidden>
                 <Icon name='arrow right' />
@@ -74,7 +94,21 @@ import {
           </div>
      )
    }
+
+   signup = () => {
+   this.props.signup(this.state.name, this.state.email, this.state.password);
+   this.setState({
+     name: '',
+     email: '',
+     password: ''
+   });
+  }
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signup: (name, email, password) => dispatch(signup(name, email, password))
+  };
+}
 
-export default Home;
+export default connect(null, mapDispatchToProps)(Home);
