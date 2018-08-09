@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { FETCH_USER, LOGIN, SIGNUP, LOGOUT } from './types';
+import { FETCH_USER, FETCH_SUBS, LOGIN, SIGNUP, LOGOUT, POST } from './types';
 
 
 // if redux-thunk sees that we're returning a function in
@@ -15,16 +15,27 @@ export const fetchUser = () => async dispatch => {
   if (user) {
   let url = 'http://localhost:8080/api/checkUser/' + JSON.parse(user).token;
   //console.log(url);
-  const res = await axios({
-    method: 'get',
-    url: url
-  });
+  const res = await axios.get('http://localhost:8080/api/checkUser/', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  }
+  );
   //console.log(res);
   dispatch({ type: FETCH_USER, payload: res.data });
 } else {
   dispatch({ type: FETCH_USER, payload: null });
 }
 };
+
+export const fetchSubs = () => async dispatch => {
+
+  console.log(JSON.parse(localStorage.getItem('user')).token);
+  const res = await axios.get('http://localhost:8080/api/sub', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  }
+)
+
+  dispatch({ type: FETCH_SUBS, payload: res.data });
+}
 
 export const login = (email, password) => async dispatch => {
 try {
@@ -60,6 +71,24 @@ export const logout = () => async dispatch => {
   try {
     localStorage.removeItem('user');
       dispatch({ type: LOGOUT, payload: null });
+  }
+  catch(err){console.log(err)}
+}
+
+export const post = (title, content, image, sub) => async dispatch => {
+  try {
+    console.log('XXXXXXXXXXXXXXXXXXXX', JSON.parse(localStorage.getItem('user')).token);
+    const res = await axios.post('http://localhost:8080/api/post', {
+      title: title,
+      content: content,
+      image: image,
+      sub: sub,
+    },
+    {
+      headers: { token: JSON.parse(localStorage.getItem('user')).token }
+    });
+    console.log('result from post', res);
+    dispatch({ type: POST, payload: res.data });
   }
   catch(err){console.log(err)}
 }

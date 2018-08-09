@@ -1,18 +1,21 @@
 import { FETCH_USER, LOGIN, LOGOUT } from "../actions/types";
 
-export default function(state = null, action) {
-  console.log(action);
+export default function(state = { loaded: false, auth: false }, action) {
+  console.log('authreducer: action', action, 'state', state);
   switch(action.type) {
     case FETCH_USER:
+    console.log('fetchuser');
       // action.payload will return empty string if it gets nothing
       // so we return || false to make sure we get false
 
       //  action.payload will return the user if a user is logged in
-      return action.payload || false;
+      return { loaded: true, auth: action.payload || false };
     case LOGIN:
-      return action.payload || false;
+    console.log('login');
+      return { loaded: true, auth: action.payload || false };
     case LOGOUT:
-      return false;
+    console.log('logging out');
+      return { loaded: false, auth: false };
     default:
       return state;
   }

@@ -13,9 +13,11 @@ const PostSchema = new mongoose.Schema({
       ref: "users"
     }
   },
+  title: {
+    type: String,
+  },
   content: {
     type: String,
-    default: 'DEFAULT CONTENT',
   },
   createdAt: {
     type: Date,

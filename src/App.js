@@ -16,6 +16,7 @@ class App extends Component {
   render() {
     console.log(this.props.auth);
     return (
+      <Router>
       <div className="App">
         <Router>
           <Switch>
@@ -28,24 +29,6 @@ class App extends Component {
   );
 }
 }
-
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      props.auth ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: "/",
-            state: { from: props.location }
-          }}
-        />
-      )
-    }
-  />
-);
 
 const mapStateToProps = ({auth}) => {
   return {
