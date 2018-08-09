@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
+import StackGrid from "react-stack-grid";
 import { logout } from '../actions'
 import {
   Button,
@@ -23,29 +24,34 @@ import {
 /* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
  * such things.
  */
- class Profile extends Component {
+ class CreateCategory extends Component {
 
    logout = () => {
    this.props.logout();
  }
+  goProfile = () => {
+    this.props.history.push('/feed')
+  }
 
    componentDidMount() {
 
    }
 
    render() {
-     console.log('rendering profile', this.props);
+     //console.log('rendering profile', this.props);
 
      return (
        <div>
         <button onClick={this.logout}>Logout</button>
-       </div>
-     )
-   }
- }
+        <button onClick={this.goProfile}>Back to profile...</button>
+
+        </div>
+      )
+    }
+  }
 
 
-Profile.propTypes = {
+CreateCategory.propTypes = {
   logout: PropTypes.func,
 };
 
@@ -56,11 +62,11 @@ const mapStateToProps = ({auth}) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
   };
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Profile)
+)(CreateCategory)

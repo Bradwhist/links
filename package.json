@@ -16,7 +16,9 @@
     "passport-local": "^1.0.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
+    "react-pinterest": "^1.2.0",
     "react-scripts": "1.1.4",
+    "react-stack-grid": "^0.7.1",
     "semantic-ui-react": "^0.82.1",
     "validator": "^10.4.0"
   },

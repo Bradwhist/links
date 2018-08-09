@@ -5,7 +5,9 @@ import { connect } from 'react-redux'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Home from './components/Home'
 import Login from './components/Login'
-import Profile from './components/Profile'
+import Feed from './components/Feed'
+import Post from './components/Post'
+import CreateCategory from './components/CreateCategory'
 import PrivateRoute from './components/PrivateRoute'
 import { BrowserRouter as Router } from 'react-router-dom'
 import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
@@ -20,26 +22,28 @@ class App extends Component {
     return (
       <Router>
       <div className="App">
-      <Switch>
-
-      {this.props.auth ?
-        <div>
-        <Redirect from='/' to='/profile'/>
-        <Route path = '/profile' component={Profile} />
-        </div>
+      {this.props.auth.auth && this.props.auth.loaded ?
+        <Switch>
+        <Route exact path = '/feed' component={Feed} />
+        <Route exact path = '/createCategory' component={CreateCategory} />
+        <Route exact path = '/post' component={Post} />
+        <Redirect exact from = '/' to = 'feed' />
+        </Switch>
         :
-        <div>
-        <Redirect from='profile' to='/'/>
-        <Route exact path = '/' component = {Home} />
-        </div>
-      }
-      </Switch>
+        this.props.auth.loaded ?
+          <Switch>
+          <Redirect from='/feed' to='/'/>
+          <Redirect from='/post' to='/'/>
+          <Route exact path = '/' component = {Home} />
+          </Switch>
+          :
+          <Route path = '/' render={() => <h1>Loading</h1>} />
+        }
       </div>
       </Router>
     );
   }
 }
-
 
 const mapStateToProps = ({auth}) => {
   return {

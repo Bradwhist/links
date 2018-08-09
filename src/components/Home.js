@@ -5,7 +5,7 @@ import { logout } from '../actions'
 import { Route, Link, Redirect } from 'react-router-dom'
 import Login from './Login'
 import Signup from './Signup'
-import Profile from './Profile'
+//import Feed from './Feed'
 import axios from 'axios'
 import {
   Button,
@@ -73,7 +73,7 @@ import {
                  <Container text>
                    <Header
                      as='h1'
-                     content='DANKO'
+                     content='FUCK DANKO'
                      inverted
                      style={{
                        fontSize: '4em',
