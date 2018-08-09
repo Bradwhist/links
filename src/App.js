@@ -28,6 +28,27 @@ class App extends Component {
           </Switch>
        </Router>
       </div>
+      // <Router>
+      // <div className="App">
+      // {this.props.auth.auth && this.props.auth.loaded ?
+      //   <Switch>
+      //   <Route exact path = '/feed' component={Feed} />
+      //   {/* <Route exact path = '/createCategory' component={CreateCategory} /> */}
+      //   {/* <Route exact path = '/post' component={Post} /> */}
+      //   <Redirect exact from = '/' to = 'feed' />
+      //   </Switch>
+      //   :
+      //   this.props.auth.loaded ?
+      //     <Switch>
+      //     <Redirect from='/feed' to='/'/>
+      //     <Redirect from='/post' to='/'/>
+      //     <Route exact path = '/' component = {Home} />
+      //     </Switch>
+      //     :
+      //     <Route path = '/' render={() => <h1>Loading</h1>} />
+      //   }
+      // </div>
+      // </Router>
     );
   }
 }

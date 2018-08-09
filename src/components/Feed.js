@@ -58,13 +58,12 @@ import {
      return (
        <div>
         <Menu pointing>
-          <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/>
-          <Menu.Menu position='left'>
-            <Menu.Item>
-              <Input icon='search' placeholder='Search...' />
-            </Menu.Item>
-          </Menu.Menu>
-          <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick} />
+          <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
+          <Input icon='search' placeholder='Search...' style = {{width: '100%', margin: '8px'}} />
+          <Menu.Item
+            name='home'
+            active={activeItem === 'home'}
+            onClick={this.handleItemClick} />
           <Menu.Item
             name='profile'
             active={activeItem === 'profile'}
@@ -78,7 +77,7 @@ import {
         </Menu>
 
         <StackGrid
-        columnWidth={150}
+        columnWidth={300}
         >
         <div key="key1">Item 1</div>
         <div key="key2">Item 2</div>
