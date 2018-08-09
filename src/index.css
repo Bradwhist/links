@@ -92,3 +92,13 @@ body {
 .msgBox {
   padding-top: 5%;
 }
+
+/* FEED COMPONENT */
+.searchInputBox {
+  width: 100%;
+  margin: 8px;
+}
+
+.imgBox {
+  width: 100%;
+}

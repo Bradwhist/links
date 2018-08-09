@@ -78,6 +78,7 @@ export const logout = () => async dispatch => {
 export const post = (title, content, image, sub) => async dispatch => {
   try {
     console.log('XXXXXXXXXXXXXXXXXXXX', JSON.parse(localStorage.getItem('user')).token);
+    let token = JSON.parse(localStorage.getItem('user')).token;
     const res = await axios.post('http://localhost:8080/api/post', {
       title: title,
       content: content,
@@ -85,7 +86,7 @@ export const post = (title, content, image, sub) => async dispatch => {
       sub: sub,
     },
     {
-      headers: { token: JSON.parse(localStorage.getItem('user')).token }
+      headers: { token }
     });
     console.log('result from post', res);
     dispatch({ type: POST, payload: res.data });

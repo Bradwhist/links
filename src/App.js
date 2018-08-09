@@ -6,7 +6,6 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Profile from './components/Profile'
 import Feed from './components/Feed'
-import PrivateRoute from './components/PrivateRoute'
 import { BrowserRouter as Router } from 'react-router-dom'
 import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
 import { fetchUser } from './actions'
@@ -24,13 +23,12 @@ class App extends Component {
             <Route exact path = '/' component = {Home} />  {/*Register Component */}
             <Route exact path = '/login' component = {Login} />
             <Route exact path = '/feed' component = {Feed} />
-            <PrivateRoute path = '/profile' component = {Profile} />
           </Switch>
        </Router>
       </div>
       // <Router>
       // <div className="App">
-      // {this.props.auth.auth && this.props.auth.loaded ?
+      // {this.props.auth.loaded && this.props.logged ?
       //   <Switch>
       //   <Route exact path = '/feed' component={Feed} />
       //   {/* <Route exact path = '/createCategory' component={CreateCategory} /> */}
