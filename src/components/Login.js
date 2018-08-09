@@ -18,6 +18,7 @@ class Login extends Component {
       email: e.target.value
     })
   }
+
   setPassword = (e) => {
     this.setState({
       password: e.target.value
@@ -34,13 +35,13 @@ class Login extends Component {
         <h1 style = {{color: '#0ccece'}}> Log-in</h1>
         <div className = "loginBox">
           <div>
-            <Input className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
+            <Input onChange = {(e) => this.setEmail(e)} className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
           </div>
           <div>
-            <Input className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Password' />
+            <Input onChange = {(e) => this.setPassword(e)} className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Password' />
           </div>
           <div>
-            <Button animated basic color = "teal">
+            <Button onClick = {this.login} animated basic color = "teal">
               <Button.Content visible>Login</Button.Content>
               <Button.Content hidden>
                 <Icon name='arrow right' />
