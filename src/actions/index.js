@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { FETCH_USER, FETCH_SUBS, LOGIN, SIGNUP, LOGOUT, POST } from './types';
+import { FETCH_USER, FETCH_SUBS, LOGIN, SIGNUP, LOGOUT, POST, GET_INPUT } from './types';
 
 
 // if redux-thunk sees that we're returning a function in
@@ -92,4 +92,8 @@ export const post = (title, content, image, sub) => async dispatch => {
     dispatch({ type: POST, payload: res.data });
   }
   catch(err){console.log(err)}
+}
+
+export const setInput = (inputVal) => async dispatch => {
+  dispatch({type: GET_INPUT, value: inputVal});
 }

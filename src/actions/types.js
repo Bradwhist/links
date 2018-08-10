@@ -4,3 +4,4 @@ export const LOGIN = 'LOGIN';
 export const SIGNUP = 'SIGNUP';
 export const LOGOUT = 'LOGOUT';
 export const POST = 'POST';
+export const GET_INPUT = 'GET_INPUT';

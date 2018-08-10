@@ -23,6 +23,7 @@ class App extends Component {
             <Route exact path = '/' component = {Home} />  {/*Register Component */}
             <Route exact path = '/login' component = {Login} />
             <Route exact path = '/feed' component = {Feed} />
+            <Route exact path = '/profile' component = {Profile} />
           </Switch>
        </Router>
       </div>
