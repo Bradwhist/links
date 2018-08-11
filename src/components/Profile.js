@@ -48,7 +48,7 @@ const extra = (
      }
      else if (name === 'bio'){
        this.setState({ secondActiveItem: name })
-       this.props.history.push('/profile/' + name);
+       this.props.history.push('/profile');
      }
      else if (name === 'posts'){
        this.setState({ secondActiveItem: name })
@@ -135,38 +135,24 @@ const extra = (
              </Grid.Column>
 
              <Grid.Column stretched width={10}>
+               {/* Put a ternary in here to render content depending on what the state is */}
                <Segment>
-                 This is an stretched grid column. This segment will always match the tab height
-               </Segment>
+               {this.state.secondActiveItem === 'bio' ? <p> This is the bio </p> : null}
+               {this.state.secondActiveItem === 'posts' ? <p> This is the posts </p> : null}
+               {this.state.secondActiveItem === 'activity' ? <p> This is the activity </p> : null}
+               {this.state.secondActiveItem === 'links' ? <p> This is the links </p> : null}
+              </Segment>
              </Grid.Column>
              <Grid.Column width={3}>
                <Card
                  image='https://www.w3schools.com/howto/img_avatar.png'
                  header='Daniel Ko'
                  meta='Friend'
-                 description='Daniel is a software engineer living in NYC who enjoys everything.'
+                 description='Daniel is a software engineer living in NYC who enjoys to smoke weed.'
                  extra={extra}
                />
              </Grid.Column>
            </Grid>
-           {/* <Grid>
-             <Grid.Column width={4}>
-
-             </Grid.Column>
-             <Grid.Column width={9}>
-               <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                 aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                 voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                 deserunt mollit anim id est laborum</p>
-             </Grid.Column>
-             <Grid.Column width={3}>
-
-             </Grid.Column>
-           </Grid> */}
-
        </div>
      )
    }
