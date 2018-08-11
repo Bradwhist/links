@@ -44,6 +44,10 @@ const PostSchema = new mongoose.Schema({
       }],
       default: [],
 },
+  score: {
+    type: Number,
+    default: 0.2641827726357623,
+  },
   sub: {
     title: String,
     id: {

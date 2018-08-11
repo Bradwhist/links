@@ -7,7 +7,9 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Feed from './components/Feed'
 import Post from './components/Post'
-import CreateCategory from './components/CreateCategory'
+import Sub from './components/Sub'
+import CreatePost from './components/CreatePost'
+import CreateSub from './components/CreateSub'
 import PrivateRoute from './components/PrivateRoute'
 import { BrowserRouter as Router } from 'react-router-dom'
 import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
@@ -22,18 +24,20 @@ class App extends Component {
     return (
       <Router>
       <div className="App">
-      {this.props.auth.auth && this.props.auth.loaded ?
+      {this.props.auth.logged && this.props.auth.loaded ?
         <Switch>
         <Route exact path = '/feed' component={Feed} />
-        <Route exact path = '/createCategory' component={CreateCategory} />
-        <Route exact path = '/post' component={Post} />
+        <Route exact path = '/post/:id' render={(props) => <Post {...props} /> } />
+        <Route exact path = '/createSub' component={CreateSub} />
+        <Route exact path = '/createPost' component={CreatePost} />
+        <Route exact path = '/sub/:id' component={Sub} />
         <Redirect exact from = '/' to = 'feed' />
         </Switch>
         :
         this.props.auth.loaded ?
           <Switch>
           <Redirect from='/feed' to='/'/>
-          <Redirect from='/post' to='/'/>
+          <Redirect from='/createPost' to='/'/>
           <Route exact path = '/' component = {Home} />
           </Switch>
           :

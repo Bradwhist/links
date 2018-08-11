@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchPosts, upvotePost, downvotePost } from '../actions'
+import { logout, fetchSub, upvotePost, downvotePost } from '../actions'
 import CreateSub from './CreateSub'
 import {
   Button,
@@ -25,14 +25,12 @@ import {
 /* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
  * such things.
  */
- class Feed extends Component {
+ class Sub extends Component {
 
    logout = () => {
      this.props.logout();
    }
-   createSub = () => {
-     this.props.history.push('/createSub');
-   }
+
    createPost = () => {
      this.props.history.push('/createPost');
    }
@@ -40,7 +38,7 @@ import {
 
    }
    componentDidMount() {
-     this.props.fetchPosts(this.props.auth.logged._id);
+     this.props.fetchSub(this.props.match.params.id);
    }
   upvotePost(postId, index) {
     this.props.upvotePost(postId, index);
@@ -69,7 +67,7 @@ import {
        <StackGrid
        columnWidth={150}
        >
-         {this.props.posts.map((ele, i) => {
+         {this.props.sub.posts.map((ele, i) => {
            return <div key={i}>
            {ele.score}
            <button onClick={() => this.upvotePost(ele._id, i)}>Big ups</button>
@@ -84,25 +82,25 @@ import {
  }
 
 
-Feed.propTypes = {
+Sub.propTypes = {
   logout: PropTypes.func,
   fetchPosts: PropTypes.func,
   upvotePost: PropTypes.func,
   downvotePost: PropTypes.func,
   auth: PropTypes.obj,
-  posts: PropTypes.array,
+  sub: PropTypes.obj,
 };
 
-const mapStateToProps = ({auth, posts}) => {
+const mapStateToProps = ({auth, sub}) => {
   return {
     auth,
-    posts
+    sub
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
-    fetchPosts: (userId) => dispatch(fetchPosts(userId)),
+    fetchSub: (subId) => dispatch(fetchSub(subId)),
     upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
     downvotePost: (postId, index) => dispatch(downvotePost(postId, index))
   };
@@ -111,7 +109,7 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Feed)
+)(Sub)
 
 // {this.props.posts ?
 // this.props.posts.map((ele, i) => <div key={"key" + (i + 1)}>{"key" + (i + 1)}</div> )
