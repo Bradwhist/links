@@ -5,7 +5,7 @@ export default function(state = { inputVal: ''}, action) {
   switch(action.type) {
     case GET_INPUT:
       if (action.value === '') {
-        return null;
+        return {inputVal: state.inputVal};
       }
       else {
         return { inputVal: action.value};

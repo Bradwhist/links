@@ -105,13 +105,12 @@ body {
   width: 92%;
 }
 
-
 .overlay {
   position: absolute;
   top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 1%;
+  left: 4%;
+  right: 4%;
   background: linear-gradient(
       rgba(0, 0, 0, 0.5),
       rgba(0, 0, 0, 0.5)
@@ -125,4 +124,9 @@ body {
 .imgBox:hover .overlay {
   visibility: visible;
   opacity: 0.5;
+}
+
+/* PROFILE COMPONENT */
+.gridBox {
+  margin: 20px;
 }

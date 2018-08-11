@@ -56,8 +56,8 @@ import {
    //
    // }
 
-   setInput = (e) => {
-     this.props.setInput(e.target.value);
+   setInput = (value) => {
+     this.props.setInput(value);
    }
 
 
@@ -68,11 +68,6 @@ import {
    render() {
      console.log('rendering feed', this.props);
      const { activeItem } = this.state;
-     const options = [
-      { key: 1, text: 'Create Profile', value: 1 },
-      { key: 2, text: 'Following', value: 2 },
-      { key: 3, text: 'Logout', value: 3 },
-     ]
      return (
        <div>
         <Menu pointing>
@@ -88,13 +83,19 @@ import {
             onClick={this.handleItemClick}
           />
           <Menu.Menu position='right'>
-            <Dropdown item simple icon = "ellipsis horizontal" direction='right' options={options} />
+            <Dropdown icon = "ellipsis horizontal" pointing className='link item'>
+              <Dropdown.Menu>
+                <Dropdown.Header>Categories</Dropdown.Header>
+                <Dropdown.Item>Clothing</Dropdown.Item>
+                <Dropdown.Item>Home Goods</Dropdown.Item>
+                <Dropdown.Item>Bedroom</Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Header>Account</Dropdown.Header>
+                <Dropdown.Item>Status</Dropdown.Item>
+                <Dropdown.Item>Logout</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Menu.Menu>
-          {/* <Menu.Item
-            name='logout'
-            active={activeItem === 'logout'}
-            onClick={this.handleItemClick}
-          /> */}
         </Menu>
 
         <StackGrid
@@ -136,20 +137,15 @@ import {
    }
  }
 
- const mapStateToProps = ({input}) => {
-   return {
-     input,
-   }
- }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
-    setInput: (event) => dispatch(setInput(event))
+    setInput: (value) => dispatch(setInput(value))
   };
 }
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
 )(Feed)
