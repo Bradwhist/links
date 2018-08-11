@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import logo from './logo.svg'
 import './App.css'
 import { connect } from 'react-redux'
 import { Route, Switch, Redirect } from 'react-router-dom'
@@ -11,6 +10,7 @@ import Sub from './components/Sub'
 import CreatePost from './components/CreatePost'
 import CreateSub from './components/CreateSub'
 import PrivateRoute from './components/PrivateRoute'
+import Profile from './components/Profile'
 import { BrowserRouter as Router } from 'react-router-dom'
 import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
 import { fetchUser } from './actions'
@@ -31,6 +31,7 @@ class App extends Component {
         <Route exact path = '/createSub' component={CreateSub} />
         <Route exact path = '/createPost' component={CreatePost} />
         <Route exact path = '/sub/:id' component={Sub} />
+        <Route exact path = '/profile' component= {Profile} />
         <Redirect exact from = '/' to = 'feed' />
         </Switch>
         :
@@ -40,13 +41,10 @@ class App extends Component {
           <Redirect from='/createPost' to='/'/>
           <Route exact path = '/' component = {Home} />
           </Switch>
-          :
-          <Route path = '/' render={() => <h1>Loading</h1>} />
-        }
-      </div>
-      </Router>
-    );
-  }
+       </Router>
+    </div>
+  );
+}
 }
 
 const mapStateToProps = ({auth}) => {
