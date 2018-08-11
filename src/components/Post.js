@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid"
-import { logout, post, fetchSubs } from '../actions'
+import { logout, createComment, createRootComment, fetchPost, fetchCommentsFP, upvoteComment, downvoteComment } from '../actions'
 import {
   Button,
   Container,
@@ -30,44 +30,37 @@ import {
      super(props);
      this.state = {
        content: '',
-       title: '',
-       image: '',
-       subSearch: '',
-       sub: '',
-     };
+    };
    }
    componentWillMount() {
-     this.props.fetchSubs();
+      console.log('auth logged id', this.props.auth.logged._id, 'match params id', this.props.match.params.id);
+       this.props.fetchPost(this.props.auth.logged._id, this.props.match.params.id);
+       this.props.fetchCommentsFP(this.props.match.params.id);
+   }
+   componentDidMount() {
+
    }
    setContent = (e) => {
      this.setState({
        content: e.target.value
      })
    }
-   setTitle = (e) => {
-     this.setState({
-       title: e.target.value
-     })
-   }
-   setImage = (e) => {
-     this.setState({
-       image: e.target.value
-     })
-   }
-   setSubSearch = (e) => {
-     this.setState({
-       subSearch: e.target.value
-     })
-   }
+
    logout = () => {
    this.props.logout();
  }
-  post = (e) => {
+  createRootComment = (e) => {
     e.preventDefault();
-    this.props.post(this.state.title, this.state.content, this.state.image, this.state.sub);
+    this.props.createRootComment(this.state.content, this.props.match.params.id);
   }
   goProfile = () => {
     this.props.history.push('/feed')
+  }
+  upvoteComment(commentId, index) {
+    this.props.upvoteComment(commentId, index);
+  }
+  downvoteComment(commentId, index) {
+    this.props.downvoteComment(commentId, index);
   }
 
    componentDidMount() {
@@ -75,28 +68,27 @@ import {
    }
 
    render() {
-     console.log('rendering post', this.props.subs);
-
+     ///console.log('rendering post', this.props.subs);
+     console.log('this.props.comments', this.props.comments);
+     console.log('url params', this.props.match);
+     console.log('global?', this.props.post);
+     console.log('content', this.state.content);
      return (
        <div>
         <button onClick={this.logout}>Logout</button>
         <button onClick={this.goProfile}>Back to profile...</button>
-        <form onSubmit={(e) => this.post(e)}>
+        <ul>
+          {this.props.comments.map((ele, i) => {
+            return <li>
+            {ele.content}
+            <button onClick={() => this.upvoteComment(ele._id, i)}>Upvote Comment</button>
+            <button onClick={() => this.downvoteComment(ele._id, i)}>Downvote Comment</button>
+            </li>
+          })}
+        </ul>
+        <form onSubmit={(e) => this.createRootComment(e)}>
           <label>
-            New Post:
-            <input type="text" name="title" value={this.state.title} onChange={this.setTitle} />
-            <input type="text" name="image" value={this.state.image} onChange={this.setImage} />
-            <input type="text" name="sub" value={this.state.subSearch} onChange={this.setSubSearch} />
-            { this.state.subSearch !== '' ?
-            <div>
-            <ul>
-              {this.props.subs.filter(ele => ele.title.indexOf(this.state.subSearch) !== - 1).map(ele => <li>{ele.title}</li>)}
-            </ul>
-            <Dropdown placeholder='Select Subreddit' fluid search selection options={this.props.subs.filter(ele => ele.title.indexOf(this.state.subSearch) !== -1)} />
-            </div>
-          :
-          null
-        }
+            New Comment:
             <textarea value={this.state.value} onChange={this.setContent} />
           </label>
           <input type="submit" value="Submit" />
@@ -109,21 +101,32 @@ import {
 
 Post.propTypes = {
   logout: PropTypes.func,
-  post: PropTypes.func,
+  createComment: PropTypes.func,
+  createRootComment: PropTypes.func,
   subs: PropTypes.array,
+  fetchPost: PropTypes.func,
+  fetchCommentsFP: PropTypes.func,
+  post: PropTypes.obj,
+  upvoteComment: PropTypes.func,
+  downvoteComment: PropTypes.func,
 };
 
-const mapStateToProps = ({ auth, subs }) => {
+const mapStateToProps = ({ auth, post, comments }) => {
   return {
     auth,
-    subs,
+    post,
+    comments,
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
-    post: (title, content, image, sub) => dispatch(post(title, content, image, sub)),
-    fetchSubs: () => dispatch(fetchSubs()),
+    createRootComment: (content, postId) => dispatch(createRootComment(content, postId)),
+    createComment: (content, commentId) => dispatch(createComment(content, commentId)),
+    fetchPost: (userId, postId) => dispatch(fetchPost(userId, postId)),
+    fetchCommentsFP: (postId) => dispatch(fetchCommentsFP(postId)),
+    upvoteComment: (commentId, index) => dispatch(upvoteComment(commentId, index)),
+    downvoteComment: (commentId, index) => dispatch(downvoteComment(commentId, index))
   };
 }
 

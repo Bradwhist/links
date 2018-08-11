@@ -1,7 +1,7 @@
 import { FETCH_USER, LOGIN, LOGOUT } from "../actions/types";
 
 export default function(state = { loaded: false, logged: false }, action) {
-  // console.log('authreducer: action', action, 'state', state);
+  console.log('authreducer: action', action, 'state', state);
   switch(action.type) {
     case FETCH_USER:
     console.log('fetchuser');

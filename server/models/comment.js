@@ -42,6 +42,10 @@ const CommentSchema = new mongoose.Schema({
       }],
       default: [],
     },
+    score: {
+      type: Number,
+      default: 0.3076923076923077,
+    },
     parent: {
       type: ObjectId,
       ref: "comments",

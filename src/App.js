@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import './App.css'
 import { connect } from 'react-redux'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import Home from './components/Home'
 import Login from './components/Login'
-import Profile from './components/Profile'
 import Feed from './components/Feed'
-import { BrowserRouter as Router } from 'react-router-dom'
+import Profile from './components/Profile'
+import Post from './components/Post'
+import Sub from './components/Sub'
+import CreatePost from './components/CreatePost'
+import CreateSub from './components/CreateSub'
 import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
 import { fetchUser } from './actions'
 
@@ -17,41 +20,42 @@ class App extends Component {
   render() {
     console.log(this.props.auth);
     return (
+      <Router>
       <div className="App">
-        <Router>
+        <Route exact path = '/' component = {Home} />  {/*Register Component */}
+        <Route exact path = '/login' component = {Login} />
+        <Route exact path = '/feed' component = {Feed} />
+        <Route exact path = '/profile' component = {Profile} />
+        <Route exact path = '/profile/bio' component = {Profile} />
+        <Route exact path = '/profile/posts' component = {Profile} />
+        <Route exact path = '/profile/activity' component = {Profile} />
+        <Route exact path = '/profile/links' component = {Profile} />
+      {/* {this.props.auth.logged && this.props.auth.loaded ?
+        <Switch>
+        <Route exact path = '/feed' component={Feed} />
+        <Route exact path = '/post/:id' render={(props) => <Post {...props} /> } />
+        <Route exact path = '/createSub' component={CreateSub} />
+        <Route exact path = '/createPost' component={CreatePost} />
+        <Route exact path = '/sub/:id' component={Sub} />
+        <Route exact path = '/profile' component= {Profile} />
+        <Redirect exact from = '/' to = 'feed' />
+        </Switch>
+        :
+        this.props.auth.loaded ?
           <Switch>
-            <Route exact path = '/' component = {Home} />  {/*Register Component */}
-            <Route exact path = '/login' component = {Login} />
-            <Route exact path = '/feed' component = {Feed} />
-            <Route exact path = '/profile' component = {Profile} />
-            <Route exact path = '/profile/bio' component = {Profile} />
-            <Route exact path = '/profile/posts' component = {Profile} />
-            <Route exact path = '/profile/activity' component = {Profile} />
-            <Route exact path = '/profile/links' component = {Profile} />
+          <Redirect from='/feed' to='/' />
+          <Redirect from='/createPost' to='/' />
+          <Redirect from='/post' to='/' />
+          <Redirect from='/createSub' to='/' />
+          <Redirect from='/sub' to='/' />
+          <redirect from='/profile' to='/' />
+          <Route exact path = '/' component = {Home} />
           </Switch>
-       </Router>
-      </div>
-      // <Router>
-      // <div className="App">
-      // {this.props.auth.loaded && this.props.logged ?
-      //   <Switch>
-      //   <Route exact path = '/feed' component={Feed} />
-      //   {/* <Route exact path = '/createCategory' component={CreateCategory} /> */}
-      //   {/* <Route exact path = '/post' component={Post} /> */}
-      //   <Redirect exact from = '/' to = 'feed' />
-      //   </Switch>
-      //   :
-      //   this.props.auth.loaded ?
-      //     <Switch>
-      //     <Redirect from='/feed' to='/'/>
-      //     <Redirect from='/post' to='/'/>
-      //     <Route exact path = '/' component = {Home} />
-      //     </Switch>
-      //     :
-      //     <Route path = '/' render={() => <h1>Loading</h1>} />
-      //   }
-      // </div>
-      // </Router>
+        :
+        <Route path = '/' render={() => <h1>Loading</h1>} />
+      } */}
+        </div>
+      </Router>
     );
   }
 }

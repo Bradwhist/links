@@ -8,6 +8,12 @@ const SubSchema = new mongoose.Schema({
     type: String,
     index: { unique: true }
   },
+  description: {
+    type: String,
+  },
+  image: {
+    type: String,
+  },
   founder: {
     name: String,
     id: {

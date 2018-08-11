@@ -52,15 +52,15 @@ const extra = (
      }
      else if (name === 'posts'){
        this.setState({ secondActiveItem: name })
-       this.props.history.push('/profile/' + name);
+       //this.props.history.push('/profile/' + name);
      }
      else if (name === 'activity'){
        this.setState({ secondActiveItem: name })
-       this.props.history.push('/profile/' + name);
+       //this.props.history.push('/profile/' + name);
      }
      else if (name === 'links'){
        this.setState({ secondActiveItem: name })
-       this.props.history.push('/profile/' + name);
+       //this.props.history.push('/profile/' + name);
      }
      //this.props.logout();
      //this.props.logout();
@@ -68,7 +68,7 @@ const extra = (
 
    logout = () => {
    this.props.logout();
- }
+   }
 
    componentDidMount() {
 
@@ -115,10 +115,12 @@ const extra = (
            <Grid>
              <Grid.Column width={3}>
                <Menu fluid vertical tabular>
-                 <Menu.Item name='bio'
+                 <Menu.Item
+                   name='bio'
                    active={secondActiveItem === 'bio'}
                    onClick={this.handleItemClick} />
-                 <Menu.Item name='posts'
+                 <Menu.Item
+                   name='posts'
                    active={secondActiveItem === 'posts'}
                    onClick={this.handleItemClick} />
                  <Menu.Item
@@ -158,9 +160,6 @@ const extra = (
    }
  }
 
-
-Profile.propTypes = {
-};
 
 const mapDispatchToProps = (dispatch) => {
   return {
