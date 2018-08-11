@@ -11,10 +11,7 @@ import reduxThunk from 'redux-thunk';
 
 
 ReactDOM.render(
-<<<<<<< HEAD
-=======
 
->>>>>>> master
     <Provider store={store}>
       <App />
     </Provider>

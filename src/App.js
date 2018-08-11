@@ -37,12 +37,20 @@ class App extends Component {
         :
         this.props.auth.loaded ?
           <Switch>
-          <Redirect from='/feed' to='/'/>
-          <Redirect from='/createPost' to='/'/>
+          <Redirect from='/feed' to='/' />
+          <Redirect from='/createPost' to='/' />
+          <Redirect from='/post' to='/' />
+          <Redirect from='/createSub' to='/' />
+          <Redirect from='/sub' to='/' />
+          <redirect from='/profile' to='/' />
           <Route exact path = '/' component = {Home} />
           </Switch>
+        :
+        <Route path = '/' render={() => <h1>Loading</h1>} />
+      }
+      </div>
        </Router>
-    </div>
+
   );
 }
 }
