@@ -49,6 +49,7 @@ const CommentSchema = new mongoose.Schema({
     parent: {
       type: ObjectId,
       ref: "comments",
+      default: null,
     },
     ancestor: {
       type: ObjectId,

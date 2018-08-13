@@ -104,7 +104,7 @@ router.post('/rootComment', function(req, res) {
       post.comments.push(response.id);
       post.save();
 
-      res.json({newComment: newComment, parentPost: post})
+      return res.json(newComment)
     })
     .catch(err => res.send(err))
   })
@@ -133,7 +133,7 @@ router.post('/comment', function(req, res) {
     .then(response => {
       comment.comments.push(response.id);
       comment.save();
-      res.json({newComment: newComment, parentComment: comment})
+      return res.json(newComment)
     })
     .catch(err => res.send(err))
   })
@@ -175,6 +175,7 @@ router.post('/vote/post/up', function(req, res) {
     b = y / (5 * (10 ** 9));                           // - time coefficient
     post.score = 1 - (1 / ((x ** a) * (Math.E ** b)));  // calculates score based on net vote difference and time posted, maps score to (-1, 1)
     post.save();
+    res.json(post.score);
   })
   .catch(err => console.log(err))
 })
@@ -215,6 +216,7 @@ router.post('/vote/post/down', function(req, res) {
     b = y / (5 * (10 ** 9));                            // - time coefficient
     post.score = 1 - (1 / ((x ** a) * (Math.E ** b)));  // calculates score based on net vote difference and time posted, maps score to (-1, 1)
     post.save();
+    res.json(post.score);
   })
   .catch(err => console.log(err))
 })
@@ -247,6 +249,7 @@ router.post('/vote/comment/up', function(req, res) {
     comment.score = ((r + z2/(2 * t) - z * Math.sqrt((r * (1 - r) + z2/(4 * t))/t))/(1 + z2/t))  //wilson interval calculation
   }
     comment.save();
+    res.json(comment.score);
   })
   .catch(err => console.log(err))
 })
@@ -279,6 +282,7 @@ router.post('/vote/comment/down', function(req, res) {
     comment.score = ((r + z2/(2 * t) - z * Math.sqrt((r * (1 - r) + z2/(4 * t))/t))/(1 + z2/t))  //wilson interval calculation
   }
     comment.save();
+    res.json(comment.score);
   })
   .catch(err => console.log(err))
 })
