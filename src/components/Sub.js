@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
 import { logout, fetchSub, upvotePost, downvotePost } from '../actions'
-import CreateSub from './CreateSub'
 import {
   Button,
   Container,

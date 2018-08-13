@@ -26,10 +26,8 @@ class App extends Component {
         <Route exact path = '/login' component = {Login} />
         <Route exact path = '/feed' component = {Feed} />
         <Route exact path = '/profile' component = {Profile} />
-        <Route exact path = '/profile/bio' component = {Profile} />
-        <Route exact path = '/profile/posts' component = {Profile} />
-        <Route exact path = '/profile/activity' component = {Profile} />
-        <Route exact path = '/profile/links' component = {Profile} />
+        <Route exact path = '/createSub' component={CreateSub} />
+        <Route exact path = '/createPost' component={CreatePost} />
       {/* {this.props.auth.logged && this.props.auth.loaded ?
         <Switch>
         <Route exact path = '/feed' component={Feed} />

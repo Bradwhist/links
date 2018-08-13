@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-// import CreateCategory from './CreateCategory'
 import { logout, fetchPosts, upvotePost, downvotePost, setInput } from '../actions'
-import CreateSub from './CreateSub'
 import {
   Button,
   Container,
@@ -50,10 +48,6 @@ import {
      this.props.logout();
    }
 
-   createSub = () => {
-     this.props.history.push('/createSub');
-   }
-
    createPost = () => {
      this.props.history.push('/createPost');
    }
@@ -92,21 +86,35 @@ import {
             active={activeItem === 'home'}
             onClick={this.handleItemClick} />
           <Menu.Item
+            name='explore'
+            active={activeItem === 'explore'}
+            onClick={this.handleItemClick}
+          />
+          <Menu.Item
             name='profile'
             active={activeItem === 'profile'}
             onClick={this.handleItemClick}
           />
           <Menu.Menu position='right'>
+          <Dropdown icon = "plus" pointing className='link item'>
+            <Dropdown.Menu>
+              <Dropdown.Header>Category</Dropdown.Header>
+              <Dropdown.Item onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Header>Post</Dropdown.Header>
+              <Dropdown.Item>Create a new post</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          </Menu.Menu>
+          <Menu.Menu position='right'>
             <Dropdown icon = "ellipsis horizontal" pointing className='link item'>
               <Dropdown.Menu>
                 <Dropdown.Header>Categories</Dropdown.Header>
-                <Dropdown.Item>Clothing</Dropdown.Item>
-                <Dropdown.Item>Home Goods</Dropdown.Item>
-                <Dropdown.Item>Bedroom</Dropdown.Item>
+                <Dropdown.Item>X</Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Header>Account</Dropdown.Header>
                 <Dropdown.Item>Status</Dropdown.Item>
-                <Dropdown.Item>Logout</Dropdown.Item>
+                <Dropdown.Item onClick = {this.logout}>Logout</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Menu.Menu>
