@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid"
-import { logout, createPost, fetchSubs } from '../actions'
+import { logout, createPost, fetchSubs, setInput } from '../actions'
 import {
   Button,
   Container,
@@ -90,6 +90,10 @@ class CreatePost extends Component {
     })
   }
 
+  setInput = (value) => {
+    this.props.setInput(value);
+  }
+
   logout = () => {
     this.props.logout();
   }
@@ -111,7 +115,7 @@ class CreatePost extends Component {
     const { activeItem } = this.state;
     return (
       <div>
-        <Menu pointing>
+        <Menu pointing inverted>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
           <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
             <Menu.Item
@@ -132,10 +136,18 @@ class CreatePost extends Component {
               <Dropdown icon = "plus" pointing className='link item'>
                 <Dropdown.Menu>
                   <Dropdown.Header>Category</Dropdown.Header>
-                  <Dropdown.Item active = {activeItem === 'createSub'} onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
+                  <Dropdown.Item
+                    active = {activeItem === 'createSub'}
+                    onClick = {() => this.props.history.push('./createSub')}>
+                    Create a new category
+                  </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Header>Post</Dropdown.Header>
-                  <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('./createPost')}>Create a new post</Dropdown.Item>
+                  <Dropdown.Item
+                    active = {activeItem === 'createPost'}
+                    onClick = {() => this.props.history.push('./createPost')}>
+                    Create a new post
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Menu.Menu>
@@ -248,6 +260,7 @@ const mapDispatchToProps = (dispatch) => {
     logout: () => dispatch(logout()),
     createPost: (title, content, image, sub) => dispatch(createPost(title, content, image, sub)),
     fetchSubs: () => dispatch(fetchSubs()),
+    setInput: (value) => dispatch(setInput(value))
   };
 }
 

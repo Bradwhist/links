@@ -96,21 +96,24 @@ class CreateSub extends Component {
     const { activeItem } = this.state;
      return (
        <div>
-         <Menu pointing>
+         <Menu pointing inverted>
            <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
            <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
            <Menu.Item
              name='home'
              active={activeItem === 'home'}
+             color='teal'
              onClick={this.handleItemClick} />
            <Menu.Item
              name='explore'
              active={activeItem === 'explore'}
+             color='teal'
              onClick={this.handleItemClick}
            />
            <Menu.Item
              name='profile'
              active={activeItem === 'profile'}
+             color='teal'
              onClick={this.handleItemClick}
            />
            <Menu.Menu position='right'>

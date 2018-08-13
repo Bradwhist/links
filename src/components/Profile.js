@@ -50,6 +50,10 @@ import {
        this.setState({ activeItem: name })
        this.props.history.push('/createSub');
      }
+     else if (name === 'createPost'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/createPost');
+     }
      else if (name === 'bio'){
        this.setState({ secondActiveItem: name })
        this.props.history.push('/profile');
@@ -109,31 +113,42 @@ import {
     )
      return (
        <div>
-         <Menu pointing>
+         <Menu pointing inverted>
            <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
            <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
            <Menu.Item
              name='home'
              active={activeItem === 'home'}
+             color='teal'
              onClick={this.handleItemClick} />
            <Menu.Item
              name='explore'
              active={activeItem === 'explore'}
+             color='teal'
              onClick={this.handleItemClick}
            />
            <Menu.Item
              name='profile'
              active={activeItem === 'profile'}
+             color='teal'
              onClick={this.handleItemClick}
            />
            <Menu.Menu position='right'>
            <Dropdown icon = "plus" pointing className='link item'>
              <Dropdown.Menu>
                <Dropdown.Header>Category</Dropdown.Header>
-               <Dropdown.Item onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
+               <Dropdown.Item
+                 active = {activeItem === 'createSub'}
+                 onClick = {() => this.props.history.push('./createSub')}>
+                 Create a new category
+               </Dropdown.Item>
                <Dropdown.Divider />
                <Dropdown.Header>Post</Dropdown.Header>
-               <Dropdown.Item>Create a new post</Dropdown.Item>
+               <Dropdown.Item
+                 active = {activeItem === 'createPost'}
+                 onClick = {() => this.props.history.push('./createPost')}>
+                 Create a new post
+               </Dropdown.Item>
              </Dropdown.Menu>
            </Dropdown>
            </Menu.Menu>
@@ -157,14 +172,17 @@ import {
                  <Menu.Item
                    name='bio'
                    active={secondActiveItem === 'bio'}
+                   color='teal'
                    onClick={this.handleItemClick} />
                  <Menu.Item
                    name='posts'
                    active={secondActiveItem === 'posts'}
+                   color='teal'
                    onClick={this.handleItemClick} />
                  <Menu.Item
                    name='activity'
                    active={secondActiveItem === 'activity'}
+                   color='teal'
                    onClick={this.handleItemClick}
                  />
                </Menu>

@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import Home from './components/Home'
 import Login from './components/Login'
 import Feed from './components/Feed'
+import Explore from './components/Explore'
 import Profile from './components/Profile'
 import Post from './components/Post'
 import Sub from './components/Sub'
@@ -25,6 +26,7 @@ class App extends Component {
         <Route exact path = '/' component = {Home} />  {/*Register Component */}
         <Route exact path = '/login' component = {Login} />
         <Route exact path = '/feed' component = {Feed} />
+        <Route exact path = '/explore' component = {Explore} />
         <Route exact path = '/profile' component = {Profile} />
         <Route exact path = '/createSub' component={CreateSub} />
         <Route exact path = '/createPost' component={CreatePost} />
