@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import './App.css'
 import { connect } from 'react-redux'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import Home from './components/Home'
 import Login from './components/Login'
 import Feed from './components/Feed'
+import Profile from './components/Profile'
 import Post from './components/Post'
 import Sub from './components/Sub'
 import CreatePost from './components/CreatePost'
 import CreateSub from './components/CreateSub'
-import PrivateRoute from './components/PrivateRoute'
-import Profile from './components/Profile'
-import { BrowserRouter as Router } from 'react-router-dom'
 import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
 import { fetchUser } from './actions'
 
@@ -24,7 +22,15 @@ class App extends Component {
     return (
       <Router>
       <div className="App">
-      {this.props.auth.logged && this.props.auth.loaded ?
+        <Route exact path = '/' component = {Home} />  {/*Register Component */}
+        <Route exact path = '/login' component = {Login} />
+        <Route exact path = '/feed' component = {Feed} />
+        <Route exact path = '/profile' component = {Profile} />
+        <Route exact path = '/profile/bio' component = {Profile} />
+        <Route exact path = '/profile/posts' component = {Profile} />
+        <Route exact path = '/profile/activity' component = {Profile} />
+        <Route exact path = '/profile/links' component = {Profile} />
+      {/* {this.props.auth.logged && this.props.auth.loaded ?
         <Switch>
         <Route exact path = '/feed' component={Feed} />
         <Route exact path = '/post/:id' render={(props) => <Post {...props} /> } />
@@ -47,13 +53,13 @@ class App extends Component {
           </Switch>
         :
         <Route path = '/' render={() => <h1>Loading</h1>} />
-      }
-      </div>
-       </Router>
+      } */}
+        </div>
+      </Router>
+    );
+  }
+}
 
-  );
-}
-}
 
 const mapStateToProps = ({auth}) => {
   return {

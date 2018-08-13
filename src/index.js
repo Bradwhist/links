@@ -11,10 +11,8 @@ import reduxThunk from 'redux-thunk';
 
 
 ReactDOM.render(
-
     <Provider store={store}>
       <App />
     </Provider>
-
 , document.getElementById('root'));
 registerServiceWorker();

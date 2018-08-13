@@ -20,3 +20,6 @@ export const UPVOTE_POST_2 = 'UPVOTE_POST_2';
 export const DOWNVOTE_POST_2 = 'DOWNVOTE_POST_2';
 export const UPVOTE_COMMENT = 'UPVOTE_COMMENT';
 export const DOWNVOTE_COMMENT = 'DOWNVOTE_COMMENT';
+
+export const POST = 'POST';
+export const GET_INPUT = 'GET_INPUT';

@@ -42,6 +42,7 @@ router.post('/post', function(req, res) {
       },
       title: req.body.title,
       content: req.body.content,
+      image: req.body.image,
       upvotes: [res.locals.user._id],
       sub: {
         id: req.body.sub,

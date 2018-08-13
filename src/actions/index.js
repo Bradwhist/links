@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_SUB,
    LOGIN, SIGNUP, LOGOUT,
    CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT,
-    UPVOTE_POST, DOWNVOTE_POST, UPVOTE_COMMENT, DOWNVOTE_COMMENT, } from './types';
+    UPVOTE_POST, DOWNVOTE_POST, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
 
 
 // if redux-thunk sees that we're returning a function in
@@ -134,6 +134,8 @@ export const createSub = (title, description, image) => async dispatch => {
 //  create new post
 export const createPost = (title, content, image, sub) => async dispatch => {
   try {
+    console.log('XXXXXXXXXXXXXXXXXXXX', JSON.parse(localStorage.getItem('user')).token);
+    let token = JSON.parse(localStorage.getItem('user')).token;
     const res = await axios.post('http://localhost:8080/api/post', {
       title: title,
       content: content,
@@ -141,7 +143,7 @@ export const createPost = (title, content, image, sub) => async dispatch => {
       sub: sub,
     },
     {
-      headers: { token: JSON.parse(localStorage.getItem('user')).token }
+      headers: { token }
     });
     console.log(res.data);
     dispatch({ type: CREATE_POST, payload: res.data });
@@ -233,4 +235,7 @@ export const downvoteComment = (commentId, index) => async dispatch => {
   }
   catch(err){console.log(err)}
 }
-/////////////////////////////////////// End voting
+
+export const setInput = (inputVal) => async dispatch => {
+  dispatch({type: GET_INPUT, value: inputVal});
+}
