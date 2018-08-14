@@ -1,9 +1,11 @@
+// Post renders the information relevant to a post, including the comment tree of replies
+
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid"
-import { logout, createComment, createRootComment, fetchPost, fetchCommentsFP, upvoteComment, downvoteComment } from '../actions'
+import { logout, createComment, createRootComment, fetchPost, upvoteComment, downvoteComment } from '../actions'
 import {
   Button,
   Container,
@@ -30,16 +32,17 @@ import {
      super(props);
      this.state = {
        content: '',
+       replying: null,
     };
    }
    componentWillMount() {
-      console.log('auth logged id', this.props.auth.logged._id, 'match params id', this.props.match.params.id);
+      // fetchPost loads in the page object to this.props
+      // this.props.post.post: post title, content, and image
+      // this.props.post.comments: flat array of all comments in tree regardless of depth
        this.props.fetchPost(this.props.auth.logged._id, this.props.match.params.id);
-       this.props.fetchCommentsFP(this.props.match.params.id);
-   }
-   componentDidMount() {
 
    }
+   // content updates state value containing current comment draft
    setContent = (e) => {
      this.setState({
        content: e.target.value
@@ -49,41 +52,122 @@ import {
    logout = () => {
    this.props.logout();
  }
+
+ // createComment is function to handle submission of form for a non-root level comment
+  createComment = (e, id) => {
+    e.preventDefault();
+      this.setState({
+        content: '',
+        replying: null,
+      })
+      //console.log(this.state.content);
+    return this.props.createComment(this.state.content, id);
+  }
+
+  // createRootComment handles submission of form for root level comment
   createRootComment = (e) => {
     e.preventDefault();
+    //console.log(this.state.content);
     this.props.createRootComment(this.state.content, this.props.match.params.id);
   }
   goProfile = () => {
     this.props.history.push('/feed')
   }
+  // upvoteComment handles click for positive vote on comment of any level
   upvoteComment(commentId, index) {
     this.props.upvoteComment(commentId, index);
   }
+  // downvoteComment handles click for negative vote on comment of any level
   downvoteComment(commentId, index) {
     this.props.downvoteComment(commentId, index);
   }
 
-   componentDidMount() {
+  // reply comment toggles which comment is being actively replied to
+   replyComment(postId) {
+     if (postId === this.state.replying) {
+       this.setState({ replying: null });
+     } else {
+       this.setState({ replying: postId });
+     }
+   }
 
+   // renderReplies is recursive function providing JSX for rendering comment tree
+   renderReplies(comments) {
+     let _this = this;
+     let sortedComments = [];  // will become array of next level of comments
+     for (var i = 0; i < comments.length; i ++) {
+
+        //  block finds the content object given the id of the object
+       let checkIndex = (comment) => {
+         return comment._id === comments[i]
+       }
+       let currentIndex = this.props.post.comments.findIndex(checkIndex);
+       let currentComment = this.props.post.comments[currentIndex];
+
+       sortedComments.push(currentComment);                           // adds new comment to array
+     }
+     sortedComments.sort((a, b) => a.score < b.score);                 //sorts array of comments by score
+
+     // block creates JSX that will be included in the return
+     const replyComments = sortedComments.map((ele, i) => {
+       let replies;                                                // JSX content
+       if (ele.comments.length > 0) {                              // iterates over comments
+         replies = _this.renderReplies(ele.comments)               // recursive function call
+       }
+       return (
+         <li>
+         { ele.content }
+         <button onClick={() => this.upvoteComment(ele._id, i)}>Upvote Comment</button>
+         <button onClick={() => this.downvoteComment(ele._id, i)}>Downvote Comment</button>
+         <button onClick={() => this.replyComment(ele._id)}>Open Post</button>
+         { this.state.replying === ele._id ?
+           <form onSubmit={(e) => this.createComment(e, ele._id)}>
+             <label>
+               New Comment:
+               <textarea value={this.state.value} onChange={this.setContent} />
+             </label>
+             <input type="submit" value="Submit" />
+           </form>
+         :
+         null
+       }
+         { replies }
+         </li>
+       )
+     })
+     return <ul>{ replyComments }</ul>
    }
 
    render() {
-     ///console.log('rendering post', this.props.subs);
-     console.log('this.props.comments', this.props.comments);
-     console.log('url params', this.props.match);
-     console.log('global?', this.props.post);
-     console.log('content', this.state.content);
+      console.log('rendering post', this.props.post.comments);
+             // Unordered list contains comment tree.  Maps over comments, and displays all root level comments.
+             // in each root comment, calls function 'renderReplies', which is recursive and displays non-root comments
      return (
        <div>
         <button onClick={this.logout}>Logout</button>
         <button onClick={this.goProfile}>Back to profile...</button>
         <ul>
-          {this.props.comments.map((ele, i) => {
-            return <li>
-            {ele.content}
+          {this.props.post.comments.map((ele, i) => {
+            if (!ele.parent) {
+              return <li>
+            { ele.content }
             <button onClick={() => this.upvoteComment(ele._id, i)}>Upvote Comment</button>
             <button onClick={() => this.downvoteComment(ele._id, i)}>Downvote Comment</button>
+            <button onClick={() => this.replyComment(ele._id)}>Open Post</button>
+            { this.state.replying === ele._id ?
+              <form onSubmit={(e) => this.createComment(e, ele._id)}>
+                <label>
+                  New Comment:
+                  <textarea value={this.state.value} onChange={this.setContent} />
+                </label>
+                <input type="submit" value="Submit" />
+              </form>
+            :
+            null
+          }
+              { this.renderReplies(ele.comments) }
             </li>
+          }
           })}
         </ul>
         <form onSubmit={(e) => this.createRootComment(e)}>
@@ -105,7 +189,6 @@ Post.propTypes = {
   createRootComment: PropTypes.func,
   subs: PropTypes.array,
   fetchPost: PropTypes.func,
-  fetchCommentsFP: PropTypes.func,
   post: PropTypes.obj,
   upvoteComment: PropTypes.func,
   downvoteComment: PropTypes.func,
@@ -124,7 +207,6 @@ const mapDispatchToProps = (dispatch) => {
     createRootComment: (content, postId) => dispatch(createRootComment(content, postId)),
     createComment: (content, commentId) => dispatch(createComment(content, commentId)),
     fetchPost: (userId, postId) => dispatch(fetchPost(userId, postId)),
-    fetchCommentsFP: (postId) => dispatch(fetchCommentsFP(postId)),
     upvoteComment: (commentId, index) => dispatch(upvoteComment(commentId, index)),
     downvoteComment: (commentId, index) => dispatch(downvoteComment(commentId, index))
   };

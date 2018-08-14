@@ -17,6 +17,7 @@ export default function(state = [], action) {
           newState[i].downVoted = true;
         }
       }
+      newState.sort((a, b) => a.score < b.score)
       return newState;
       // let postsArr = action.payload;
       // // helper scoring function
@@ -42,14 +43,18 @@ export default function(state = [], action) {
       // return postsArr.sort((a,b) => scoreFn(b) - scoreFn(a));
       case UPVOTE_POST:
         let newState2 = [ ...state ];
-        newState2[action.payload].upVoted = !newState2[action.payload].upVoted;
-        newState2[action.payload].downVoted = false;
+        console.log(action.payload.score);
+        newState2[action.payload.index].upVoted = !newState2[action.payload.index].upVoted;
+        newState2[action.payload.index].downVoted = false;
+        newState2[action.payload.index].score = action.payload.score;
       return newState2;
       case DOWNVOTE_POST:
         let newState3 = [ ...state ];
-        newState3[action.payload].downVoted = !newState3[action.payload].downVoted;
-        newState3[action.payload].upVoted = false;
-      return state;
+        console.log(action.payload.score);
+        newState3[action.payload.index].downVoted = !newState3[action.payload.index].downVoted;
+        newState3[action.payload.index].upVoted = false;
+        newState3[action.payload.index].score = action.payload.score;
+      return newState3;
       default:
       return state;
   }

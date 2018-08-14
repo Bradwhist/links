@@ -41,8 +41,12 @@ class App extends Component {
         <Route exact path = '/createSub' component={CreateSub} />
         <Route exact path = '/createPost' component={CreatePost} />
         <Route exact path = '/sub/:id' component={Sub} />
-        <Redirect exact from = '/' to = '/feed' />
-        <Redirect exact from = '/login' to = '/feed' />
+        <Route exact path = '/profile' component= {Profile} />
+        <Route exact path = '/profile/bio' component = {Profile} />
+        <Route exact path = '/profile/posts' component = {Profile} />
+        <Route exact path = '/profile/activity' component = {Profile} />
+        <Route exact path = '/profile/links' component = {Profile} />
+        <Redirect exact from = '/login' to = 'feed' />
         </Switch>
         :
         this.props.auth.loaded ?

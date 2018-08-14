@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_COMMENTS_FP, FETCH_SUB,
+import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_SUB,
    LOGIN, SIGNUP, LOGOUT,
    CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT,
     UPVOTE_POST, DOWNVOTE_POST, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
@@ -47,15 +47,18 @@ export const fetchPost = (userId, postId) => async dispatch => {
   const res = await axios.get('http://localhost:8080/api/post/byPost/' + postId, {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
-  dispatch({ type: FETCH_POST, payload: { post: res.data, user: userId }});
-}
-export const fetchCommentsFP = (postId) => async dispatch => {
-  //console.log('in action fetchcommentsfp')
-  const res = await axios.get('http://localhost:8080/api/comment/byPost/' + postId, {
+  const res2 = await axios.get('http://localhost:8080/api/comment/byPost/' + postId, {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
-  dispatch({ type: FETCH_COMMENTS_FP, payload: res.data });
+  dispatch({ type: FETCH_POST, payload: { post: res.data, comments: res2.data, user: userId }});
 }
+// export const fetchCommentsFP = (postId) => async dispatch => {
+//   //console.log('in action fetchcommentsfp')
+//   const res = await axios.get('http://localhost:8080/api/comment/byPost/' + postId, {
+//     headers: { token: JSON.parse(localStorage.getItem('user')).token }
+//   })
+//   dispatch({ type: FETCH_COMMENTS_FP, payload: res.data });
+// }
 // Fetch subs
 export const fetchSub = (subId) => async dispatch => {
   let postArr = [];
@@ -140,6 +143,7 @@ export const createPost = (title, content, image, sub) => async dispatch => {
     {
       headers: { token }
     });
+    console.log(res.data);
     dispatch({ type: CREATE_POST, payload: res.data });
   }
   catch(err){console.log(err)}
@@ -147,13 +151,15 @@ export const createPost = (title, content, image, sub) => async dispatch => {
 
 export const createComment = (content, commentId) => async dispatch => {
   try {
+    console.log('create comment, content:', content, 'commentId', commentId);
     const res = await axios.post('http://localhost:8080/api/comment', {
       content: content,
-      commentId: commentId,
+      parent: commentId,
     },
   {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   });
+    console.log(res.data);
     dispatch({ type: CREATE_COMMENT, payload: res.data });
   }
   catch(err){console.log(err)}
@@ -168,6 +174,7 @@ export const createRootComment = (content, postId) => async dispatch => {
   {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   });
+  console.log(res.data);
     dispatch({ type: CREATE_ROOT_COMMENT, payload: res.data });
   }
   catch(err){console.log(err)}
@@ -178,12 +185,14 @@ export const createRootComment = (content, postId) => async dispatch => {
 // Post voting
 export const upvotePost = (postId, index) => async dispatch => {
   try {
+    console.log('in upvote', postId, index);
     const res = await axios.post('http://localhost:8080/api/vote/post/up', {
       post: postId
     }, {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
-    });
-    dispatch({ type: UPVOTE_POST , payload: index });
+    })
+    console.log('after server request', res.data);
+    dispatch({ type: UPVOTE_POST , payload: { index: index, score: res.data } });
   }
   catch(err){console.log(err)}
 }
@@ -195,7 +204,7 @@ export const downvotePost = (postId, index) => async dispatch => {
     }, {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     });
-    dispatch({ type: DOWNVOTE_POST , payload: index });
+    dispatch({ type: DOWNVOTE_POST , payload: { index: index, score: res.data } });
   }
   catch(err){console.log(err)}
 }
@@ -208,7 +217,7 @@ export const upvoteComment = (commentId, index) => async dispatch => {
     }, {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     });
-    dispatch({ type: UPVOTE_COMMENT , payload: index });
+    dispatch({ type: UPVOTE_COMMENT, payload: {index: index, score: res.data } });
   }
   catch(err){console.log(err)}
 }
@@ -220,7 +229,7 @@ export const downvoteComment = (commentId, index) => async dispatch => {
     }, {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     });
-    dispatch({ type: DOWNVOTE_COMMENT , payload: index });
+    dispatch({ type: DOWNVOTE_COMMENT, payload: { index: index, score: res.data } });
   }
   catch(err){console.log(err)}
 }
