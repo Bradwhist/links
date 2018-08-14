@@ -23,8 +23,6 @@ import {
   TextArea,
   Visibility,
 } from 'semantic-ui-react'
-
-
 class CreatePost extends Component {
   constructor(props) {
     super(props);
@@ -68,20 +66,17 @@ class CreatePost extends Component {
       this.props.history.push('/explore');
     }
   }
-
   setContent = (e) => {
     this.setState({
       content: e.target.value
     })
   }
-
   setTitle = (e) => {
     this.setState({
       title: e.target.value
     })
     console.log('title', e.target.value)
   }
-
   setImage = (e) => {
     this.setState({
       image: e.target.value
@@ -96,23 +91,19 @@ class CreatePost extends Component {
     })
     console.log('setSub', value)
   }
-
   setSubSearch = (e) => {
     this.setState({
       subSearch: e.target.value
     })
     console.log('subsearch', e.target.value)
   }
-
   setInput = (value) => {
     this.props.setInput(value);
     console.log('INPUT', value)
   }
-
   logout = () => {
     this.props.logout();
   }
-
   createPost = (e) => {
     e.preventDefault();
     this.props.createPost(this.state.title, this.state.content, this.state.image, this.state.sub);
@@ -121,11 +112,8 @@ class CreatePost extends Component {
   goProfile = () => {
     this.props.history.push('/feed')
   }
-
   componentDidMount() {
-
   }
-
   render() {
     console.log('rendering post', this.props.subs);
     const { activeItem } = this.state;
@@ -257,14 +245,11 @@ class CreatePost extends Component {
 )
 }
 }
-
-
 CreatePost.propTypes = {
   logout: PropTypes.func,
   createPost: PropTypes.func,
   subs: PropTypes.array,
 };
-
 const mapStateToProps = ({ auth, subs }) => {
   return {
     auth,
@@ -279,7 +264,6 @@ const mapDispatchToProps = (dispatch) => {
     setInput: (value) => dispatch(setInput(value))
   };
 }
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
