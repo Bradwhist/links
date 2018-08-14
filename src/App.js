@@ -20,7 +20,6 @@ class App extends Component {
     this.props.fetchUser();
   }
   render() {
-    console.log(this.props.auth);
     return (
       <Router>
       <div className="App">

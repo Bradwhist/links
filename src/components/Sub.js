@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub } from '../actions'
+import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub, subscribeFromSub } from '../actions'
 import {
   Button,
   Container,
@@ -53,14 +53,11 @@ class Sub extends Component {
     this.props.history.push('/createPost');
   }
 
-  componentWillMount() {
-
-  }
-
-  componentDidMount() {
-    this.props.fetchSub(this.props.match.params.id);
-  }
-
+   }
+   componentDidMount() {
+     let subscribed = this.props.match.params.id === this.props.auth.logged.subscriptions;
+     this.props.fetchSub(this.props.match.params.id, subscribed);
+   }
   upvotePostFromSub(postId, index) {
     this.props.upvotePostFromSub(postId, index);
   }
@@ -68,7 +65,9 @@ class Sub extends Component {
   downvotePostFromSub(postId, index) {
     this.props.downvotePostFromSub(postId, index);
   }
-
+  subscribeFromSub() {
+    this.props.subscribeFromSub(this.props.sub.sub._id);
+  }
   openPost(postId) {
     this.props.history.push('/post/' + postId);
   }
@@ -157,6 +156,16 @@ class Sub extends Component {
              </div>}
            )}
          </StackGrid>
+
+         {/* <div>
+         <button onClick={this.logout}>Logout</button>
+         <button onClick={this.createSub}>Create a new category</button>
+         <button onClick={this.createPost}>Create a new post</button>
+         {this.props.sub.subscribed ?
+           <button onClick = {this.subscribeFromSub.bind(this)}>Unsubscribe</button> :
+           <button onClick = {this.subscribeFromSub.bind(this)}>Subscribe</button>
+         }
+        </div> */}
        </div>
      )
    }
@@ -168,6 +177,7 @@ Sub.propTypes = {
   fetchPosts: PropTypes.func,
   upvotePostFromSub: PropTypes.func,
   downvotePostFromSub: PropTypes.func,
+  subscribeFromSub: PropTypes.func,
   auth: PropTypes.obj,
   sub: PropTypes.obj,
 };
@@ -181,9 +191,10 @@ const mapStateToProps = ({auth, sub}) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
-    fetchSub: (subId) => dispatch(fetchSub(subId)),
+    fetchSub: (subId, match) => dispatch(fetchSub(subId, match)),
     upvotePostFromSub: (postId, index) => dispatch(upvotePostFromSub(postId, index)),
-    downvotePostFromSub: (postId, index) => dispatch(downvotePostFromSub(postId, index))
+    downvotePostFromSub: (postId, index) => dispatch(downvotePostFromSub(postId, index)),
+    subscribeFromSub: (subId) => dispatch(subscribeFromSub(subId)),
   };
 }
 

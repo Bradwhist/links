@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchSubs, upvotePost, downvotePost } from '../actions'
+import { logout, fetchSubs, upvotePost, downvotePost, subscribe } from '../actions'
 import {
   Button,
   Container,
@@ -70,7 +70,7 @@ class Sub extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchSubs();
+    this.props.fetchSubs(this.props.auth.logged.subscriptions);
   }
 
   upvotePost(postId, index) {
@@ -80,14 +80,15 @@ class Sub extends Component {
   downvotePost(postId, index) {
     this.props.downvotePost(postId, index);
   }
+  subscribe(subId, i) {
+    this.props.subscribe(subId, i);
+  }
 
   openPost(postId) {
     this.props.history.push('/post/' + postId);
   }
 
   render() {
-    console.log('rendering feed', this.props.posts);
-    console.log('rendering feed auth', this.props.auth.logged._id);
     const { activeItem } = this.state;
 
     return (
@@ -149,6 +150,11 @@ class Sub extends Component {
               {this.props.subs.map((ele, i) => {
                 return <div key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
                   {ele.title}
+
+                  {ele.subscribed ?
+                    <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
+                    <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> }
+
                 </div>}
               )}
             </StackGrid>
@@ -161,6 +167,7 @@ class Sub extends Component {
     Sub.propTypes = {
       logout: PropTypes.func,
       fetchPosts: PropTypes.func,
+      fetchSubs: PropTypes.func,
       upvotePost: PropTypes.func,
       downvotePost: PropTypes.func,
       auth: PropTypes.obj,
@@ -177,9 +184,10 @@ class Sub extends Component {
     const mapDispatchToProps = (dispatch) => {
       return {
         logout: () => dispatch(logout()),
-        fetchSubs: () => dispatch(fetchSubs()),
+        fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
         upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
-        downvotePost: (postId, index) => dispatch(downvotePost(postId, index))
+        downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
+        subscribe: (subId, i) => dispatch(subscribe(subId, i)),
       };
     }
 

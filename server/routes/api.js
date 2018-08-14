@@ -296,6 +296,22 @@ router.post('/vote/comment/down', (req, res) => {
   .catch(err => console.log(err))
 })
 //
+// post subscribe user to sub
+router.post('/subscribe', (req, res) => {
+  User.findById(res.locals.user._id)
+  .then(user => {
+    let subIndex = user.subscriptions.indexOf(req.body.sub);
+    if (subIndex === -1) {
+    user.subscriptions.push(req.body.sub);
+  } else {
+    user.subscriptions.splice(subIndex, 1);
+  }
+    user.save();
+    console.log(user.subscriptions);
+    res.json(user.subscriptions);
+  })
+})
+//
 // Get all posts
 router.get('/post', (req, res) => {
   Post.find().exec()

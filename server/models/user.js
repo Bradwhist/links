@@ -19,6 +19,13 @@ const UserSchema = new mongoose.Schema({
     }],
     default: [],
   },
+  subscriptions: {
+    type: [{
+      type: ObjectId,
+      ref: "subs"
+    }],
+    default: [],
+  },
   token: String,
 });
 

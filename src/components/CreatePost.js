@@ -37,7 +37,7 @@ class CreatePost extends Component {
   }
 
   componentWillMount() {
-    this.props.fetchSubs();
+    this.props.fetchSubs(this.props.auth.logged.subscriptions);
   }
 
   handleItemClick = (e, { name }) => {
@@ -260,7 +260,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
     createPost: (title, content, image, sub) => dispatch(createPost(title, content, image, sub)),
-    fetchSubs: () => dispatch(fetchSubs()),
+    fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
     setInput: (value) => dispatch(setInput(value))
   };
 }
