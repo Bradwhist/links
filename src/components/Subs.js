@@ -73,22 +73,25 @@ class Sub extends Component {
     this.props.fetchSubs(this.props.auth.logged.subscriptions);
   }
 
-  upvotePost(postId, index) {
+  upvotePost = (postId, index) => {
     this.props.upvotePost(postId, index);
   }
 
-  downvotePost(postId, index) {
+  downvotePost = (postId, index) => {
     this.props.downvotePost(postId, index);
   }
-  subscribe(subId, i) {
-    this.props.subscribe(subId, i);
-  }
 
-  openPost(postId) {
+  openPost = (postId) => {
     this.props.history.push('/post/' + postId);
   }
 
+  subscribe = (subId, i) => {
+  this.props.subscribe(subId, i);
+}
+
   render() {
+    console.log('rendering feed', this.props.posts);
+    console.log('rendering feed auth', this.props.auth.logged._id);
     const { activeItem } = this.state;
 
     return (
@@ -148,14 +151,31 @@ class Sub extends Component {
             columnWidth={300}
             >
               {this.props.subs.map((ele, i) => {
-                return <div key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
-                  {ele.title}
-
-                  {ele.subscribed ?
-                    <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
-                    <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> }
-
-                </div>}
+                return <div className = "imgBox" key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
+                  <img src = {ele.image} alt = "pic4" className = "img"/>
+                  <div class = "overlay"></div>
+                  <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+                  <div className = 'likeBtn'>
+                    <Button
+                      icon = 'thumbs up outline'
+                      color = "teal"
+                      label={{ as: 'a', basic: true, content: '2,048' }}
+                      labelPosition='right'
+                    />
+                  </div>
+                  <div className = 'dislikeBtn'>
+                    <Button
+                      icon = 'thumbs down outline'
+                      color = "teal"
+                      label={{ as: 'a', basic: true, content: '2,048' }}
+                      labelPosition='right'
+                    />
+                  </div>
+                {/* </div> */}
+                {/* {ele.subscribed ?
+                  <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
+                  <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> } */}
+              </div>}
               )}
             </StackGrid>
           </div>
@@ -167,7 +187,6 @@ class Sub extends Component {
     Sub.propTypes = {
       logout: PropTypes.func,
       fetchPosts: PropTypes.func,
-      fetchSubs: PropTypes.func,
       upvotePost: PropTypes.func,
       downvotePost: PropTypes.func,
       auth: PropTypes.obj,
@@ -187,7 +206,7 @@ class Sub extends Component {
         fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
         upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
         downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
-        subscribe: (subId, i) => dispatch(subscribe(subId, i)),
+        subscribe: (subId, i) => dispatch(subscribe(subId, i))
       };
     }
 

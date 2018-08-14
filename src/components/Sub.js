@@ -53,22 +53,25 @@ class Sub extends Component {
     this.props.history.push('/createPost');
   }
 
-   }
-   componentDidMount() {
-     let subscribed = this.props.match.params.id === this.props.auth.logged.subscriptions;
-     this.props.fetchSub(this.props.match.params.id, subscribed);
-   }
-  upvotePostFromSub(postId, index) {
+ componentDidMount() {
+   let subscribed = this.props.match.params.id === this.props.auth.logged.subscriptions;
+   this.props.fetchSub(this.props.match.params.id, subscribed);
+ }
+
+  upvotePostFromSub = (postId, index) => {
     this.props.upvotePostFromSub(postId, index);
   }
 
-  downvotePostFromSub(postId, index) {
+  downvotePostFromSub = (postId, index) => {
     this.props.downvotePostFromSub(postId, index);
   }
-  subscribeFromSub() {
+
+  // toggle subscribe
+  subscribeFromSub = () => {
     this.props.subscribeFromSub(this.props.sub.sub._id);
   }
-  openPost(postId) {
+
+  openPost = (postId) => {
     this.props.history.push('/post/' + postId);
   }
 
@@ -157,15 +160,15 @@ class Sub extends Component {
            )}
          </StackGrid>
 
-         {/* <div>
-         <button onClick={this.logout}>Logout</button>
+         <div>
+         {/* <button onClick={this.logout}>Logout</button>
          <button onClick={this.createSub}>Create a new category</button>
-         <button onClick={this.createPost}>Create a new post</button>
+         <button onClick={this.createPost}>Create a new post</button> */}
          {this.props.sub.subscribed ?
-           <button onClick = {this.subscribeFromSub.bind(this)}>Unsubscribe</button> :
-           <button onClick = {this.subscribeFromSub.bind(this)}>Subscribe</button>
+           <button onClick = {this.subscribeFromSub}>Unsubscribe</button> :
+           <button onClick = {this.subscribeFromSub}>Subscribe</button>
          }
-        </div> */}
+        </div>
        </div>
      )
    }
