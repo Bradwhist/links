@@ -22,18 +22,31 @@ import {
 
 /* eslint-disable react/no-multi-comp */
 /* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
- * such things.
- */
- class Sub extends Component {
+* such things.
+*/
+class Sub extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
 
-   logout = () => {
-     this.props.logout();
-   }
+    }
+  }
 
-   createPost = () => {
-     this.props.history.push('/createPost');
-   }
-   componentWillMount() {
+  logout = () => {
+    this.props.logout();
+  }
+
+  createPost = () => {
+    this.props.history.push('/createPost');
+  }
+
+  componentWillMount() {
+
+  }
+
+  componentDidMount() {
+    this.props.fetchSub(this.props.match.params.id);
+  }
 
    }
    componentDidMount() {
@@ -70,17 +83,32 @@ import {
          <button onClick = {this.subscribeFromSub.bind(this)}>Subscribe</button>
        }
        <StackGrid
-       columnWidth={150}
-       >
-         {this.props.sub.posts.map((ele, i) => {
-           return <div key={i}>
-           {ele.score}
-           <button onClick={() => this.upvotePostFromSub(ele._id, i)}>Big ups</button>
-           <button onClick={() => this.downvotePostFromSub(ele._id, i)}>Big downs</button>
-           <button onClick={() => this.openPost(ele._id)}>Open Post</button>
-           </div>}
-       )}
-        </StackGrid>
+         columnWidth={150}
+         >
+           {this.props.sub.posts.map((ele, i) => {
+             return <div key={i}>
+               <h1>{ele.score}</h1>
+               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.upvotePostFromSub(ele._id, i)}>
+                 <Button.Content hidden><Icon className = "thumbs" name='thumbs up outline' /></Button.Content>
+                 <Button.Content visible>
+                   Upvote
+                 </Button.Content>
+               </Button>
+               <Button className = "subBtn" animated='vertical' basic color = "teal" onClick={() => this.downvotePostFromSub(ele._id, i)}>
+                 <Button.Content hidden><Icon name='thumbs down outline' /></Button.Content>
+                 <Button.Content visible>
+                   Downvote
+                 </Button.Content>
+               </Button>
+               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.openPostFromSub(ele._id, i)}>
+                 <Button.Content hidden><Icon name='thumbs up outline' /></Button.Content>
+                 <Button.Content visible>
+                   Open Post
+                 </Button.Content>
+               </Button>
+             </div>}
+           )}
+         </StackGrid>
        </div>
      )
    }
