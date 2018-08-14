@@ -17,6 +17,7 @@ export default function(state = [], action) {
           newState[i].downVoted = true;
         }
       }
+      newState.sort((a, b) => a.score < b.score)
       return newState;
       // let postsArr = action.payload;
       // // helper scoring function

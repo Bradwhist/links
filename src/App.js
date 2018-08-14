@@ -24,13 +24,8 @@ class App extends Component {
       <div className="App">
         <Route exact path = '/' component = {Home} />  {/*Register Component */}
         <Route exact path = '/login' component = {Login} />
-        <Route exact path = '/feed' component = {Feed} />
-        <Route exact path = '/profile' component = {Profile} />
-        <Route exact path = '/profile/bio' component = {Profile} />
-        <Route exact path = '/profile/posts' component = {Profile} />
-        <Route exact path = '/profile/activity' component = {Profile} />
-        <Route exact path = '/profile/links' component = {Profile} />
-      {/* {this.props.auth.logged && this.props.auth.loaded ?
+
+       {this.props.auth.logged && this.props.auth.loaded ?
         <Switch>
         <Route exact path = '/feed' component={Feed} />
         <Route exact path = '/post/:id' render={(props) => <Post {...props} /> } />
@@ -38,7 +33,11 @@ class App extends Component {
         <Route exact path = '/createPost' component={CreatePost} />
         <Route exact path = '/sub/:id' component={Sub} />
         <Route exact path = '/profile' component= {Profile} />
-        <Redirect exact from = '/' to = 'feed' />
+        <Route exact path = '/profile/bio' component = {Profile} />
+        <Route exact path = '/profile/posts' component = {Profile} />
+        <Route exact path = '/profile/activity' component = {Profile} />
+        <Route exact path = '/profile/links' component = {Profile} />
+        <Redirect exact from = '/login' to = 'feed' />
         </Switch>
         :
         this.props.auth.loaded ?
@@ -53,7 +52,7 @@ class App extends Component {
           </Switch>
         :
         <Route path = '/' render={() => <h1>Loading</h1>} />
-      } */}
+      }
         </div>
       </Router>
     );
