@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchSub, upvotePost, downvotePost } from '../actions'
+import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub } from '../actions'
 import {
   Button,
   Container,
@@ -48,13 +48,15 @@ class Sub extends Component {
     this.props.fetchSub(this.props.match.params.id);
   }
 
-  upvotePost(postId, index) {
-    this.props.upvotePost(postId, index);
-    //this.handleClick();
+   }
+   componentDidMount() {
+     this.props.fetchSub(this.props.match.params.id);
+   }
+  upvotePostFromSub(postId, index) {
+    this.props.upvotePostFromSub(postId, index);
   }
-
-  downvotePost(postId, index) {
-    this.props.downvotePost(postId, index);
+  downvotePostFromSub(postId, index) {
+    this.props.downvotePostFromSub(postId, index);
   }
 
   openPost(postId) {
@@ -82,19 +84,19 @@ class Sub extends Component {
            {this.props.sub.posts.map((ele, i) => {
              return <div key={i}>
                <h1>{ele.score}</h1>
-               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.upvotePost(ele._id, i)}>
+               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.upvotePostFromSub(ele._id, i)}>
                  <Button.Content hidden><Icon className = "thumbs" name='thumbs up outline' /></Button.Content>
                  <Button.Content visible>
                    Upvote
                  </Button.Content>
                </Button>
-               <Button className = "subBtn" animated='vertical' basic color = "teal" onClick={() => this.downvotePost(ele._id, i)}>
+               <Button className = "subBtn" animated='vertical' basic color = "teal" onClick={() => this.downvotePostFromSub(ele._id, i)}>
                  <Button.Content hidden><Icon name='thumbs down outline' /></Button.Content>
                  <Button.Content visible>
                    Downvote
                  </Button.Content>
                </Button>
-               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.openPost(ele._id, i)}>
+               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.openPostFromSub(ele._id, i)}>
                  <Button.Content hidden><Icon name='thumbs up outline' /></Button.Content>
                  <Button.Content visible>
                    Open Post
@@ -112,8 +114,8 @@ class Sub extends Component {
 Sub.propTypes = {
   logout: PropTypes.func,
   fetchPosts: PropTypes.func,
-  upvotePost: PropTypes.func,
-  downvotePost: PropTypes.func,
+  upvotePostFromSub: PropTypes.func,
+  downvotePostFromSub: PropTypes.func,
   auth: PropTypes.obj,
   sub: PropTypes.obj,
 };
@@ -128,8 +130,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
     fetchSub: (subId) => dispatch(fetchSub(subId)),
-    upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
-    downvotePost: (postId, index) => dispatch(downvotePost(postId, index))
+    upvotePostFromSub: (postId, index) => dispatch(upvotePostFromSub(postId, index)),
+    downvotePostFromSub: (postId, index) => dispatch(downvotePostFromSub(postId, index))
   };
 }
 
