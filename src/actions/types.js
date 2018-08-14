@@ -25,3 +25,5 @@ export const DOWNVOTE_COMMENT = 'DOWNVOTE_COMMENT';
 
 export const POST = 'POST';
 export const GET_INPUT = 'GET_INPUT';
+export const SUBSCRIBE = 'SUBSCRIBE';
+export const SUBSCRIBE_FROM_SUB = 'SUBSCRIBE_FROM_SUB';

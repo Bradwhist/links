@@ -169,7 +169,6 @@ import {
    }
 
    render() {
-      console.log('rendering post', this.props.post.comments);
              // Unordered list contains comment tree.  Maps over comments, and displays all root level comments.
              // in each root comment, calls function 'renderReplies', which is recursive and displays non-root comments
       const { activeItem } = this.state;

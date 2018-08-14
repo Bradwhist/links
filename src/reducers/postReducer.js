@@ -44,7 +44,6 @@ export default function(state = { post: {}, comments: [] }, action) {
         return newState6;
 
       case CREATE_COMMENT:
-      console.log('in create comment', action.payload);
         let newState7 = JSON.parse(JSON.stringify(state));
         let checkIndex = (comment) => {
           return comment._id === action.payload.parent

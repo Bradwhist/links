@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_SUB,
-   LOGIN, SIGNUP, LOGOUT,
+   LOGIN, SIGNUP, LOGOUT, SUBSCRIBE, SUBSCRIBE_FROM_SUB,
    CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT,
     UPVOTE_POST, DOWNVOTE_POST, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
 
@@ -30,14 +30,16 @@ export const fetchUser = () => async dispatch => {
 }
 };
 // Fetch Subs
-export const fetchSubs = () => async dispatch => {
+export const fetchSubs = (userSub) => async dispatch => {
+  console.log(userSub);
   const res = await axios.get('http://localhost:8080/api/sub', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
-  dispatch({ type: FETCH_SUBS, payload: res.data });
+  dispatch({ type: FETCH_SUBS, payload: { subs: res.data, userSub: userSub }});
 }
 //Fetch Posts
 export const fetchPosts = (userId) => async dispatch => {
+  console.log('fetch posts action');
   const res = await axios.get('http://localhost:8080/api/post', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
@@ -60,18 +62,20 @@ export const fetchPost = (userId, postId) => async dispatch => {
 //   dispatch({ type: FETCH_COMMENTS_FP, payload: res.data });
 // }
 // Fetch subs
-export const fetchSub = (subId) => async dispatch => {
+export const fetchSub = (subId, match) => async dispatch => {
   let postArr = [];
   const res = await axios.get('http://localhost:8080/api/sub/bySub/' + subId, {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
+  console.log(res);
   for (var i = 0; i < res.data.posts.length; i ++) {
   postArr[i] = await axios.get('http://localhost:8080/api/post/byPost/' + res.data.posts[i], {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
   postArr[i] = postArr[i].data;
+  console.log(i, postArr[i]);
 }
-  dispatch({ type: FETCH_SUB, payload: { sub: res.data, posts: postArr }});
+  dispatch({ type: FETCH_SUB, payload: { sub: res.data, posts: postArr, subscribed: match }});
 }
 //////////////////////////////////////////////////
 
@@ -132,7 +136,6 @@ export const createSub = (title, description, image) => async dispatch => {
 //  create new post
 export const createPost = (title, content, image, sub) => async dispatch => {
   try {
-    console.log('XXXXXXXXXXXXXXXXXXXX', JSON.parse(localStorage.getItem('user')).token);
     let token = JSON.parse(localStorage.getItem('user')).token;
     const res = await axios.post('http://localhost:8080/api/post', {
       title,
@@ -143,7 +146,6 @@ export const createPost = (title, content, image, sub) => async dispatch => {
     {
       headers: { token }
     });
-    console.log(res.data);
     dispatch({ type: CREATE_POST, payload: res.data });
   }
   catch(err){console.log(err)}
@@ -151,7 +153,6 @@ export const createPost = (title, content, image, sub) => async dispatch => {
 
 export const createComment = (content, commentId) => async dispatch => {
   try {
-    console.log('create comment, content:', content, 'commentId', commentId);
     const res = await axios.post('http://localhost:8080/api/comment', {
       content: content,
       parent: commentId,
@@ -159,7 +160,6 @@ export const createComment = (content, commentId) => async dispatch => {
   {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   });
-    console.log(res.data);
     dispatch({ type: CREATE_COMMENT, payload: res.data });
   }
   catch(err){console.log(err)}
@@ -174,7 +174,6 @@ export const createRootComment = (content, postId) => async dispatch => {
   {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   });
-  console.log(res.data);
     dispatch({ type: CREATE_ROOT_COMMENT, payload: res.data });
   }
   catch(err){console.log(err)}
@@ -185,13 +184,11 @@ export const createRootComment = (content, postId) => async dispatch => {
 // Post voting
 export const upvotePost = (postId, index) => async dispatch => {
   try {
-    console.log('in upvote', postId, index);
     const res = await axios.post('http://localhost:8080/api/vote/post/up', {
       post: postId
     }, {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     })
-    console.log('after server request', res.data);
     dispatch({ type: UPVOTE_POST , payload: { index: index, score: res.data } });
   }
   catch(err){console.log(err)}
@@ -211,13 +208,11 @@ export const downvotePost = (postId, index) => async dispatch => {
 // vote on post from subs
 export const upvotePostFromSub = (postId, index) => async dispatch => {
   try {
-    console.log('in upvote', postId, index);
     const res = await axios.post('http://localhost:8080/api/vote/post/up', {
       post: postId
     }, {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     })
-    console.log('after server request', res.data);
     dispatch({ type: UPVOTE_POST_FROM_SUB , payload: { index: index, score: res.data } });
   }
   catch(err){console.log(err)}
@@ -256,6 +251,31 @@ export const downvoteComment = (commentId, index) => async dispatch => {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     });
     dispatch({ type: DOWNVOTE_COMMENT, payload: { index: index, score: res.data } });
+  }
+  catch(err){console.log(err)}
+}
+
+export const subscribe = (subId, i) => dispatch => {
+  try {
+    axios.post('http://localhost:8080/api/subscribe', {
+      sub: subId
+    }, {
+      headers: {token: JSON.parse(localStorage.getItem('user')).token }
+    });
+    dispatch({ type: SUBSCRIBE, payload: i })
+  }
+  catch(err){console.log(err)}
+}
+
+export const subscribeFromSub = (subId) => dispatch => {
+  try {
+    console.log('in subscribe');
+    axios.post('http://localhost:8080/api/subscribe', {
+      sub: subId
+    }, {
+      headers: {token: JSON.parse(localStorage.getItem('user')).token }
+    });
+    dispatch({ type: SUBSCRIBE_FROM_SUB, payload: null })
   }
   catch(err){console.log(err)}
 }

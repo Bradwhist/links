@@ -1,7 +1,7 @@
 import { FETCH_POSTS, UPVOTE_POST, DOWNVOTE_POST } from "../actions/types";
 
 export default function(state = [], action) {
-  console.log(action);
+  console.log('fetching posts', action);
   switch(action.type) {
     case FETCH_POSTS:
       let newState = action.payload.posts;
@@ -43,14 +43,12 @@ export default function(state = [], action) {
       // return postsArr.sort((a,b) => scoreFn(b) - scoreFn(a));
       case UPVOTE_POST:
         let newState2 = [ ...state ];
-        console.log(action.payload.score);
         newState2[action.payload.index].upVoted = !newState2[action.payload.index].upVoted;
         newState2[action.payload.index].downVoted = false;
         newState2[action.payload.index].score = action.payload.score;
       return newState2;
       case DOWNVOTE_POST:
         let newState3 = [ ...state ];
-        console.log(action.payload.score);
         newState3[action.payload.index].downVoted = !newState3[action.payload.index].downVoted;
         newState3[action.payload.index].upVoted = false;
         newState3[action.payload.index].score = action.payload.score;
