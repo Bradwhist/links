@@ -15,6 +15,7 @@ import {
   Header,
   Icon,
   Image,
+  Input,
   List,
   Menu,
   Responsive,
@@ -31,6 +32,7 @@ import {
    constructor(props) {
      super(props);
      this.state = {
+       activeItem: '',
        content: '',
        replying: null,
     };
@@ -42,6 +44,34 @@ import {
        this.props.fetchPost(this.props.auth.logged._id, this.props.match.params.id);
 
    }
+
+   handleItemClick = (e, { name }) => {
+     if (name === 'home') {
+       this.setState({ activeItem: name })
+       this.props.history.push('/feed');
+     }
+     else if (name === 'explore'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/explore');
+     }
+     else if (name === 'subs'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/subs');
+     }
+     else if (name === 'profile'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/profile');
+     }
+     else if (name === 'createSub'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/createSub');
+     }
+     else if (name === 'createPost'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/createPost');
+     }
+   }
+
    // content updates state value containing current comment draft
    setContent = (e) => {
      this.setState({
@@ -142,41 +172,94 @@ import {
       console.log('rendering post', this.props.post.comments);
              // Unordered list contains comment tree.  Maps over comments, and displays all root level comments.
              // in each root comment, calls function 'renderReplies', which is recursive and displays non-root comments
+      const { activeItem } = this.state;
      return (
        <div>
-        <button onClick={this.logout}>Logout</button>
-        <button onClick={this.goProfile}>Back to profile...</button>
-        <ul>
-          {this.props.post.comments.map((ele, i) => {
-            if (!ele.parent) {
-              return <li>
-            { ele.content }
-            <button onClick={() => this.upvoteComment(ele._id, i)}>Upvote Comment</button>
-            <button onClick={() => this.downvoteComment(ele._id, i)}>Downvote Comment</button>
-            <button onClick={() => this.replyComment(ele._id)}>Open Post</button>
-            { this.state.replying === ele._id ?
-              <form onSubmit={(e) => this.createComment(e, ele._id)}>
-                <label>
-                  New Comment:
-                  <textarea value={this.state.value} onChange={this.setContent} />
-                </label>
-                <input type="submit" value="Submit" />
-              </form>
-            :
-            null
-          }
-              { this.renderReplies(ele.comments) }
-            </li>
-          }
-          })}
-        </ul>
-        <form onSubmit={(e) => this.createRootComment(e)}>
-          <label>
-            New Comment:
-            <textarea value={this.state.value} onChange={this.setContent} />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
+         <Menu pointing inverted>
+           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
+           <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
+           <Menu.Item
+             name='home'
+             active={activeItem === 'home'}
+             color='teal'
+             onClick={this.handleItemClick} />
+           <Menu.Item
+             name='explore'
+             active={activeItem === 'explore'}
+             color='teal'
+             onClick={this.handleItemClick}
+           />
+           <Menu.Item
+             name='profile'
+             active={activeItem === 'profile'}
+             color='teal'
+             onClick={this.handleItemClick}
+           />
+           <Menu.Menu position='right'>
+           <Dropdown icon = "plus" pointing className='link item'>
+             <Dropdown.Menu>
+               <Dropdown.Header>Category</Dropdown.Header>
+               <Dropdown.Item onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
+               <Dropdown.Divider />
+               <Dropdown.Header>Post</Dropdown.Header>
+               <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('./createPost')}>Create a new post</Dropdown.Item>
+             </Dropdown.Menu>
+           </Dropdown>
+           </Menu.Menu>
+           <Menu.Menu position='right'>
+             <Dropdown icon = "ellipsis horizontal" pointing className='link item'>
+               <Dropdown.Menu>
+                 <Dropdown.Header>Categories</Dropdown.Header>
+                 <Dropdown.Item>X</Dropdown.Item>
+                 <Dropdown.Divider />
+                 <Dropdown.Header>Account</Dropdown.Header>
+                 <Dropdown.Item>Status</Dropdown.Item>
+                 <Dropdown.Item onClick = {this.logout}>Logout</Dropdown.Item>
+               </Dropdown.Menu>
+             </Dropdown>
+           </Menu.Menu>
+         </Menu>
+
+         <Grid>
+           <Grid.Column width={10}>
+             <button onClick={this.logout}>Logout</button>
+             <button onClick={this.goProfile}>Back to profile...</button>
+             <ul>
+              {this.props.post.comments.map((ele, i) => {
+                if (!ele.parent) {
+                  return <li>
+                { ele.content }
+                <button onClick={() => this.upvoteComment(ele._id, i)}>Upvote Comment</button>
+                <button onClick={() => this.downvoteComment(ele._id, i)}>Downvote Comment</button>
+                <button onClick={() => this.replyComment(ele._id)}>Open Post</button>
+                { this.state.replying === ele._id ?
+                  <form onSubmit={(e) => this.createComment(e, ele._id)}>
+                    <label>
+                      New Comment:
+                      <textarea value={this.state.value} onChange={this.setContent} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                  </form>
+                :
+                null
+              }
+                  { this.renderReplies(ele.comments) }
+                </li>
+              }
+              })}
+            </ul>
+            <form onSubmit={(e) => this.createRootComment(e)}>
+              <label>
+                New Comment:
+                <textarea value={this.state.value} onChange={this.setContent} />
+              </label>
+              <input type="submit" value="Submit" />
+            </form>
+           </Grid.Column>
+           <Grid.Column width={3}>
+             <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+           </Grid.Column>
+         </Grid>
         </div>
       )
     }

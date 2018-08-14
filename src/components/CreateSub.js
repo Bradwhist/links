@@ -44,6 +44,14 @@ class CreateSub extends Component {
       this.setState({ activeItem: name })
       this.props.history.push('/feed');
     }
+    else if (name === 'explore'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/explore');
+    }
+    else if (name === 'subs'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/subs');
+    }
     else if (name === 'profile'){
       this.setState({ activeItem: name })
       this.props.history.push('/profile');
@@ -61,9 +69,11 @@ class CreateSub extends Component {
   logout = () => {
     this.props.logout();
   }
+
   goProfile = () => {
     this.props.history.push('/feed')
   }
+
   setDescription = (e) => {
     this.setState({
       description: e.target.value
@@ -107,6 +117,12 @@ class CreateSub extends Component {
            <Menu.Item
              name='explore'
              active={activeItem === 'explore'}
+             color='teal'
+             onClick={this.handleItemClick}
+           />
+           <Menu.Item
+             name='subs'
+             active={activeItem === 'subs'}
              color='teal'
              onClick={this.handleItemClick}
            />
@@ -161,7 +177,7 @@ class CreateSub extends Component {
                    control={Input}
                    value={this.state.image}
                    label='Image'
-                   placeholder='Image'
+                   placeholder='Image URL'
                    onChange={(e) => this.setImage(e)}
                  />
                </Form.Group>
@@ -171,6 +187,7 @@ class CreateSub extends Component {
                  value={this.state.description}
                  label='Description'
                  placeholder='Description'
+                 onChange={(e) => this.setDescription(e)}
                />
                <Form.Field
                  id='form-button-control-public'

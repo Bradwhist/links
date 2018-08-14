@@ -37,14 +37,23 @@ class CreatePost extends Component {
       sub: '',
     };
   }
-  // componentWillMount() {
-  //   this.props.fetchSubs();
-  // }
+
+  componentWillMount() {
+    this.props.fetchSubs();
+  }
 
   handleItemClick = (e, { name }) => {
     if (name === 'home') {
       this.setState({ activeItem: name })
       this.props.history.push('/feed');
+    }
+    else if (name === 'explore'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/explore');
+    }
+    else if (name === 'subs'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/subs');
     }
     else if (name === 'profile'){
       this.setState({ activeItem: name })
@@ -70,28 +79,34 @@ class CreatePost extends Component {
     this.setState({
       title: e.target.value
     })
+    console.log('title', e.target.value)
   }
 
   setImage = (e) => {
     this.setState({
       image: e.target.value
     })
+    console.log('image', e.target.value)
   }
 
-  setSub = (e) => {
+  setSub = (e, {value}) => {
+    e.persist();
     this.setState({
-      sub: e.target.value
+      sub: value
     })
+    console.log('setSub', value)
   }
 
   setSubSearch = (e) => {
     this.setState({
       subSearch: e.target.value
     })
+    console.log('subsearch', e.target.value)
   }
 
   setInput = (value) => {
     this.props.setInput(value);
+    console.log('INPUT', value)
   }
 
   logout = () => {
@@ -101,6 +116,7 @@ class CreatePost extends Component {
   createPost = (e) => {
     e.preventDefault();
     this.props.createPost(this.state.title, this.state.content, this.state.image, this.state.sub);
+    console.log(this.state.title, this.state.content, this.state.image, this.state.sub)
   }
   goProfile = () => {
     this.props.history.push('/feed')
@@ -118,13 +134,19 @@ class CreatePost extends Component {
         <Menu pointing inverted>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
           <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
-            <Menu.Item
-              name='home'
-              active={activeItem === 'home'}
-              onClick={this.handleItemClick} />
+          <Menu.Item
+            name='home'
+            active={activeItem === 'home'}
+            onClick={this.handleItemClick} />
             <Menu.Item
               name='explore'
               active={activeItem === 'explore'}
+              onClick={this.handleItemClick}
+            />
+            <Menu.Item
+              name='subs'
+              active={activeItem === 'subs'}
+              color='teal'
               onClick={this.handleItemClick}
             />
             <Menu.Item
@@ -165,7 +187,7 @@ class CreatePost extends Component {
             </Menu.Menu>
           </Menu>
 
-          <Grid>
+          <Grid className = "createPostGrid">
             <Grid.Column width={4}>
               <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
             </Grid.Column>
@@ -185,57 +207,51 @@ class CreatePost extends Component {
                     control={Input}
                     value={this.state.image}
                     label='Image'
-                    placeholder='Image'
+                    placeholder='Image URL'
                     onChange={(e) => this.setImage(e)}
                   />
+                  <Form.Field
+                    id='form-input-control-last-name'
+                    control={Input}
+                    value={this.state.content}
+                    label='Content'
+                    placeholder='Content'
+                    onChange={(e) => this.setContent(e)}
+                  />
                 </Form.Group>
-                <Form.Field
-                  id='form-textarea-control-opinion'
-                  control={Input}
-                  value={this.state.subSearch}
-                  label='Category'
-                  placeholder='Category'
-                  onChange={(e) => this.setSubSearch(e)}
-                />
-                <Form.Field
-                  id='form-textarea-control-opinion'
-                  control={TextArea}
-                  value={this.state.sub}
-                  label='Sub'
-                  placeholder='Sub'
 
-                />
-                <Form.Field
-                  id='form-button-control-public'
-                  control={Button}
-                  content='Confirm'
-                  onClick = {(e) => this.createPost(e)}
-                />
-              </Form>
-            </Grid.Column>
-          </Grid>
-          {/* <button onClick={this.logout}>Logout</button>
-          <button onClick={this.goProfile}>Back to profile...</button>
-          <form onSubmit={(e) => this.createPost(e)}>
-          <label>
-          New Post:
-          <input type="text" name="title" value={this.state.title} onChange={this.setTitle} />
-          <input type="text" name="image" value={this.state.image} onChange={this.setImage} />
-          <input type="text" name="subSearch" value={this.state.subSearch} onChange={this.setSubSearch} />
-          <input type="text" name="sub" value={this.state.sub} onChange={this.setSub} />
-          { this.state.subSearch !== '' ?
-          <div>
-          <ul>
-          {this.props.subs.filter(ele => ele.title.indexOf(this.state.subSearch) !== - 1).map(ele => <li>{ele.title}</li>)}
-        </ul>
-        <Dropdown placeholder='Select Subreddit' fluid search selection options={this.props.subs.filter(ele => ele.title.indexOf(this.state.subSearch) !== -1)} />
-      </div>
-      :
-      null
-    }
-    <textarea value={this.state.value} onChange={this.setContent} />
-  </label>
-  <input type="submit" value="Submit" />
+              <Dropdown placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: ele._id, text: ele.title} })}/>
+              <Form.Field
+                id='form-button-control-public'
+                control={Button}
+                content='Confirm'
+                onClick = {(e) => this.createPost(e)}
+              />
+            </Form>
+          </Grid.Column>
+        </Grid>
+        {/* <button onClick={this.logout}>Logout</button>
+        <button onClick={this.goProfile}>Back to profile...</button>
+        <form onSubmit={(e) => this.createPost(e)}>
+        <label>
+        New Post:
+        <input type="text" name="title" value={this.state.title} onChange={this.setTitle} />
+        <input type="text" name="image" value={this.state.image} onChange={this.setImage} />
+        <input type="text" name="subSearch" value={this.state.subSearch} onChange={this.setSubSearch} />
+        <input type="text" name="sub" value={this.state.sub} onChange={this.setSub} />
+        { this.state.subSearch !== '' ?
+        <div>
+        <ul>
+        {this.props.subs.filter(ele => ele.title.indexOf(this.state.subSearch) !== - 1).map(ele => <li>{ele.title}</li>)}
+      </ul>
+      <Dropdown placeholder='Select Subreddit' fluid search selection options={this.props.subs.filter(ele => ele.title.indexOf(this.state.subSearch) !== -1)} />
+    </div>
+    :
+    null
+  }
+  <textarea value={this.state.value} onChange={this.setContent} />
+</label>
+<input type="submit" value="Submit" />
 </form> */}
 </div>
 )

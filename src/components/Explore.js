@@ -38,6 +38,12 @@ import {
      if (name === 'home') {
        this.props.history.push('/feed');
      }
+     else if (name === 'explore'){
+       this.props.history.push('/explore');
+     }
+     else if (name === 'subs'){
+       this.props.history.push('/subs');
+     }
      else if (name === 'profile'){
        this.props.history.push('/profile');
      }
@@ -46,9 +52,6 @@ import {
      }
      else if (name === 'createPost'){
        this.props.history.push('/createPost');
-     }
-     else if (name === 'explore'){
-       this.props.history.push('/explore');
      }
    }
 
@@ -97,6 +100,12 @@ import {
           <Menu.Item
             name='explore'
             active={activeItem === 'explore'}
+            color='teal'
+            onClick={this.handleItemClick}
+          />
+          <Menu.Item
+            name='subs'
+            active={activeItem === 'subs'}
             color='teal'
             onClick={this.handleItemClick}
           />

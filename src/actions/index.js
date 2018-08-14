@@ -135,10 +135,10 @@ export const createPost = (title, content, image, sub) => async dispatch => {
     console.log('XXXXXXXXXXXXXXXXXXXX', JSON.parse(localStorage.getItem('user')).token);
     let token = JSON.parse(localStorage.getItem('user')).token;
     const res = await axios.post('http://localhost:8080/api/post', {
-      title: title,
-      content: content,
-      image: image,
-      sub: sub,
+      title,
+      content,
+      image,
+      sub,
     },
     {
       headers: { token }

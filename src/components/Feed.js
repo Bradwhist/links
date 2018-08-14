@@ -93,6 +93,12 @@ import {
             onClick={this.handleItemClick}
           />
           <Menu.Item
+            name='subs'
+            active={activeItem === 'subs'}
+            color='teal'
+            onClick={this.handleItemClick}
+          />
+          <Menu.Item
             name='profile'
             active={activeItem === 'profile'}
             color='teal'

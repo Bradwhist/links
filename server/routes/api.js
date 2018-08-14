@@ -14,7 +14,7 @@ const Comment = require('../models/Comment');
 const BigNumber = require('bignumber.js');
 const router = new express.Router();
 //middleware for verifying token
-router.use(function(req, res, next) {
+router.use((req, res, next) => {
 
   if (!req.headers.token) {
     return res.send('no token in request, gg no re');
@@ -31,7 +31,7 @@ router.use(function(req, res, next) {
 });
 // API Routes
 // Create new post
-router.post('/post', function(req, res) {
+router.post('/post', (req, res) => {
   Sub.findById(req.body.sub).exec()
   .then(sub => {
     var currentTime = new Date();
@@ -64,7 +64,7 @@ router.post('/post', function(req, res) {
 })
 //
 // Create new Sub
-router.post('/sub', function(req, res) {
+router.post('/sub', (req, res) => {
   var currentTime = new Date();
   var newSub = new Sub({
     title: req.body.title,
@@ -84,7 +84,7 @@ router.post('/sub', function(req, res) {
 })
 //
 // Post comment to post
-router.post('/rootComment', function(req, res) {
+router.post('/rootComment', (req, res) => {
   console.log('in root comment');
   var currentTime = new Date();
   var newComment = new Comment({
@@ -113,7 +113,7 @@ router.post('/rootComment', function(req, res) {
 })
 //
 // Post comment to comments
-router.post('/comment', function(req, res) {
+router.post('/comment', (req, res) => {
 
   Comment.findById(req.body.parent).exec()
   .then(comment => {
@@ -142,7 +142,7 @@ router.post('/comment', function(req, res) {
 })
 //
 // Post upvote to post
-router.post('/vote/post/up', function(req, res) {
+router.post('/vote/post/up', (req, res) => {
   Post.findById(req.body.post)
   .then(post => {
     let upIndex = post.upvotes.indexOf(res.locals.user._id);
@@ -182,7 +182,7 @@ router.post('/vote/post/up', function(req, res) {
 })
 //
 // Post downvote to posts
-router.post('/vote/post/down', function(req, res) {
+router.post('/vote/post/down', (req, res) => {
   Post.findById(req.body.post)
   .then(post => {
     let downIndex = post.downvotes.indexOf(res.locals.user._id);
@@ -223,7 +223,7 @@ router.post('/vote/post/down', function(req, res) {
 })
 //
 //Post upvote to comment
-router.post('/vote/comment/up', function(req, res) {
+router.post('/vote/comment/up', (req, res) => {
   Comment.findById(req.body.comment)
   .then(comment => {
     let upIndex = comment.upvotes.indexOf(res.locals.user._id);
@@ -256,7 +256,7 @@ router.post('/vote/comment/up', function(req, res) {
 })
 //
 // Post downvote to comments
-router.post('/vote/comment/down', function(req, res) {
+router.post('/vote/comment/down', (req, res) => {
   Comment.findById(req.body.comment)
   .then(comment => {
     let downIndex = comment.downvotes.indexOf(res.locals.user._id);
@@ -289,34 +289,34 @@ router.post('/vote/comment/down', function(req, res) {
 })
 //
 // Get all posts
-router.get('/post', function(req, res) {
+router.get('/post', (req, res) => {
   Post.find().exec()
   .then(posts => res.json(posts))
   .catch(err => res.send(err))
 })
 //
 // Get Posts by Subscriptions
-router.get('/post/bySub/:sub', function(req, res) {
+router.get('/post/bySub/:sub', (req, res) => {
   Post.find({"sub.id": req.params.sub }).exec()
   .then(posts => res.json(posts))
   .catch(err => res.send(err))
 })
 //
 //Get posts by users
-router.get('/post/byUser/:user', function(req, res) {
+router.get('/post/byUser/:user', (req, res) => {
   Post.find({"author.id": req.params.user }).exec()
   .then(posts => res.json(posts))
   .catch(err => res.send(err))
 })
 //
 //Get post by post id
-router.get('/post/byPost/:post', function(req, res) {
+router.get('/post/byPost/:post', (req, res) => {
   Post.findById(req.params.post).exec()
   .then(post => res.json(post))
   .catch(err => res.send(err))
 })
 //
-router.post('/post/edit/', function(req, res) {
+router.post('/post/edit/', (req, res) => {
   Post.findById(req.body.id).exec()
   .then(post => {
     post.content = req.body.content;
@@ -325,21 +325,21 @@ router.post('/post/edit/', function(req, res) {
 })
 //
 //Get comments by post id
-router.get('/comment/byPost/:post', function(req, res) {
+router.get('/comment/byPost/:post', (req, res) => {
   Comment.find({ "ancestor": req.params.post }).exec()
   .then(comments => res.json(comments))
   .catch(err => res.send(err))
 })
 //
 // Get all Subscriptions
-router.get('/sub', function(req, res) {
+router.get('/sub', (req, res) => {
   Sub.find().exec()
   .then(subs => res.json(subs))
   .catch(err => res.send(err))
 })
 //
 // get sub by id
-router.get('/sub/bySub/:subId', function(req, res) {
+router.get('/sub/bySub/:subId', (req, res) => {
   Sub.findById(req.params.subId)
   .then(sub => res.json(sub))
   .catch(err => res.send(err))
