@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchSubs, upvotePost, downvotePost } from '../actions'
+import { logout, fetchSubs, upvotePost, downvotePost, subscribe } from '../actions'
 import {
   Button,
   Container,
@@ -70,20 +70,24 @@ class Sub extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchSubs();
+    this.props.fetchSubs(this.props.auth.logged.subscriptions);
   }
 
-  upvotePost(postId, index) {
+  upvotePost = (postId, index) => {
     this.props.upvotePost(postId, index);
   }
 
-  downvotePost(postId, index) {
+  downvotePost = (postId, index) => {
     this.props.downvotePost(postId, index);
   }
 
-  openPost(postId) {
+  openPost = (postId) => {
     this.props.history.push('/post/' + postId);
   }
+
+  subscribe = (subId, i) => {
+  this.props.subscribe(subId, i);
+}
 
   render() {
     console.log('rendering feed', this.props.posts);
@@ -147,9 +151,31 @@ class Sub extends Component {
             columnWidth={300}
             >
               {this.props.subs.map((ele, i) => {
-                return <div key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
-                  {ele.title}
-                </div>}
+                return <div className = "imgBox" key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
+                  <img src = {ele.image} alt = "pic4" className = "img"/>
+                  <div class = "overlay"></div>
+                  <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+                  <div className = 'likeBtn'>
+                    <Button
+                      icon = 'thumbs up outline'
+                      color = "teal"
+                      label={{ as: 'a', basic: true, content: '2,048' }}
+                      labelPosition='right'
+                    />
+                  </div>
+                  <div className = 'dislikeBtn'>
+                    <Button
+                      icon = 'thumbs down outline'
+                      color = "teal"
+                      label={{ as: 'a', basic: true, content: '2,048' }}
+                      labelPosition='right'
+                    />
+                  </div>
+                {/* </div> */}
+                {/* {ele.subscribed ?
+                  <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
+                  <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> } */}
+              </div>}
               )}
             </StackGrid>
           </div>
@@ -177,9 +203,10 @@ class Sub extends Component {
     const mapDispatchToProps = (dispatch) => {
       return {
         logout: () => dispatch(logout()),
-        fetchSubs: () => dispatch(fetchSubs()),
+        fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
         upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
-        downvotePost: (postId, index) => dispatch(downvotePost(postId, index))
+        downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
+        subscribe: (subId, i) => dispatch(subscribe(subId, i))
       };
     }
 

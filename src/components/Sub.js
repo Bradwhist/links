@@ -57,7 +57,7 @@ class Sub extends Component {
    let subscribed = this.props.match.params.id === this.props.auth.logged.subscriptions;
    this.props.fetchSub(this.props.match.params.id, subscribed);
  }
- 
+
   upvotePostFromSub = (postId, index) => {
     this.props.upvotePostFromSub(postId, index);
   }
@@ -160,15 +160,15 @@ class Sub extends Component {
            )}
          </StackGrid>
 
-         {/* <div>
-         <button onClick={this.logout}>Logout</button>
+         <div>
+         {/* <button onClick={this.logout}>Logout</button>
          <button onClick={this.createSub}>Create a new category</button>
-         <button onClick={this.createPost}>Create a new post</button>
+         <button onClick={this.createPost}>Create a new post</button> */}
          {this.props.sub.subscribed ?
            <button onClick = {this.subscribeFromSub}>Unsubscribe</button> :
            <button onClick = {this.subscribeFromSub}>Subscribe</button>
          }
-        </div> */}
+        </div>
        </div>
      )
    }
