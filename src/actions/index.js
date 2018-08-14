@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_SUB,
    LOGIN, SIGNUP, LOGOUT,
    CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT,
-    UPVOTE_POST, DOWNVOTE_POST, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
+    UPVOTE_POST, DOWNVOTE_POST, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
 
 
 // if redux-thunk sees that we're returning a function in
@@ -205,6 +205,32 @@ export const downvotePost = (postId, index) => async dispatch => {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     });
     dispatch({ type: DOWNVOTE_POST , payload: { index: index, score: res.data } });
+  }
+  catch(err){console.log(err)}
+}
+// vote on post from subs
+export const upvotePostFromSub = (postId, index) => async dispatch => {
+  try {
+    console.log('in upvote', postId, index);
+    const res = await axios.post('http://localhost:8080/api/vote/post/up', {
+      post: postId
+    }, {
+      headers: { token: JSON.parse(localStorage.getItem('user')).token }
+    })
+    console.log('after server request', res.data);
+    dispatch({ type: UPVOTE_POST_FROM_SUB , payload: { index: index, score: res.data } });
+  }
+  catch(err){console.log(err)}
+}
+
+export const downvotePostFromSub = (postId, index) => async dispatch => {
+  try {
+    const res = await axios.post('http://localhost:8080/api/vote/post/down', {
+      post: postId
+    }, {
+      headers: { token: JSON.parse(localStorage.getItem('user')).token }
+    });
+    dispatch({ type: DOWNVOTE_POST_FROM_SUB , payload: { index: index, score: res.data } });
   }
   catch(err){console.log(err)}
 }

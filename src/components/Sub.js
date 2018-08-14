@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchSub, upvotePost, downvotePost } from '../actions'
+import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub } from '../actions'
 import {
   Button,
   Container,
@@ -39,11 +39,11 @@ import {
    componentDidMount() {
      this.props.fetchSub(this.props.match.params.id);
    }
-  upvotePost(postId, index) {
-    this.props.upvotePost(postId, index);
+  upvotePostFromSub(postId, index) {
+    this.props.upvotePostFromSub(postId, index);
   }
-  downvotePost(postId, index) {
-    this.props.downvotePost(postId, index);
+  downvotePostFromSub(postId, index) {
+    this.props.downvotePostFromSub(postId, index);
   }
   openPost(postId) {
     this.props.history.push('/post/' + postId);
@@ -69,8 +69,8 @@ import {
          {this.props.sub.posts.map((ele, i) => {
            return <div key={i}>
            {ele.score}
-           <button onClick={() => this.upvotePost(ele._id, i)}>Big ups</button>
-           <button onClick={() => this.downvotePost(ele._id, i)}>Big downs</button>
+           <button onClick={() => this.upvotePostFromSub(ele._id, i)}>Big ups</button>
+           <button onClick={() => this.downvotePostFromSub(ele._id, i)}>Big downs</button>
            <button onClick={() => this.openPost(ele._id)}>Open Post</button>
            </div>}
        )}
@@ -84,8 +84,8 @@ import {
 Sub.propTypes = {
   logout: PropTypes.func,
   fetchPosts: PropTypes.func,
-  upvotePost: PropTypes.func,
-  downvotePost: PropTypes.func,
+  upvotePostFromSub: PropTypes.func,
+  downvotePostFromSub: PropTypes.func,
   auth: PropTypes.obj,
   sub: PropTypes.obj,
 };
@@ -100,8 +100,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
     fetchSub: (subId) => dispatch(fetchSub(subId)),
-    upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
-    downvotePost: (postId, index) => dispatch(downvotePost(postId, index))
+    upvotePostFromSub: (postId, index) => dispatch(upvotePostFromSub(postId, index)),
+    downvotePostFromSub: (postId, index) => dispatch(downvotePostFromSub(postId, index))
   };
 }
 

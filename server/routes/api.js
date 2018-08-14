@@ -35,7 +35,7 @@ router.post('/post', (req, res) => {
   Sub.findById(req.body.sub).exec()
   .then(sub => {
     var currentTime = new Date();
-    let y = 0                 
+    let y = 0
     let b = 0
     y = currentTime.getTime() / 1000;
     b = y / (5 * (10 ** 9));
