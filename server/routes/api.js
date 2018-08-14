@@ -35,6 +35,13 @@ router.post('/post', function(req, res) {
   Sub.findById(req.body.sub).exec()
   .then(sub => {
     var currentTime = new Date();
+    let y = 0                 
+    let b = 0
+    y = currentTime.getTime() / 1000;
+    b = y / (5 * (10 ** 9));
+    let initScore = 1 - (1 / (Math.E ** b));
+
+
     var newPost = new Post({
       author: {
         id: res.locals.user._id,
@@ -44,6 +51,7 @@ router.post('/post', function(req, res) {
       content: req.body.content,
       image: req.body.image,
       upvotes: [res.locals.user._id],
+      score: initScore,
       sub: {
         id: req.body.sub,
         title: sub.title,

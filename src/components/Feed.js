@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
+// import CreateCategory from './CreateCategory'
 import { logout, fetchPosts, upvotePost, downvotePost, setInput } from '../actions'
+import CreateSub from './CreateSub'
 import {
   Button,
   Container,
@@ -48,6 +50,10 @@ import {
      this.props.logout();
    }
 
+   createSub = () => {
+     this.props.history.push('/createSub');
+   }
+
    createPost = () => {
      this.props.history.push('/createPost');
    }
@@ -78,46 +84,29 @@ import {
      // console.log('rendering feed auth', this.props.auth.logged._id);
      return (
        <div>
-        <Menu pointing inverted>
+        <Menu pointing>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
           <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
           <Menu.Item
             name='home'
             active={activeItem === 'home'}
-            color='teal'
             onClick={this.handleItemClick} />
-          <Menu.Item
-            name='explore'
-            active={activeItem === 'explore'}
-            color='teal'
-            onClick={this.handleItemClick}
-          />
           <Menu.Item
             name='profile'
             active={activeItem === 'profile'}
-            color='teal'
             onClick={this.handleItemClick}
           />
-          <Menu.Menu position='right'>
-          <Dropdown icon = "plus" pointing className='link item'>
-            <Dropdown.Menu>
-              <Dropdown.Header>Category</Dropdown.Header>
-              <Dropdown.Item onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Header>Post</Dropdown.Header>
-              <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('./createPost')}>Create a new post</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          </Menu.Menu>
           <Menu.Menu position='right'>
             <Dropdown icon = "ellipsis horizontal" pointing className='link item'>
               <Dropdown.Menu>
                 <Dropdown.Header>Categories</Dropdown.Header>
-                <Dropdown.Item>X</Dropdown.Item>
+                <Dropdown.Item>Clothing</Dropdown.Item>
+                <Dropdown.Item>Home Goods</Dropdown.Item>
+                <Dropdown.Item>Bedroom</Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Header>Account</Dropdown.Header>
                 <Dropdown.Item>Status</Dropdown.Item>
-                <Dropdown.Item onClick = {this.logout}>Logout</Dropdown.Item>
+                <Dropdown.Item>Logout</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Menu.Menu>
