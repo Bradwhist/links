@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import Home from './components/Home'
 import Login from './components/Login'
 import Feed from './components/Feed'
+import Explore from './components/Explore'
 import Profile from './components/Profile'
 import Post from './components/Post'
 import Sub from './components/Sub'
@@ -22,12 +23,20 @@ class App extends Component {
     return (
       <Router>
       <div className="App">
-        <Route exact path = '/' component = {Home} />  {/*Register Component */}
-        <Route exact path = '/login' component = {Login} />
-
-       {this.props.auth.logged && this.props.auth.loaded ?
+        {/* <Route exact path = '/' component = {Home} />  {/*Register Component */}
+        {/* <Route exact path = '/login' component = {Login} />
+        <Route exact path = '/feed' component = {Feed} />
+        <Route exact path = '/explore' component = {Explore} />
+        <Route exact path = '/profile' component = {Profile} />
+        <Route exact path = '/createSub' component={CreateSub} />
+        <Route exact path = '/createPost' component={CreatePost} /> */}
+      <Route exact path = '/' component = {Home} />
+      <Route exact path = '/login' component = {Login} />
+      {this.props.auth.logged && this.props.auth.loaded ?
         <Switch>
         <Route exact path = '/feed' component={Feed} />
+        <Route exact path = '/explore' component={Explore} />
+        <Route exact path = '/profile' component= {Profile} />
         <Route exact path = '/post/:id' render={(props) => <Post {...props} /> } />
         <Route exact path = '/createSub' component={CreateSub} />
         <Route exact path = '/createPost' component={CreatePost} />

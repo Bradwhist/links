@@ -25,23 +25,31 @@ import {
 /* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
  * such things.
  */
- class Feed extends Component {
+ class Explore extends Component {
    constructor(props){
      super(props);
      this.state = {
-       activeItem: 'home'
+       activeItem: 'explore'
      }
    }
 
    handleItemClick = (e, { name }) => {
-     this.setState({ activeItem: name })
+    this.setState({ activeItem: name })
      if (name === 'home') {
        this.props.history.push('/feed');
      }
-     else {
-       this.props.history.push('/' + name);
+     else if (name === 'profile'){
+       this.props.history.push('/profile');
      }
-     //this.props.logout();
+     else if (name === 'createSub'){
+       this.props.history.push('/createSub');
+     }
+     else if (name === 'createPost'){
+       this.props.history.push('/createPost');
+     }
+     else if (name === 'explore'){
+       this.props.history.push('/explore');
+     }
    }
 
    logout = () => {
@@ -202,7 +210,7 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
     null,
     mapDispatchToProps
-)(Feed)
+)(Explore)
 
 // {this.props.posts ?
 // this.props.posts.map((ele, i) => <div key={"key" + (i + 1)}>{"key" + (i + 1)}</div> )

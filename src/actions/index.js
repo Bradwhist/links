@@ -19,8 +19,6 @@ export const fetchUser = () => async dispatch => {
   let user = localStorage.getItem('user');
   //console.log(JSON.parse(user).token);
   if (user) {
-  let url = 'http://localhost:8080/api/checkUser/' + JSON.parse(user).token;
-  //console.log(url);
   const res = await axios.get('http://localhost:8080/api/checkUser/', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   }
