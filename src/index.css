@@ -1,4 +1,4 @@
-body {
+/* body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
@@ -108,7 +108,7 @@ body {
 .overlay {
   position: absolute;
   top: 0;
-  bottom: 1%;
+  bottom: 5px;
   left: 4%;
   right: 4%;
   background: linear-gradient(
@@ -116,15 +116,69 @@ body {
       rgba(0, 0, 0, 0.5)
     );
   opacity: 0;
-  visibility: hidden;
   /* transition effect. not necessary */
-  transition: opacity .2s, visibility .2s;
+  transition: opacity 0.3s;
 }
 
+.likeBtn {
+  position: absolute;
+   left: 23%;
+   bottom: 0;
+   transform: translate(-50%, -50%);
+   -ms-transform: translate(-50%, -50%);
+   border: none;
+   cursor: pointer;
+   opacity: 0;
+   transition: opacity .2s;
+   border-radius: 5px;
+}
+
+.dislikeBtn {
+  position: absolute;
+  left: 60%;
+  bottom: 0;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .2s;
+  border-radius: 5px;
+}
+
+.imgTitleBox {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+}
+
+.imgTitle {
+  color: white;
+}
+
+/* make the overlay appear on hover */
 .imgBox:hover .overlay {
-  visibility: visible;
   opacity: 0.5;
 }
+
+/* make the like button appear on hover */
+.imgBox:hover .likeBtn {
+  opacity: 1;
+}
+
+/* make the dislike button appear on hover */
+.imgBox:hover .dislikeBtn {
+  opacity: 1;
+}
+
+/* make the title appear on hover */
+.imgBox:hover .imgTitleBox {
+  opacity: 1;
+}
+
 
 /* PROFILE COMPONENT */
 .gridBox {
@@ -138,13 +192,13 @@ body {
 
 /* SUB COMPONENT */
 .subBtn {
-  width: 95px;
+  width: 60px;
 }
 
 .thumbs {
-  transition: font-size 0.3s;
+  transition: font-size 0.5s;
 }
 
-.thumbs:hover {
-  font-size: 200%;
-}
+/* .thumbs:hover {
+  font-size: 150%;
+} */
