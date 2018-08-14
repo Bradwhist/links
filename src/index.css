@@ -130,3 +130,8 @@ body {
 .gridBox {
   margin: 20px;
 }
+
+/* CREATEPOST COMPONENT */
+.createPostGrid {
+  margin: 100px;
+}

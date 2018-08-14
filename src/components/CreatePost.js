@@ -35,9 +35,11 @@ class CreatePost extends Component {
       sub: '',
     };
   }
+
   componentWillMount() {
     this.props.fetchSubs();
   }
+
   handleItemClick = (e, { name }) => {
     if (name === 'home') {
       this.setState({ activeItem: name })
@@ -47,9 +49,9 @@ class CreatePost extends Component {
       this.setState({ activeItem: name })
       this.props.history.push('/explore');
     }
-    else if (name === 'sub'){
+    else if (name === 'subs'){
       this.setState({ activeItem: name })
-      this.props.history.push('/sub');
+      this.props.history.push('/subs');
     }
     else if (name === 'profile'){
       this.setState({ activeItem: name })
@@ -81,6 +83,7 @@ class CreatePost extends Component {
     })
     console.log('image', e.target.value)
   }
+
   setSub = (e, {value}) => {
     e.persist();
     this.setState({
@@ -129,8 +132,8 @@ class CreatePost extends Component {
               onClick={this.handleItemClick}
             />
             <Menu.Item
-              name='sub'
-              active={activeItem === 'sub'}
+              name='subs'
+              active={activeItem === 'subs'}
               color='teal'
               onClick={this.handleItemClick}
             />
@@ -171,6 +174,7 @@ class CreatePost extends Component {
               </Dropdown>
             </Menu.Menu>
           </Menu>
+
           <Grid className = "createPostGrid">
             <Grid.Column width={4}>
               <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
@@ -191,7 +195,7 @@ class CreatePost extends Component {
                     control={Input}
                     value={this.state.image}
                     label='Image'
-                    placeholder='Image'
+                    placeholder='Image URL'
                     onChange={(e) => this.setImage(e)}
                   />
                   <Form.Field
@@ -203,6 +207,7 @@ class CreatePost extends Component {
                     onChange={(e) => this.setContent(e)}
                   />
                 </Form.Group>
+
               <Dropdown placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: ele._id, text: ele.title} })}/>
               <Form.Field
                 id='form-button-control-public'

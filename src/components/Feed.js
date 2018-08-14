@@ -92,6 +92,18 @@ import {
             active={activeItem === 'home'}
             onClick={this.handleItemClick} />
           <Menu.Item
+            name='explore'
+            active={activeItem === 'explore'}
+            color='teal'
+            onClick={this.handleItemClick}
+          />
+          <Menu.Item
+            name='subs'
+            active={activeItem === 'subs'}
+            color='teal'
+            onClick={this.handleItemClick}
+          />
+          <Menu.Item
             name='profile'
             active={activeItem === 'profile'}
             onClick={this.handleItemClick}

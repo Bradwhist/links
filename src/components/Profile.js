@@ -33,7 +33,7 @@ import {
      }
    }
 
-   handleItemClick = async (e, { name }) => {
+   handleItemClick = (e, { name }) => {
      if (name === 'home') {
        this.setState({ activeItem: name })
        this.props.history.push('/feed');
@@ -45,6 +45,10 @@ import {
      else if (name === 'explore'){
        this.setState({ activeItem: name })
        this.props.history.push('/explore');
+     }
+     else if (name === 'subs'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/subs');
      }
      else if (name === 'createSub'){
        this.setState({ activeItem: name })
@@ -124,6 +128,12 @@ import {
            <Menu.Item
              name='explore'
              active={activeItem === 'explore'}
+             color='teal'
+             onClick={this.handleItemClick}
+           />
+           <Menu.Item
+             name='subs'
+             active={activeItem === 'subs'}
              color='teal'
              onClick={this.handleItemClick}
            />
