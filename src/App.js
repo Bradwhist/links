@@ -49,7 +49,7 @@ class App extends Component {
         <Route exact path = '/profile/posts' component = {Profile} />
         <Route exact path = '/profile/activity' component = {Profile} />
         <Route exact path = '/profile/links' component = {Profile} />
-        <Redirect exact from = '/login' to = 'feed' />
+        <Redirect exact from = '/login' to = '/feed' />
         </Switch>
         :
         this.props.auth.loaded ?

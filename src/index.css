@@ -135,3 +135,16 @@ body {
 .createPostGrid {
   margin: 100px;
 }
+
+/* SUB COMPONENT */
+.subBtn {
+  width: 95px;
+}
+
+.thumbs {
+  transition: font-size 0.3s;
+}
+
+.thumbs:hover {
+  font-size: 200%;
+}

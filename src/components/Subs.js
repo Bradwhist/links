@@ -147,7 +147,7 @@ class Sub extends Component {
             columnWidth={300}
             >
               {this.props.subs.map((ele, i) => {
-                return <div key={i}>
+                return <div key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
                   {ele.title}
                 </div>}
               )}
