@@ -23,22 +23,26 @@ class App extends Component {
     return (
       <Router>
       <div className="App">
-        <Route exact path = '/' component = {Home} />  {/*Register Component */}
-        <Route exact path = '/login' component = {Login} />
+        {/* <Route exact path = '/' component = {Home} />  {/*Register Component */}
+        {/* <Route exact path = '/login' component = {Login} />
         <Route exact path = '/feed' component = {Feed} />
         <Route exact path = '/explore' component = {Explore} />
         <Route exact path = '/profile' component = {Profile} />
         <Route exact path = '/createSub' component={CreateSub} />
-        <Route exact path = '/createPost' component={CreatePost} />
-      {/* {this.props.auth.logged && this.props.auth.loaded ?
+        <Route exact path = '/createPost' component={CreatePost} /> */}
+      <Route exact path = '/' component = {Home} />
+      <Route exact path = '/login' component = {Login} />
+      {this.props.auth.logged && this.props.auth.loaded ?
         <Switch>
         <Route exact path = '/feed' component={Feed} />
+        <Route exact path = '/explore' component={Explore} />
+        <Route exact path = '/profile' component= {Profile} />
         <Route exact path = '/post/:id' render={(props) => <Post {...props} /> } />
         <Route exact path = '/createSub' component={CreateSub} />
         <Route exact path = '/createPost' component={CreatePost} />
         <Route exact path = '/sub/:id' component={Sub} />
-        <Route exact path = '/profile' component= {Profile} />
-        <Redirect exact from = '/' to = 'feed' />
+        <Redirect exact from = '/' to = '/feed' />
+        <Redirect exact from = '/login' to = '/feed' />
         </Switch>
         :
         this.props.auth.loaded ?
@@ -53,7 +57,7 @@ class App extends Component {
           </Switch>
         :
         <Route path = '/' render={() => <h1>Loading</h1>} />
-      } */}
+      }
         </div>
       </Router>
     );

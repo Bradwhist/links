@@ -35,10 +35,23 @@ class Login extends Component {
         <h1 style = {{color: '#0ccece'}}> Log-in</h1>
         <div className = "loginBox">
           <div>
-            <Input onChange = {(e) => this.setEmail(e)} className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
+            <Input
+              onChange = {(e) => this.setEmail(e)}
+              className = "emailInput"
+              focus icon="mail"
+              iconPosition='left'
+              type='email'
+              value={this.state.email}
+              placeholder='Email' />
           </div>
           <div>
-            <Input onChange = {(e) => this.setPassword(e)} className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Password' />
+            <Input
+               onChange = {(e) => this.setPassword(e)}
+               className = "pwdInput" focus icon="lock"
+               iconPosition='left'
+               type='password'
+               value={this.state.password}
+               placeholder='Password' />
           </div>
           <div>
             <Button onClick = {this.login} animated basic color = "teal">
@@ -47,6 +60,7 @@ class Login extends Component {
                 <Icon name='arrow right' />
               </Button.Content>
             </Button>
+
           </div>
           </div>
           <div className = "msgBox">
@@ -65,9 +79,16 @@ class Login extends Component {
     email: '',
     password: ''
   });
+  }
 }
 
-}
+const mapStateToProps = ({auth}) => {
+    return {
+      auth,
+    }
+  }
+
+
 const mapDispatchToProps = (dispatch) => {
   return {
     login: (email, password) => dispatch(login(email, password))
@@ -75,4 +96,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

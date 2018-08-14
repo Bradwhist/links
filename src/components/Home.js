@@ -77,7 +77,7 @@ import {
               <Input onChange={e => this.setPassword(e)} className = "pwdInput" focus icon="lock" iconPosition='left' type='password' placeholder='Create a password' />
               </div>
             <div>
-            <Button onClick = {this.login} animated basic color = "teal">
+            <Button onClick = {this.signup} animated basic color = "teal">
               <Button.Content visible>Sign up!</Button.Content>
               <Button.Content hidden>
                 <Icon name='arrow right' />
