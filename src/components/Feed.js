@@ -139,9 +139,68 @@ import {
         <StackGrid
         columnWidth={300}
         >
-          <div className = "imgBox" key="key1"><img src = "https://images.unsplash.com/photo-1533756102515-155e3863ee1c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7714524f4448bdda1d20f3cb883d2e45&auto=format&fit=crop&w=634&q=80" alt = "pic1" className = "img" /><div class = "overlay"></div></div>
-          <div className = "imgBox" key="key2"><img src = "https://images.unsplash.com/photo-1533821312764-eb0483f98f69?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d383aa86b1a43b453dd58374919155b9&auto=format&fit=crop&w=1050&q=80" alt = "pic2" className = "img"/><div class = "overlay"></div></div>
-          <div className = "imgBox" key="key3"><img src = "https://images.unsplash.com/photo-1533826418470-0cef7eb8bdaa?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=714f5ed2388ebfa626d8263ef243c644&auto=format&fit=crop&w=634&q=80" alt = "pic3" className = "img"/><div class = "overlay"></div></div>
+          <div className = "imgBox" key="key1">
+            <img src = "https://images.unsplash.com/photo-1533756102515-155e3863ee1c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7714524f4448bdda1d20f3cb883d2e45&auto=format&fit=crop&w=634&q=80" alt = "pic1" className = "img" />
+            <div class = "overlay"></div>
+            <div className = "imgTitleBox"><h1 className = "imgTitle">Insert title here</h1></div>
+              <div className = 'likeBtn'>
+                <Button
+                  icon = 'thumbs up outline'
+                  color = "teal"
+                  label={{ as: 'a', basic: true, content: '2,048' }}
+                  labelPosition='right'
+                  // onClick event handler here
+                />
+              </div>
+              <div className = 'dislikeBtn'>
+                <Button
+                  icon = 'thumbs down outline'
+                  color = "teal"
+                  label={{ as: 'a', basic: true, content: '2,048' }}
+                  labelPosition='right'
+                />
+              </div>
+          </div>
+          <div className = "imgBox" key="key2"><img src = "https://images.unsplash.com/photo-1533821312764-eb0483f98f69?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d383aa86b1a43b453dd58374919155b9&auto=format&fit=crop&w=1050&q=80" alt = "pic2" className = "img"/>
+            <div class = "overlay"></div>
+            <div className = "imgTitleBox"><h1 className = "imgTitle">Insert title here</h1></div>
+            <div className = 'likeBtn'>
+              <Button
+                icon = 'thumbs up outline'
+                color = "teal"
+                label={{ as: 'a', basic: true, content: '2,048' }}
+                labelPosition='right'
+              />
+            </div>
+            <div className = 'dislikeBtn'>
+              <Button
+                icon = 'thumbs down outline'
+                color = "teal"
+                label={{ as: 'a', basic: true, content: '2,048' }}
+                labelPosition='right'
+              />
+            </div>
+          </div>
+          <div className = "imgBox" key="key3"><img src = "https://images.unsplash.com/photo-1533826418470-0cef7eb8bdaa?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=714f5ed2388ebfa626d8263ef243c644&auto=format&fit=crop&w=634&q=80" alt = "pic3" className = "img"/>
+            <div class = "overlay"></div>
+            <div className = "imgTitleBox"><h1 className = "imgTitle">Insert title here</h1></div>
+            <div className = 'likeBtn'>
+              <Button
+                icon = 'thumbs up outline'
+                color = "teal"
+                label={{ as: 'a', basic: true, content: '2,048' }}
+                labelPosition='right'
+              />
+            </div>
+            <div className = 'dislikeBtn'>
+              <Button
+                icon = 'thumbs down outline'
+                color = "teal"
+                label={{ as: 'a', basic: true, content: '2,048' }}
+                labelPosition='right'
+              />
+            </div>
+          </div>
           <div className = "imgBox" key="key4"><img src = "https://images.unsplash.com/photo-1533765204875-741de68c678e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=85f7d010307ca1ff3e6d0674a611e2a1&auto=format&fit=crop&w=634&q=80" alt = "pic4" className = "img"/><div class = "overlay"></div></div>
           <div className = "imgBox" key="key5"><img src = "https://images.unsplash.com/photo-1533756972958-d6f38a9761e3?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d710493bc1818842db8ce47f887708f2&auto=format&fit=crop&w=1189&q=80" alt = "pic5" className = "img"/><div class = "overlay"></div></div>
           <div className = "imgBox" key="key6"><img src = "https://images.unsplash.com/photo-1533764625214-b97671494f23?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f6130b5c1dd5cbba0fa332b333cac299&auto=format&fit=crop&w=634&q=80" alt = "pic6" className = "img"/></div>
