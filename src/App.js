@@ -44,10 +44,6 @@ class App extends Component {
         <Route exact path = '/subs' component={Subs} />
         <Route exact path = '/sub/:id' component={Sub} />
         <Route exact path = '/profile' component= {Profile} />
-        <Route exact path = '/profile/bio' component = {Profile} />
-        <Route exact path = '/profile/posts' component = {Profile} />
-        <Route exact path = '/profile/activity' component = {Profile} />
-        <Route exact path = '/profile/links' component = {Profile} />
         <Redirect exact from = '/login' to = '/feed' />
         </Switch>
         :

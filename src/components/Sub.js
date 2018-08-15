@@ -83,6 +83,7 @@ class Sub extends Component {
     //   this.props.posts.map((ele, i) => {StackGridContent = StackGridContent + '<div key="key' + (i + 1) + '">Meow</div>'})
     // }
     //   console.log(StackGridContent);
+    console.log('subs', this.props.sub.posts)
     const { activeItem } = this.state;
      return (
        <div>
@@ -150,7 +151,7 @@ class Sub extends Component {
                <Button className = "subBtn" icon basic color = "teal" onClick={() => this.downvotePostFromSub(ele._id, i)}>
                  <Icon name='thumbs down outline' />
                </Button>
-               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.openPostFromSub(ele._id, i)}>
+               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.openPost(ele._id, i)}>
                  <Button.Content hidden><Icon name='flag' /></Button.Content>
                  <Button.Content visible>
                    Open Post

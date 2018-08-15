@@ -148,14 +148,14 @@ class CreatePost extends Component {
                   <Dropdown.Header>Category</Dropdown.Header>
                   <Dropdown.Item
                     active = {activeItem === 'createSub'}
-                    onClick = {() => this.props.history.push('./createSub')}>
+                    onClick = {() => this.props.history.push('/createSub')}>
                     Create a new category
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Header>Post</Dropdown.Header>
                   <Dropdown.Item
                     active = {activeItem === 'createPost'}
-                    onClick = {() => this.props.history.push('./createPost')}>
+                    onClick = {() => this.props.history.push('/createPost')}>
                     Create a new post
                   </Dropdown.Item>
                 </Dropdown.Menu>
