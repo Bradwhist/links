@@ -38,7 +38,9 @@ class Post extends Component {
       content: '',
       replying: null,
       navigation: null,
-      showReplies: []
+      showReplies: [],
+      value: 'Type something here...',
+      replyComments: []
     };
   }
 
@@ -88,13 +90,18 @@ class Post extends Component {
   }
 
   // createComment is function to handle submission of form for a non-root level comment
-  createComment = (e, id) => {
+  createComment = (e, id, num) => {
     e.preventDefault();
+    console.log('REPLYCOMMENTS', this.state.replyComments, num)
+    let newArr = this.state.replyComments.slice();
+    newArr.push(num)
+    console.log('NEWARR', newArr)
     this.setState({
       content: '',
       replying: null,
+      replyComments: newArr
     })
-    //console.log(this.state.content);
+    console.log('REPLYCOMMENTS', this.state.replyComments)
     return this.props.createComment(this.state.content, id);
   }
 
@@ -117,11 +124,11 @@ class Post extends Component {
   }
 
   // reply comment toggles which comment is being actively replied to
-  replyComment = (postId) => {
-    if (postId === this.state.replying) {
+  replyComment = (commentId) => {
+    if (commentId === this.state.replying) {
       this.setState({ replying: null });
     } else {
-      this.setState({ replying: postId });
+      this.setState({ replying: commentId });
     }
   }
 
@@ -164,7 +171,29 @@ class Post extends Component {
                 </Comment.Metadata>
                 <Comment.Text>{ele.content}</Comment.Text>
                   <Comment.Actions>
-                    {this.showReplies(ele._id) ? <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>Hide replies</Comment.Action> : <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View replies</Comment.Action> }
+                    {this.showReplies(ele._id) ? <div>
+                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
+                      <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>Hide replies</Comment.Action></div> :
+                    ele.comments.length === 0 ? <div>
+                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action></div>:
+                    ele.comments.length === 1 ? <div>
+                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
+                      <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} reply</Comment.Action></div>:
+                      <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} replies</Comment.Action> }
+                    {this.state.replying === ele._id ?
+                      <Form reply onSubmit={(e) => this.createComment(e, ele._id, i)}>
+                        <Form.TextArea placeholder={"Replying to " + ele.author.name} onChange={this.setContent} />
+                        <Button content='Reply' labelPosition='left' icon='edit' primary />
+                      </Form>
+                      :
+                      null
+                    }
                   </Comment.Actions>
                 </Comment.Content>
                 {/* This is to render the replies based on a ternary */}
@@ -176,56 +205,21 @@ class Post extends Component {
             // <button onClick={() => this.upvoteComment(ele._id, i)}>Upvote Comment</button>
             // <button onClick={() => this.downvoteComment(ele._id, i)}>Downvote Comment</button>
             // <button onClick={() => this.replyComment(ele._id)}>Open Post</button> */}
-            { this.state.replying === ele._id ?
-              // <form onSubmit={(e) => this.createComment(e, ele._id)}>
-              //   <label>
-              //     New Comment:
-              //     <textarea value={this.state.value} onChange={this.setContent} />
-              //   </label>
-              //   <input type="submit" value="Submit" />
-              // </form>
-              <Form reply>
-                <Form.TextArea value={this.state.value} onChange={this.setContent} />
-                <Button onSubmit={(e) => this.createComment(e, ele._id)} content='Add Reply' labelPosition='left' icon='edit' primary />
-              </Form>
-              :
-              null
-            }
+
 
           </div>
         )
       })
-      return <ul>{ replyComments }</ul>
+      return replyComments;
     }
 
-    renderCommentBlock = (commentId) => {
-      console.log(this.props.post);
-      let parentIndex = this.props.post.comments.findIndex((ele) => {
-        return ele._id === commentId;
-      })
-      console.log('PARENT INDEX', parentIndex);
-      let parentComment = this.props.post.comments[parentIndex];
-      let sortedComments = [];
-      for (let i = 0; i < parentComment.comments.length; i ++) {
-        let checkIndex = (comment) => {
-          return comment._id === parentComment.comments[i];
-        }
-        let currentIndex = this.props.post.comments.findIndex(checkIndex);
-        let currentComment = this.props.post.comments[currentIndex];
-        sortedComments.push(currentComment);
-      }
-      sortedComments.sort((a, b) => a.score < b.score);
-      return sortedComments.map((ele, i) => {
-        return <li>'comment content here'</li>
-      }
-    )}
 
     showReplies = (commentId) => {
       return this.state.showReplies.indexOf(commentId) !== -1 ;
     }
 
     toggleReplies = (commentId) => {
-      console.log('fuck this shit')
+      console.log('testing toggle')
       let index = this.state.showReplies.indexOf(commentId);
       let newArr = this.state.showReplies.slice();
       if (index === -1) {
@@ -310,10 +304,15 @@ class Post extends Component {
                   <Grid.Column>
                     <Header as='h3' dividing>
                       Comments
+                      <Menu style = {{fontSize: 12, position: 'absolute', right: 10, bottom: 475}} compact>
+                        <Dropdown text='Sort' options={options} simple item />
+                      </Menu>
                     </Header>
-                    <Menu compact>
-                      <Dropdown text='Sort' options={options} simple item />
-                    </Menu>
+
+                    <Form reply onSubmit={(e) => this.createRootComment(e)}>
+                      <Form.TextArea placeholder={this.state.value} onChange={this.setContent} />
+                      <Button content='Add Comment' labelPosition='left' icon='edit' primary />
+                    </Form>
                     {this.props.post.comments.map((ele, i) => {
                       if (!ele.parent) {
                         return  <Comment.Group>
@@ -326,7 +325,33 @@ class Post extends Component {
                               </Comment.Metadata>
                               <Comment.Text>{ele.content}</Comment.Text>
                               <Comment.Actions>
-                                {this.showReplies(ele._id) ? <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>Hide replies</Comment.Action> : <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View replies</Comment.Action> }
+                                {this.showReplies(ele._id) ? <div>
+                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
+                                  <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>Hide replies</Comment.Action></div> :
+                                ele.comments.length === 0 ? <div>
+                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action> </div> :
+                                ele.comments.length === 1 ?  <div>
+                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
+                                  <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} reply</Comment.Action> </div> :
+                                <div>
+                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
+                                  <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} replies</Comment.Action> </div>}
+                                {this.state.replying === ele._id ?
+                                  <Form reply onSubmit={(e) => this.createComment(e, ele._id, i)}>
+                                    <Form.TextArea placeholder={"Replying to " + ele.author.name} onChange={this.setContent} />
+                                    <Button content='Reply' labelPosition='left' icon='edit' primary />
+                                  </Form>
+                                  :
+                                  null
+                                }
                               </Comment.Actions>
                             </Comment.Content>
                             {/* This is to render the replies based on a ternary */}
@@ -336,11 +361,6 @@ class Post extends Component {
                         </Comment.Group>
                       }
                     })}
-
-                    <Form reply onSubmit={(e) => this.createRootComment(e)}>
-                      <Form.TextArea value={this.state.value} onChange={this.setContent} />
-                      <Button content='Add Comment' labelPosition='left' icon='edit' primary />
-                    </Form>
                     {/* <form onSubmit={(e) => this.createRootComment(e)}>
                     <label>
                     New Comment:

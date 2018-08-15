@@ -157,6 +157,7 @@ class CreateSub extends Component {
            </Menu.Menu>
          </Menu>
 
+         <Container>
          <Grid>
            <Grid.Column width={4}>
              <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
@@ -198,6 +199,7 @@ class CreateSub extends Component {
              </Form>
            </Grid.Column>
          </Grid>
+        </Container>
         </div>
       )
     }

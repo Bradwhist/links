@@ -175,6 +175,7 @@ class CreatePost extends Component {
             </Menu.Menu>
           </Menu>
 
+          <Container>
           <Grid className = "createPostGrid">
             <Grid.Column width={4}>
               <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
@@ -218,6 +219,7 @@ class CreatePost extends Component {
             </Form>
           </Grid.Column>
         </Grid>
+        </Container>
         {/* <button onClick={this.logout}>Logout</button>
         <button onClick={this.goProfile}>Back to profile...</button>
         <form onSubmit={(e) => this.createPost(e)}>
