@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub, subscribeFromSub } from '../actions'
+import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub,
+  subscribeFromSub } from '../actions'
 import {
   Button,
   Container,
@@ -75,6 +76,10 @@ class Sub extends Component {
     this.props.history.push('/post/' + postId);
   }
 
+  deletePost = (postId, i) => {
+    this.props.deletePost(postId, i);
+  }
+
   render() {
     console.log('rendering feed', this.props.posts);
     console.log('rendering feed auth', this.props.auth.logged._id);
@@ -115,10 +120,10 @@ class Sub extends Component {
            <Dropdown icon = "plus" pointing className='link item'>
              <Dropdown.Menu>
                <Dropdown.Header>Category</Dropdown.Header>
-               <Dropdown.Item onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
+               <Dropdown.Item onClick = {() => this.props.history.push('/createSub')}>Create a new category</Dropdown.Item>
                <Dropdown.Divider />
                <Dropdown.Header>Post</Dropdown.Header>
-               <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('./createPost')}>Create a new post</Dropdown.Item>
+               <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('/createPost')}>Create a new post</Dropdown.Item>
              </Dropdown.Menu>
            </Dropdown>
            </Menu.Menu>
@@ -137,7 +142,7 @@ class Sub extends Component {
              </Dropdown>
            </Menu.Menu>
          </Menu>
-
+         { !!this.props.sub ?
        <StackGrid
          columnWidth={150}
          >
@@ -150,7 +155,7 @@ class Sub extends Component {
                <Button className = "subBtn" icon basic color = "teal" onClick={() => this.downvotePostFromSub(ele._id, i)}>
                  <Icon name='thumbs down outline' />
                </Button>
-               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.openPostFromSub(ele._id, i)}>
+               <Button className = "subBtn" animated='vertical' color = "teal" onClick={() => this.openPost(ele._id, i)}>
                  <Button.Content hidden><Icon name='flag' /></Button.Content>
                  <Button.Content visible>
                    Open Post
@@ -159,15 +164,17 @@ class Sub extends Component {
              </div>}
            )}
          </StackGrid>
-
+       : <div>Facepalm, this WAS the category you were looking for</div> }
          <div>
          {/* <button onClick={this.logout}>Logout</button>
          <button onClick={this.createSub}>Create a new category</button>
          <button onClick={this.createPost}>Create a new post</button> */}
-         {this.props.sub.subscribed ?
-           <button onClick = {this.subscribeFromSub}>Unsubscribe</button> :
-           <button onClick = {this.subscribeFromSub}>Subscribe</button>
-         }
+         { this.props.sub ?
+           <div>{this.props.sub.subscribed ?
+             <button onClick = {this.subscribeFromSub}>Unsubscribe</button> :
+             <button onClick = {this.subscribeFromSub}>Subscribe</button>
+          }</div>
+         : null }
         </div>
        </div>
      )

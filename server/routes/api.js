@@ -312,6 +312,118 @@ router.post('/subscribe', (req, res) => {
   })
 })
 //
+// Delete Routes
+// delete post
+router.post('/delete/post', (req, res) => {
+    Post.findById(req.body.post).exec()
+    .then(post => {
+      console.log('author', post.author.id, 'locals', res.locals.user.id);
+      if (post.author.id == res.locals.user.id) {
+        Post.findOneAndDelete( {_id: req.body.post} ).exec()
+        .then(() => {
+          Sub.findOne({ posts: { $all: [req.body.post] } })
+          .then(sub => {
+            let postIndex = sub.posts.indexOf(req.body.post);
+            sub.posts.splice(postIndex, 1);
+            sub.save();
+            res.send('all done');
+          })
+          .catch(err => console.log(err))
+        })
+        .catch(err => res.send(err))
+      } else {
+        console.log('no match');
+      }
+      res.send('no match');
+    })
+    .catch(err => console.log(err));
+})
+//
+// delete root comment
+  router.post('/delete/rootComment', (req, res) => {
+    Comment.findById(req.body.comment)
+      .then(comment => {
+        comment.content = 'deleted by author';
+        comment.author = {
+          name: 'deleted',
+        };
+        comment.deleted = true;
+        comment.save();
+        res.json(comment);
+      })
+      .catch(err => console.log(err));
+  })
+// delete non-root comment
+router.post('/delete/comment', (req, res) => {
+  Comment.findById(req.body.comment)
+    .then(comment => {
+      if (comment.author.id == res.locals.user.id) {
+      comment.content = 'deleted by author';
+      comment.author = {
+        name: 'deleted',
+      };
+      comment.deleted = true;
+      comment.save();
+      res.json(comment);
+    }
+    res.send('dont delete what aint yours bruh');
+    })
+    .catch(err => console.log(err));
+})
+// delete root comment UNTESTED
+// router.post('/delete/rootComment', (req, res) => {
+//     Comment.findById(req.body.comment).exec()
+//     .then(comment => {
+//       console.log('author', comment.author.id, 'locals', res.locals.user.id);
+//       if (comment.author.id == res.locals.user.id) {
+//         Comment.findOneAndDelete(req.body.comment).exec()
+//         .then(() => {
+//           Post.findOne({ comments: { $all: [req.body.post] } })
+//           .then(post => {
+//             let commentIndex = post.comments.indexOf(req.body.comment);
+//             post.comments.splice(commentIndex, 1);
+//             post.save();
+//             res.send('all done');
+//           })
+//           .catch(err => console.log(err))
+//         })
+//         .catch(err => res.send(err))
+//       } else {
+//         console.log('no match');
+//       }
+//       res.send('no match');
+//     })
+//     .catch(err => console.log(err));
+// })
+// //
+// // delete non root comment UNTESTED
+// router.post('/delete/comment', (req, res) => {
+//     Comment.findById(req.body.comment).exec()
+//     .then(comment => {
+//       console.log('author', comment.author.id, 'locals', res.locals.user.id);
+//       if (comment.author.id == res.locals.user.id) {
+//         Comment.findOneAndDelete(req.body.comment).exec()
+//         .then(() => {
+//           Comment.findOne({ comments: { $all: [req.body.post] } })
+//           .then(parentComment => {
+//             let commentIndex = parentComment.comments.indexOf(req.body.comment);
+//             parentComment.comments.splice(commentIndex, 1);
+//             parentComment.save();
+//             res.send('all done');
+//           })
+//           .catch(err => console.log(err))
+//         })
+//         .catch(err => res.send(err))
+//       } else {
+//         console.log('no match');
+//       }
+//       res.send('no match');
+//     })
+//     .catch(err => console.log(err));
+// })
+//
+// delete sub
+//
 // Get all posts
 router.get('/post', (req, res) => {
   Post.find().exec()

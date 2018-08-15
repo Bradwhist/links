@@ -89,6 +89,10 @@ class Sub extends Component {
   this.props.subscribe(subId, i);
 }
 
+  // deleteSub = (subId, i) => {
+  //   this.props.deleteSub(subId, i);
+  // }
+
   render() {
     console.log('rendering feed', this.props.posts);
     console.log('rendering feed auth', this.props.auth.logged._id);
@@ -126,10 +130,10 @@ class Sub extends Component {
               <Dropdown icon = "plus" pointing className='link item'>
                 <Dropdown.Menu>
                   <Dropdown.Header>Category</Dropdown.Header>
-                  <Dropdown.Item onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
+                  <Dropdown.Item onClick = {() => this.props.history.push('/createSub')}>Create a new category</Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Header>Post</Dropdown.Header>
-                  <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('./createPost')}>Create a new post</Dropdown.Item>
+                  <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('/createPost')}>Create a new post</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Menu.Menu>
@@ -175,7 +179,7 @@ class Sub extends Component {
                 {/* {ele.subscribed ?
                   <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
                   <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> } */}
-              </div>}
+                  </div>}
               )}
             </StackGrid>
           </div>
@@ -206,7 +210,8 @@ class Sub extends Component {
         fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
         upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
         downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
-        subscribe: (subId, i) => dispatch(subscribe(subId, i))
+        subscribe: (subId, i) => dispatch(subscribe(subId, i)),
+        // deleteSub: (subId, i) => dispatch(deleteSub(subId, i))
       };
     }
 
