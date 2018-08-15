@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_SUB,
+import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_POST_NONE, FETCH_SUB,
    LOGIN, SIGNUP, LOGOUT, SUBSCRIBE, SUBSCRIBE_FROM_SUB,
-   CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT,
+   CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT, DELETE_COMMENT,
     UPVOTE_POST, DOWNVOTE_POST, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
 
 
@@ -26,7 +26,7 @@ export const fetchUser = () => async dispatch => {
   //console.log(res);
   dispatch({ type: FETCH_USER, payload: res.data });
 } else {
-  dispatch({ type: FETCH_USER, payload: null });
+  dispatch({ type: FETCH_USER, payload: false });
 }
 };
 // Fetch Subs
@@ -52,7 +52,11 @@ export const fetchPost = (userId, postId) => async dispatch => {
   const res2 = await axios.get('http://localhost:8080/api/comment/byPost/' + postId, {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
+  if (res.data && res.data._id) {
   dispatch({ type: FETCH_POST, payload: { post: res.data, comments: res2.data, user: userId }});
+} else {
+  dispatch({ type: FETCH_POST_NONE, payload: false })
+}
 }
 // export const fetchCommentsFP = (postId) => async dispatch => {
 //   //console.log('in action fetchcommentsfp')
@@ -68,14 +72,18 @@ export const fetchSub = (subId, match) => async dispatch => {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
   console.log(res);
-  for (var i = 0; i < res.data.posts.length; i ++) {
-  postArr[i] = await axios.get('http://localhost:8080/api/post/byPost/' + res.data.posts[i], {
-    headers: { token: JSON.parse(localStorage.getItem('user')).token }
-  })
-  postArr[i] = postArr[i].data;
-  console.log(i, postArr[i]);
-}
-  dispatch({ type: FETCH_SUB, payload: { sub: res.data, posts: postArr, subscribed: match }});
+  if (res.data.posts) {
+    for (var i = 0; i < res.data.posts.length; i ++) {
+      postArr[i] = await axios.get('http://localhost:8080/api/post/byPost/' + res.data.posts[i], {
+        headers: { token: JSON.parse(localStorage.getItem('user')).token }
+      })
+      postArr[i] = postArr[i].data;
+      console.log(i, postArr[i]);
+    }
+    dispatch({ type: FETCH_SUB, payload: { sub: res.data, posts: postArr, subscribed: match }});
+  } else {
+    dispatch({ type: FETCH_SUB, payload: null })
+  }
 }
 //////////////////////////////////////////////////
 
@@ -129,7 +137,8 @@ export const createSub = (title, description, image) => async dispatch => {
     {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     });
-    dispatch({ type: CREATE_SUB, payload: res.data });
+    //dispatch({ type: CREATE_SUB, payload: res.data });
+    return res.data._id;
   }
   catch(err){console.log(err)}
 }
@@ -146,7 +155,8 @@ export const createPost = (title, content, image, sub) => async dispatch => {
     {
       headers: { token }
     });
-    dispatch({ type: CREATE_POST, payload: res.data });
+    //dispatch({ type: CREATE_POST, payload: res.data });
+    return res.data._id;
   }
   catch(err){console.log(err)}
 }
@@ -276,6 +286,54 @@ export const subscribeFromSub = (subId) => dispatch => {
       headers: {token: JSON.parse(localStorage.getItem('user')).token }
     });
     dispatch({ type: SUBSCRIBE_FROM_SUB, payload: null })
+  }
+  catch(err){console.log(err)}
+}
+// DELETE Actions
+export const deletePost = (postId) => async dispatch => {
+  try {
+    const res = await axios.post('http://localhost:8080/api/delete/post', {
+      post: postId
+    }, {
+      headers: {token: JSON.parse(localStorage.getItem('user')).token }
+    });
+    console.log('after delete', postId);
+    return res;
+  }
+  catch(err){console.log(err)}
+}
+
+export const deleteComment = (commentId, i) => dispatch => {
+  try {
+    axios.post('http://localhost:8080/api/delete/comment', {
+      comment: commentId
+    }, {
+      headers: { token: JSON.parse(localStorage.getItem('user')).token }
+    });
+    dispatch({ type: DELETE_COMMENT, payload: i })
+  }
+  catch(err){console.log(err)}
+}
+
+export const deleteRootComment = (commentId, i) => dispatch => {
+  try {
+    axios.post('http://localhost:8080/api/delete/rootComment', {
+      comment: commentId
+    }, {
+      headers: { token: JSON.parse(localStorage.getItem('user')).token }
+    });
+    dispatch({ type: DELETE_COMMENT, payload: i })
+  }
+  catch(err){console.log(err)}
+}
+
+export const deleteSub = (subId, i) => dispatch => {
+  try {
+    axios.post('http://localhost:8080/api/delete/sub', {
+      sub: subId
+    }, {
+      headers: {token: JSON.parse(localStorage.getItem('user')).token }
+    });
   }
   catch(err){console.log(err)}
 }

@@ -104,10 +104,10 @@ class CreatePost extends Component {
   logout = () => {
     this.props.logout();
   }
-  createPost = (e) => {
+  createPost = async (e) => {
     e.preventDefault();
-    this.props.createPost(this.state.title, this.state.content, this.state.image, this.state.sub);
-    console.log(this.state.title, this.state.content, this.state.image, this.state.sub)
+    const res = await this.props.createPost(this.state.title, this.state.content, this.state.image, this.state.sub);
+    this.props.history.push('/post/' + res);
   }
   goProfile = () => {
     this.props.history.push('/feed')

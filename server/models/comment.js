@@ -9,7 +9,6 @@ const CommentSchema = new mongoose.Schema({
     name: String,
     id: {
       type: ObjectId,
-      required: true,
       ref: "users"
     }
   },
@@ -55,6 +54,10 @@ const CommentSchema = new mongoose.Schema({
       type: ObjectId,
       ref: "posts"
     },
+    deleted: {
+      type: Boolean,
+      default: false,
+    }
 });
 
 module.exports = mongoose.model('Comment', CommentSchema);

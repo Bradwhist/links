@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid"
-import { logout, createComment, createRootComment, fetchPost, upvoteComment, downvoteComment } from '../actions'
+import { logout, createComment, createRootComment, fetchPost, upvoteComment, downvoteComment, deletePost, deleteComment, deleteRootComment } from '../actions'
 import {
   Button,
   Comment,
@@ -140,6 +140,24 @@ class Post extends Component {
     let renderComment = this.props.post.comments[renderIndex];
     return this.renderReplies(renderComment.comments);
   }
+  //
+  setNavigation = (commentId) => {
+    this.setState({ navigation: commentId })
+  }
+  //
+  deletePost = async (postId) => {
+    try {
+    const res = await this.props.deletePost(postId);
+  }
+  catch(err){console.log(err)}
+  this.props.history.push('/sub/' + this.props.post.post.sub.id)
+  }
+  deleteRootComment = (commentId, i) => {
+    this.props.deleteRootComment(commentId, i);
+  }
+  deleteComment = (commentId, i) => {
+    this.props.deleteComment(commentId, i);
+  }
   // renderReplies is recursive function providing JSX for rendering comment tree
   renderReplies = (comments) => {
     let _this = this;
@@ -152,7 +170,7 @@ class Post extends Component {
       }
       let currentIndex = this.props.post.comments.findIndex(checkIndex);
       let currentComment = this.props.post.comments[currentIndex];
-
+      currentComment.index = currentIndex;
       sortedComments.push(currentComment);                           // adds new comment to array
     }
     sortedComments.sort((a, b) => a.score < b.score);                 //sorts array of comments by score
@@ -174,15 +192,18 @@ class Post extends Component {
                     {this.showReplies(ele._id) ? <div>
                       <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
                       <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.deleteComment(ele._id, ele.index)}>Delete Comment</Comment.Action>
                       <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
                       <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>Hide replies</Comment.Action></div> :
                     ele.comments.length === 0 ? <div>
                       <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
                       <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.deleteComment(ele._id, ele.index)}>Delete Comment</Comment.Action>
                       <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action></div>:
                     ele.comments.length === 1 ? <div>
                       <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
                       <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.deleteComment(ele._id, ele.index)}>Delete Comment</Comment.Action>
                       <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
                       <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} reply</Comment.Action></div>:
                       <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} replies</Comment.Action> }
@@ -249,6 +270,7 @@ class Post extends Component {
       console.log('SD;FJKASF', this.props.post.comments)
       return (
         <div>
+          <button onClick = {() => this.deletePost(this.props.match.params.id)}>Delete Post</button>
           <Menu pointing inverted>
             <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
             <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
@@ -293,7 +315,7 @@ class Post extends Component {
                 </Dropdown>
               </Menu.Menu>
             </Menu>
-
+            {this.props.post ?
             <Container>
               <Grid centered columns = {2}>
                 <Grid.Column>
@@ -328,20 +350,24 @@ class Post extends Component {
                                 {this.showReplies(ele._id) ? <div>
                                   <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
                                   <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action>
                                   <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
                                   <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>Hide replies</Comment.Action></div> :
                                 ele.comments.length === 0 ? <div>
                                   <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
                                   <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action>
                                   <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action> </div> :
                                 ele.comments.length === 1 ?  <div>
                                   <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
                                   <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action>
                                   <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
                                   <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} reply</Comment.Action> </div> :
                                 <div>
                                   <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
                                   <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action>
                                   <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
                                   <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} replies</Comment.Action> </div>}
                                 {this.state.replying === ele._id ?
@@ -372,6 +398,7 @@ class Post extends Component {
                 </Grid.Row>
               </Grid>
             </Container>
+          : <div> This post does not exist </div> }
             {/*this.props.post.comments.length > 0 ?
               <ul>{this.renderCommentBlock('5b736da262b180559cb157b0')}</ul> :
               null
@@ -391,6 +418,9 @@ class Post extends Component {
         post: PropTypes.obj,
         upvoteComment: PropTypes.func,
         downvoteComment: PropTypes.func,
+        deletePost: PropTypes.func,
+        deleteComment: PropTypes.func,
+        deleteRootComment: PropTypes.func,
       };
 
       const mapStateToProps = ({ auth, post, comments }) => {
@@ -407,7 +437,10 @@ class Post extends Component {
           createComment: (content, commentId) => dispatch(createComment(content, commentId)),
           fetchPost: (userId, postId) => dispatch(fetchPost(userId, postId)),
           upvoteComment: (commentId, index) => dispatch(upvoteComment(commentId, index)),
-          downvoteComment: (commentId, index) => dispatch(downvoteComment(commentId, index))
+          downvoteComment: (commentId, index) => dispatch(downvoteComment(commentId, index)),
+          deletePost: (postId) => dispatch(deletePost(postId)),
+          deleteRootComment: (commentId, i) => dispatch(deleteRootComment(commentId, i)),
+          deleteComment: (commentId, i) => dispatch(deleteComment(commentId, i)),
         };
       }
 

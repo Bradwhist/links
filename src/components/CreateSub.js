@@ -89,9 +89,10 @@ class CreateSub extends Component {
       image: e.target.value
     })
   }
-  createSub = (e) => {
+  createSub = async (e) => {
     e.preventDefault();
-    this.props.createSub(this.state.title,  this.state.description, this.state.image);
+    const res = await this.props.createSub(this.state.title,  this.state.description, this.state.image);
+    this.props.history.push('/sub/' + res);
   }
 
   setInput = (value) => {
