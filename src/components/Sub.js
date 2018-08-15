@@ -88,6 +88,7 @@ class Sub extends Component {
     //   this.props.posts.map((ele, i) => {StackGridContent = StackGridContent + '<div key="key' + (i + 1) + '">Meow</div>'})
     // }
     //   console.log(StackGridContent);
+    console.log('subs', this.props.sub.posts)
     const { activeItem } = this.state;
      return (
        <div>
