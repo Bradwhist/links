@@ -161,7 +161,7 @@ body {
 
 /* make the overlay appear on hover */
 .imgBox:hover .overlay {
-  opacity: 0.5;
+  opacity: 0.75;
 }
 
 /* make the like button appear on hover */
@@ -202,3 +202,36 @@ body {
 /* .thumbs:hover {
   font-size: 150%;
 } */
+
+
+/* SUBS COMPONENT */
+.followBtn {
+  position: absolute;
+   right: 0;
+   top: 25px;
+   transform: translate(-50%, -50%);
+   -ms-transform: translate(-50%, -50%);
+   border: none;
+   cursor: pointer;
+   opacity: 0;
+   transition: opacity .2s;
+   border-radius: 5px;
+}
+
+.imgTitleBoxForSub {
+  position: absolute;
+  top: 40%;
+  bottom: 60%;
+  left: 0;
+  right: 0;
+  opacity: 0;
+}
+
+/* make the follow button appear on hover */
+.imgBox:hover .followBtn {
+  opacity: 1;
+}
+
+.imgBox:hover .imgTitleBoxForSub {
+  opacity: 1;
+}

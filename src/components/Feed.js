@@ -45,8 +45,25 @@ import {
      if (name === 'home') {
        this.props.history.push('/feed');
      }
-     else {
-       this.props.history.push('/' + name);
+     else if (name === 'allSubs'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/allSubs');
+     }
+     else if (name === 'allPosts'){
+       this.setState({ activeItem: name })
+       this.props.history.push('/allPosts');
+     }
+     else if (name === 'following'){
+       this.props.history.push('/following');
+     }
+     else if (name === 'profile'){
+       this.props.history.push('/profile');
+     }
+     else if (name === 'createSub'){
+       this.props.history.push('/createSub');
+     }
+     else if (name === 'createPost'){
+       this.props.history.push('/createPost');
      }
      //this.props.logout();
    }
@@ -96,15 +113,28 @@ import {
             active={activeItem === 'home'}
             color='teal'
             onClick={this.handleItemClick} />
+            <Menu.Menu position='right'>
+            <Dropdown text = "Explore" pointing className='link item'>
+              <Dropdown.Menu>
+                <Dropdown.Header>Subs</Dropdown.Header>
+                <Dropdown.Item
+                  active = {activeItem === 'allSubs'}
+                  onClick = {() => this.props.history.push('./allSubs')}>
+                  All Subs
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Header>Posts</Dropdown.Header>
+                <Dropdown.Item
+                  active = {activeItem === 'allPosts'}
+                  onClick = {() => this.props.history.push('./allPosts')}>
+                  All Posts
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            </Menu.Menu>
           <Menu.Item
-            name='explore'
-            active={activeItem === 'explore'}
-            color='teal'
-            onClick={this.handleItemClick}
-          />
-          <Menu.Item
-            name='subs'
-            active={activeItem === 'subs'}
+            name='following'
+            active={activeItem === 'following'}
             color='teal'
             onClick={this.handleItemClick}
           />

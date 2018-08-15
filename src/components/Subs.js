@@ -16,6 +16,7 @@ import {
   Input,
   List,
   Menu,
+  Popup,
   Responsive,
   Segment,
   Sidebar,
@@ -30,7 +31,7 @@ class Sub extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeItem: 'subs',
+      activeItem: 'following',
     };
   }
 
@@ -39,13 +40,17 @@ class Sub extends Component {
       this.setState({ activeItem: name })
       this.props.history.push('/feed');
     }
-    else if (name === 'explore'){
+    else if (name === 'allSubs'){
       this.setState({ activeItem: name })
-      this.props.history.push('/explore');
+      this.props.history.push('/allSubs');
     }
-    else if (name === 'subs'){
+    else if (name === 'allPosts'){
       this.setState({ activeItem: name })
-      this.props.history.push('/subs');
+      this.props.history.push('/allPosts');
+    }
+    else if (name === 'following'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/following');
     }
     else if (name === 'profile'){
       this.setState({ activeItem: name })
@@ -87,11 +92,7 @@ class Sub extends Component {
 
   subscribe = (subId, i) => {
   this.props.subscribe(subId, i);
-}
-
-  // deleteSub = (subId, i) => {
-  //   this.props.deleteSub(subId, i);
-  // }
+  }
 
   render() {
     console.log('rendering feed', this.props.posts);
@@ -108,15 +109,34 @@ class Sub extends Component {
             active={activeItem === 'home'}
             color='teal'
             onClick={this.handleItemClick} />
-            <Menu.Item
+            <Menu.Menu position='right'>
+            <Dropdown text = "Explore" pointing className='link item'>
+              <Dropdown.Menu>
+                <Dropdown.Header>Subs</Dropdown.Header>
+                <Dropdown.Item
+                  active = {activeItem === 'allSubs'}
+                  onClick = {() => this.props.history.push('./allSubs')}>
+                  All Subs
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Header>Posts</Dropdown.Header>
+                <Dropdown.Item
+                  active = {activeItem === 'allPosts'}
+                  onClick = {() => this.props.history.push('./allPosts')}>
+                  All Posts
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            </Menu.Menu>
+            {/* <Menu.Item
               name='explore'
               active={activeItem === 'explore'}
               color='teal'
               onClick={this.handleItemClick}
-            />
+            /> */}
             <Menu.Item
-              name='subs'
-              active={activeItem === 'subs'}
+              name='following'
+              active={activeItem === 'following'}
               color='teal'
               onClick={this.handleItemClick}
             />
@@ -130,10 +150,10 @@ class Sub extends Component {
               <Dropdown icon = "plus" pointing className='link item'>
                 <Dropdown.Menu>
                   <Dropdown.Header>Category</Dropdown.Header>
-                  <Dropdown.Item onClick = {() => this.props.history.push('/createSub')}>Create a new category</Dropdown.Item>
+                  <Dropdown.Item active = {activeItem === 'createSub'} onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Header>Post</Dropdown.Header>
-                  <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('/createPost')}>Create a new post</Dropdown.Item>
+                  <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('./createPost')}>Create a new post</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Menu.Menu>
@@ -156,30 +176,31 @@ class Sub extends Component {
             >
               {this.props.subs.map((ele, i) => {
                 return <div className = "imgBox" key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
-                  <img src = {ele.image} alt = "pic4" className = "img"/>
+                  <img src = {ele.image} alt = {"pic" + i} className = "img"/>
                   <div class = "overlay"></div>
-                  <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
-                  <div className = 'likeBtn'>
+                  <div className = "imgTitleBoxForSub"><h1 className = "imgTitle">{ele.title}</h1></div>
+                  <Popup trigger={
                     <Button
-                      icon = 'thumbs up outline'
-                      color = "teal"
-                      label={{ as: 'a', basic: true, content: '2,048' }}
-                      labelPosition='right'
-                    />
-                  </div>
-                  <div className = 'dislikeBtn'>
+                    className = "followBtn"
+                    icon = 'minus'
+                    color="teal"
+                  />}
+                    content = "Press here to unfollow this sub!"
+                    inverted />
+
+                  {/* <div className = 'dislikeBtn'>
                     <Button
                       icon = 'thumbs down outline'
                       color = "teal"
                       label={{ as: 'a', basic: true, content: '2,048' }}
                       labelPosition='right'
                     />
-                  </div>
+                  </div> */}
                 {/* </div> */}
                 {/* {ele.subscribed ?
                   <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
                   <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> } */}
-                  </div>}
+              </div>}
               )}
             </StackGrid>
           </div>
@@ -210,8 +231,7 @@ class Sub extends Component {
         fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
         upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
         downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
-        subscribe: (subId, i) => dispatch(subscribe(subId, i)),
-        // deleteSub: (subId, i) => dispatch(deleteSub(subId, i))
+        subscribe: (subId, i) => dispatch(subscribe(subId, i))
       };
     }
 
