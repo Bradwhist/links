@@ -40,8 +40,25 @@ class Sub extends Component {
     if (name === 'home') {
       this.props.history.push('/feed');
     }
-    else {
-      this.props.history.push('/' + name);
+    else if (name === 'explore'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/explore');
+    }
+    else if (name === 'following'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/following');
+    }
+    else if (name === 'profile'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/profile');
+    }
+    else if (name === 'createSub'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/createSub');
+    }
+    else if (name === 'createPost'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/createPost');
     }
     //this.props.logout();
   }
@@ -100,15 +117,28 @@ class Sub extends Component {
              active={activeItem === 'home'}
              color='teal'
              onClick={this.handleItemClick} />
+             <Menu.Menu position='right'>
+             <Dropdown text = "Explore" pointing className='link item'>
+               <Dropdown.Menu>
+                 <Dropdown.Header>Subs</Dropdown.Header>
+                 <Dropdown.Item
+                   active = {activeItem === 'allSubs'}
+                   onClick = {() => this.props.history.push('./allSubs')}>
+                   All Subs
+                 </Dropdown.Item>
+                 <Dropdown.Divider />
+                 <Dropdown.Header>Posts</Dropdown.Header>
+                 <Dropdown.Item
+                   active = {activeItem === 'allPosts'}
+                   onClick = {() => this.props.history.push('./allPosts')}>
+                   All Posts
+                 </Dropdown.Item>
+               </Dropdown.Menu>
+             </Dropdown>
+             </Menu.Menu>
            <Menu.Item
-             name='explore'
-             active={activeItem === 'explore'}
-             color='teal'
-             onClick={this.handleItemClick}
-           />
-           <Menu.Item
-             name='subs'
-             active={activeItem === 'subs'}
+             name='following'
+             active={activeItem === 'following'}
              color='teal'
              onClick={this.handleItemClick}
            />
@@ -145,12 +175,31 @@ class Sub extends Component {
          </Menu>
          { !!this.props.sub ?
        <StackGrid
-         columnWidth={150}
+         columnWidth={300}
          >
            {this.props.sub.posts.map((ele, i) => {
-             return <div className = "imgBox" key={i + 1}><img className = "img" src = {ele.image} alt = {"pic" + i + 1}/>
-               <h1>{ele.score}</h1>
-               <Button className = "subBtn" icon color = "teal" onClick={() => this.upvotePostFromSub(ele._id, i)}>
+             return <div className = "imgBox" key={i}>
+               <img className = "img" src = {ele.image} alt = {"pic" + i}/>
+               <div class = "overlay"></div>
+               <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+               <div className = 'likeBtn'>
+                 <Button
+                   icon = 'thumbs up outline'
+                   color = "teal"
+                   label={{ as: 'a', basic: true, content: '2,048' }}
+                   labelPosition='right'
+                 />
+               </div>
+               <div className = 'dislikeBtn'>
+                 <Button
+                   icon = 'thumbs down outline'
+                   color = "teal"
+                   label={{ as: 'a', basic: true, content: '2,048' }}
+                   labelPosition='right'
+                 />
+               </div>
+               {/* <h1>{ele.score}</h1> */}
+               {/* <Button className = "subBtn" icon color = "teal" onClick={() => this.upvotePostFromSub(ele._id, i)}>
                  <Icon name='thumbs up outline' />
                </Button>
                <Button className = "subBtn" icon basic color = "teal" onClick={() => this.downvotePostFromSub(ele._id, i)}>
@@ -161,7 +210,7 @@ class Sub extends Component {
                  <Button.Content visible>
                    Open Post
                  </Button.Content>
-               </Button>
+               </Button> */}
              </div>}
            )}
          </StackGrid>
@@ -170,12 +219,12 @@ class Sub extends Component {
          {/* <button onClick={this.logout}>Logout</button>
          <button onClick={this.createSub}>Create a new category</button>
          <button onClick={this.createPost}>Create a new post</button> */}
-         { this.props.sub ?
+         {/* { this.props.sub ?
            <div>{this.props.sub.subscribed ?
              <button onClick = {this.subscribeFromSub}>Unsubscribe</button> :
              <button onClick = {this.subscribeFromSub}>Subscribe</button>
           }</div>
-         : null }
+         : null } */}
         </div>
        </div>
      )
