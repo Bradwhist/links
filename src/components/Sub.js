@@ -219,13 +219,13 @@ class Sub extends Component {
          {/* <button onClick={this.logout}>Logout</button>
          <button onClick={this.createSub}>Create a new category</button>
          <button onClick={this.createPost}>Create a new post</button> */}
+         {/* { this.props.sub ?
+           <div>{this.props.sub.subscribed ?
+             <button onClick = {this.subscribeFromSub}>Unsubscribe</button> :
+             <button onClick = {this.subscribeFromSub}>Subscribe</button>
+          }</div>
+         : null } */}
         </div>
-        { this.props.sub ?
-          <div>{this.props.sub.subscribed ?
-            <button onClick = {this.subscribeFromSub}>Unsubscribe</button> :
-            <button onClick = {this.subscribeFromSub}>Subscribe</button>
-         }</div>
-        : null }
        </div>
      )
    }

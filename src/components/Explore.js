@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchPosts, upvotePost, downvotePost, setInput, fetchSubs } from '../actions'
+import { logout, fetchPosts, upvotePost, downvotePost, setInput, fetchSubs, subscribe } from '../actions'
 import {
   Button,
   Container,
@@ -167,14 +167,28 @@ class Explore extends Component {
                 <img src = {ele.image} alt = {"pic" + i} className = "img"/>
                 <div class = "overlay"></div>
                 <div className = "imgTitleBoxForSub"><h1 className = "imgTitle">{ele.title}</h1></div>
-                <Popup trigger={
-                  <Button
-                    className = "followBtn"
-                    icon = 'plus'
-                    color="teal"
-                  />}
-                  content = "Press here to follow this sub!"
-                  inverted />
+                { this.props.sub ?
+                  this.props.sub.subscribed ?
+                    <Popup trigger={
+                      <Button
+                        className = "followBtn"
+                        icon = 'minus'
+                        color="teal"
+                        onClick = {this.subscribe}
+                      />}
+                      content = "Press here to unfollow this sub!"
+                      inverted /> :
+                    <Popup trigger={
+                      <Button
+                        className = "followBtn"
+                        icon = 'plus'
+                        color="teal"
+                        onClick = {this.subscribe}
+                      />}
+                      content = "Press here to follow this sub!"
+                      inverted />
+
+                : null }
 
                   {/* <div className = 'dislikeBtn'>
                   <Button
@@ -223,10 +237,11 @@ class Explore extends Component {
 //   posts: PropTypes.array,
 // };
 
-const mapStateToProps = ({auth, subs}) => {
+const mapStateToProps = ({auth, subs, sub}) => {
   return {
     auth,
-    subs
+    subs,
+    sub
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -237,6 +252,7 @@ const mapDispatchToProps = (dispatch) => {
     downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
     setInput: (value) => dispatch(setInput(value)),
     fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
+    subscribe: (subId, i) => dispatch(subscribe(subId, i))
   };
 }
 
