@@ -74,7 +74,7 @@ class Explore extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchSubs(this.props.auth.logged.subscriptions);
+    this.props.fetchSubs();
   }
 
   upvotePost = (postId, index) => {
@@ -260,7 +260,7 @@ const mapDispatchToProps = (dispatch) => {
     upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
     downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
     setInput: (value) => dispatch(setInput(value)),
-    fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
+    fetchSubs: () => dispatch(fetchSubs()),
     subscribe: (subId, i) => dispatch(subscribe(subId, i))
   };
 }

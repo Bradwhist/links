@@ -75,7 +75,7 @@ class Sub extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchSubs(this.props.auth.logged.subscriptions);
+    this.props.fetchSubs();
   }
 
   upvotePost = (postId, index) => {
@@ -97,7 +97,7 @@ class Sub extends Component {
 
   render() {
     const { activeItem } = this.state;
-
+    console.log(this.props.subs);
     return (
       <div>
         <Menu pointing inverted>
@@ -233,7 +233,7 @@ class Sub extends Component {
     const mapDispatchToProps = (dispatch) => {
       return {
         logout: () => dispatch(logout()),
-        fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
+        fetchSubs: () => dispatch(fetchSubs()),
         upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
         downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
         subscribe: (subId, i) => dispatch(subscribe(subId, i))
