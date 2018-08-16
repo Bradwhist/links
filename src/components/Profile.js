@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
-import { logout, createSub, createPost, fetchSubs, setInput } from '../actions'
+import { logout, createSub, createPost, fetchSubs, setInput, fetchProfile } from '../actions'
 import {
   Button,
   Card,
@@ -31,6 +31,10 @@ import {
        activeItem: 'profile',
        secondActiveItem: 'bio'
      }
+   }
+
+   componentDidMount() {
+     this.props.fetchProfile();
    }
 
    handleItemClick = (e, { name }) => {
@@ -62,10 +66,18 @@ import {
        this.setState({ secondActiveItem: name })
        this.props.history.push('/profile');
      }
+     else if (name === 'subscriptions'){
+       console.log('subscriptions', name)
+       this.setState({ secondActiveItem: name })
+     }
      else if (name === 'posts'){
        console.log('posts', name)
        this.setState({ secondActiveItem: name })
        // this.props.history.push('/profile/' + name);
+     }
+     else if (name === 'comments'){
+       console.log('comments', name)
+       this.setState({ secondActiveItem: name })
      }
      else if (name === 'activity'){
        console.log('activity', name)
@@ -82,7 +94,15 @@ import {
    setInput = (value) => {
      this.props.setInput(value);
    }
-
+   goToSub = (subId) => {
+     this.props.history.push('/sub/' + subId);
+   }
+   goToPost = (postId) => {
+     this.props.history.push('/post/' + postId);
+   }
+   goToComment = (commentId, postId) => {
+     this.props.history.push('/post/' + postId + '/' + commentId);
+   }
   //  goProfile = () => {
   //   this.props.history.push('/feed')
   // }
@@ -107,6 +127,7 @@ import {
   // }
 
    render() {
+     console.log(this.props.profile)
     const { activeItem } = this.state;
     const { secondActiveItem } = this.state;
     const extra = (
@@ -184,9 +205,19 @@ import {
                    active={secondActiveItem === 'bio'}
                    color='teal'
                    onClick={this.handleItemClick} />
+                   <Menu.Item
+                     name='subscriptions'
+                     active={secondActiveItem === 'subscriptions'}
+                     color='teal'
+                     onClick={this.handleItemClick} />
                  <Menu.Item
                    name='posts'
                    active={secondActiveItem === 'posts'}
+                   color='teal'
+                   onClick={this.handleItemClick} />
+                 <Menu.Item
+                   name='comments'
+                   active={secondActiveItem === 'comments'}
                    color='teal'
                    onClick={this.handleItemClick} />
                  <Menu.Item
@@ -202,7 +233,21 @@ import {
                {/* Put a ternary in here to render content depending on what the state is */}
                <Segment>
                  {this.state.secondActiveItem === 'bio' ? <p> This is the bio </p> : null}
-                 {this.state.secondActiveItem === 'posts' ? <p> This is the posts </p> : null}
+                 {this.state.secondActiveItem === 'subscriptions' ?
+                 <ul> { this.props.profile.subscriptions.map((ele, i) => {
+                   return <li onClick={() => this.goToSub(ele._id)}>{ele.title}</li>;
+                 })}</ul>
+                 : null}
+                 {this.state.secondActiveItem === 'posts' ?
+                 <ul> { this.props.profile.posts.map((ele, i) => {
+                   return <li onClick={() => this.goToPost(ele._id)}>{ele.title}</li>;
+                 })}</ul>
+                 : null}
+                 {this.state.secondActiveItem === 'comments' ?
+                 <ul> { this.props.profile.comments.map((ele, i) => {
+                   return <li onClick={() => this.goToComment(ele._id, ele.ancestor)}>{ele.content}</li>;
+                 })}</ul>
+                 : null}
                  {this.state.secondActiveItem === 'activity' ? <p> This is the activity </p> : null}
                </Segment>
              </Grid.Column>
@@ -225,9 +270,10 @@ Profile.propTypes = {
   logout: PropTypes.func,
 };
 
-const mapStateToProps = ({auth}) => {
+const mapStateToProps = ({auth, profile}) => {
   return {
     auth,
+    profile
   }
 }
 
@@ -235,7 +281,8 @@ const mapStateToProps = ({auth}) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
-    setInput: (value) => dispatch(setInput(value))
+    setInput: (value) => dispatch(setInput(value)),
+    fetchProfile: () => dispatch(fetchProfile()),
   };
 }
 

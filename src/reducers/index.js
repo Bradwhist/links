@@ -7,6 +7,7 @@ import subReducer from './subReducer'
 import postsReducer from './postsReducer'
 import postReducer from './postReducer'
 import commentsReducer from './commentsReducer'
+import profileReducer from './profileReducer'
 
 export default createStore(
   combineReducers({
@@ -16,7 +17,8 @@ export default createStore(
     sub: subReducer,
     posts: postsReducer,
     post: postReducer,
-    comments: commentsReducer
+    comments: commentsReducer,
+    profile: profileReducer,
   }),
   applyMiddleware(
     ReduxThunk

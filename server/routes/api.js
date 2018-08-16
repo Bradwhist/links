@@ -452,6 +452,20 @@ router.get('/post/byPost/:post', (req, res) => {
   .catch(err => res.send(err))
 })
 //
+//Get posts by self
+router.get('/post/bySelf', (req, res) => {
+  Post.find({ "author.id": res.locals.user.id }).exec()
+  .then(posts => res.json(posts))
+  .catch(err => res.send(err))
+})
+//
+// Get comments by bySelf
+router.get('/comment/bySelf', (req, res) => {
+  Comment.find({ "author.id": res.locals.user.id }).exec()
+  .then(comments => res.json(comments))
+  .catch(err => res.send(err))
+})
+//
 router.post('/post/edit/', (req, res) => {
   Post.findById(req.body.id).exec()
   .then(post => {
@@ -479,6 +493,17 @@ router.get('/sub/bySub/:subId', (req, res) => {
   Sub.findById(req.params.subId)
   .then(sub => res.json(sub))
   .catch(err => res.send(err))
+})
+//
+// get subs by self
+router.get('/sub/bySelf', (req, res) => {
+  User.findById(res.locals.user.id)
+  .then(user => {
+    Sub.find({ _id: { $in: user.subscriptions } })
+    .then(subs => res.json(subs))
+    .catch(err => console.log(err))
+  })
+  .catch(err => console.log(err))
 })
 //
 // Test logged inspect

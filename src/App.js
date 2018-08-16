@@ -38,7 +38,7 @@ class App extends Component {
         <Route exact path = '/feed' component={Feed} />
         <Route exact path = '/explore' component={Explore} />
         <Route exact path = '/profile' component= {Profile} />
-        <Route exact path = '/post/:id' render={(props) => <Post {...props} /> } />
+        <Route exact path = '/post/:id/:commentId?' render={(props) => <Post {...props} /> } />
         <Route exact path = '/createSub' component={CreateSub} />
         <Route exact path = '/createPost' component={CreatePost} />
         <Route exact path = '/subs' component={Subs} />

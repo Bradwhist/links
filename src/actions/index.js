@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_POST_NONE, FETCH_SUB,
+import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_POST_NONE, FETCH_SUB, FETCH_PROFILE,
    LOGIN, SIGNUP, LOGOUT, SUBSCRIBE, SUBSCRIBE_FROM_SUB,
    CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT, DELETE_COMMENT,
     UPVOTE_POST, DOWNVOTE_POST, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
@@ -54,9 +54,11 @@ export const fetchPost = (userId, postId) => async dispatch => {
   })
   if (res.data && res.data._id) {
   dispatch({ type: FETCH_POST, payload: { post: res.data, comments: res2.data, user: userId }});
+
 } else {
   dispatch({ type: FETCH_POST_NONE, payload: false })
 }
+return true;
 }
 // export const fetchCommentsFP = (postId) => async dispatch => {
 //   //console.log('in action fetchcommentsfp')
@@ -84,6 +86,20 @@ export const fetchSub = (subId, match) => async dispatch => {
   } else {
     dispatch({ type: FETCH_SUB, payload: null })
   }
+}
+// fetch profile
+export const fetchProfile = () => async dispatch => {
+  const resSubs = await axios.get('http://localhost:8080/api/sub/bySelf', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  })
+  const resPosts = await axios.get('http://localhost:8080/api/post/bySelf', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  })
+  const resComments = await axios.get('http://localhost:8080/api/comment/bySelf', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  })
+  console.log('XXXX Subs: ', resSubs, 'XXXXX Posts: ', resPosts, 'XXXXX Comments: ', resComments);
+  dispatch({ type: FETCH_PROFILE, payload: { subscriptions: resSubs.data, posts: resPosts.data, comments: resComments.data }})
 }
 //////////////////////////////////////////////////
 
