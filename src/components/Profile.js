@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
+import StackGrid from "react-stack-grid"
 import { logout, createSub, createPost, fetchSubs, setInput, fetchProfile } from '../actions'
 import {
   Button,
@@ -74,13 +75,13 @@ import {
        console.log('subscriptions', name)
        this.setState({ secondActiveItem: name })
      }
-     else if (name === 'posts'){
+     else if (name === 'my posts'){
        console.log('posts', name)
        this.setState({ secondActiveItem: name })
        // this.props.history.push('/profile/' + name);
      }
-     else if (name === 'comments'){
-       console.log('comments', name)
+     else if (name === 'comment history'){
+       console.log('comment history', name)
        this.setState({ secondActiveItem: name })
      }
      else if (name === 'activity'){
@@ -228,13 +229,13 @@ import {
                      color='teal'
                      onClick={this.handleItemClick} />
                  <Menu.Item
-                   name='posts'
-                   active={secondActiveItem === 'posts'}
+                   name='my posts'
+                   active={secondActiveItem === 'my posts'}
                    color='teal'
                    onClick={this.handleItemClick} />
                  <Menu.Item
-                   name='comments'
-                   active={secondActiveItem === 'comments'}
+                   name='comment history'
+                   active={secondActiveItem === 'comment history'}
                    color='teal'
                    onClick={this.handleItemClick} />
                  <Menu.Item
@@ -255,16 +256,45 @@ import {
                    return <li onClick={() => this.goToSub(ele._id)}>{ele.title}</li>;
                  })}</ul>
                  : null}
-                 {this.state.secondActiveItem === 'posts' ?
-                 <ul> { this.props.profile.posts.map((ele, i) => {
-                   return <li onClick={() => this.goToPost(ele._id)}>{ele.title}</li>;
-                 })}</ul>
-                 : null}
-                 {this.state.secondActiveItem === 'comments' ?
-                 <ul> { this.props.profile.comments.map((ele, i) => {
-                   return <li onClick={() => this.goToComment(ele._id, ele.ancestor)}>{ele.content}</li>;
-                 })}</ul>
-                 : null}
+                 {this.state.secondActiveItem === 'my posts' ?
+                 this.props.profile.posts.length > 0 ?
+                 <StackGrid
+                   columnWidth={150}
+                   > {this.props.profile.posts.map((ele, i) => {
+                   return <div className = "imgBox" key={i}>
+                     <img className = "img" src = {ele.image} alt = {"pic" + i}/>
+                     <div class = "overlay"></div>
+                     <div onClick = { () => this.goToPost(ele._id) } className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+                   </div>
+                 })}</StackGrid>
+                 : <Header as='h2'>
+                   You have no posts right now.
+                   <Header.Subheader>Create a post in the menu bar above</Header.Subheader>
+                 </Header> : null}
+                 {this.state.secondActiveItem === 'comment history' ?
+                 this.props.profile.comments.length > 0 ?
+                 <List>
+                     {this.props.profile.comments.map((ele, i) => {
+                      return <List.Item as='a'>
+                        <Icon name='file alternate outline' />
+                        <List.Content>
+                          <List.Header>{ele.postTitle}</List.Header>
+                          <List.Description onClick={() => this.goToComment(ele._id, ele.ancestor)}>{ele.content}</List.Description>
+                        </List.Content>
+                        <Divider />
+                      </List.Item>
+                    })}
+
+                </List>
+
+               //    <ul> { this.props.profile.comments.map((ele, i) => {
+               //     return <li onClick={() => this.goToComment(ele._id, ele.ancestor)}>{ele.content}</li>;
+               //   })}
+               // </ul>
+                 : <Header as='h2'>
+                   You have no comments right now.
+                   <Header.Subheader>Create a comment on a post to see your history!</Header.Subheader>
+                 </Header> : null}
                  {this.state.secondActiveItem === 'activity' ? <p> This is the activity </p> : null}
                </Segment>
              </Grid.Column>
@@ -273,7 +303,7 @@ import {
                  image='https://www.w3schools.com/howto/img_avatar.png'
                  header='Daniel Ko'
                  meta='Friend'
-                 description='Daniel is a software engineer living in NYC who enjoys to smoke weed.'
+                 description='Daniel is a software engineer living in NYC who loves to chill.'
                  extra={extra}
                />
              </Grid.Column>

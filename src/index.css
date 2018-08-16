@@ -240,12 +240,12 @@ body {
   color: teal;
 }
 
-.makeBigger {
+/* .makeBigger {
   animation-name: bigger;
   animation-duration: 0.5s;
-}
+} */
 
-@keyframes bigger {
+/* @keyframes bigger {
   0% {
     font-size: 5px;
   }
@@ -261,4 +261,9 @@ body {
   100% {
     font-size: 5px;
   }
+} */
+
+.deleteEllipsis {
+  position: absolute;
+  right: 0;
 }

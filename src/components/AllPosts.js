@@ -31,7 +31,7 @@ import {
    constructor(props){
      super(props);
      this.state = {
-       activeItem: 'home',
+       activeItem: 'allPosts',
        sortParam: '',
        sortOrder: true,
      }
@@ -125,9 +125,9 @@ import {
      //console.log('rendering feed auth', this.props.auth.logged._id);
      return (
        <div>
-       <Menu style = {{fontSize: 12 }} compact>
+       {/* <Menu style = {{fontSize: 12 }} compact>
          <Dropdown text='Sort' options={options} simple item />
-       </Menu>
+       </Menu> */}
         <Menu pointing inverted>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
           <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
