@@ -6,14 +6,14 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Feed from './components/Feed'
 import Explore from './components/Explore'
-import allPosts from './components/AllPosts'
+import AllPosts from './components/AllPosts'
 import Profile from './components/Profile'
 import Post from './components/Post'
 import Subs from './components/Subs'
 import Sub from './components/Sub'
 import CreatePost from './components/CreatePost'
 import CreateSub from './components/CreateSub'
-import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
+import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Loader, Menu, Segment} from 'semantic-ui-react'
 import { fetchUser, fetchSearch } from './actions'
 
 class App extends Component {
@@ -39,7 +39,7 @@ class App extends Component {
         <Switch>
         <Route exact path = '/feed' component={Feed} />
         <Route exact path = '/allSubs' component={Explore} />
-        <Route exact path = '/allPosts' component={allPosts} />
+        <Route exact path = '/allPosts' component={AllPosts} />
         <Route exact path = '/profile' component= {Profile} />
         <Route exact path = '/post/:id/:commentId?' render={(props) => <Post {...props} /> } />
         <Route exact path = '/createSub' component={CreateSub} />
@@ -61,7 +61,7 @@ class App extends Component {
           <Route exact path = '/' component = {Home} />
           </Switch>
         :
-        <Route path = '/' render={() => <h1>Loading</h1>} />
+        <Route path = '/' render={() => <Loader active content="Loading" inline='centered' />} />
       }
         </div>
       </Router>

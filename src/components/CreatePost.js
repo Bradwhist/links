@@ -255,7 +255,12 @@ class CreatePost extends Component {
               <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
             </Grid.Column>
             <Grid.Column width={12}>
+              <Header
+                as='h2'
+                content='Create a new post'
+              />
               <Form>
+                <Dropdown style = {{marginBottom: 20}} placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: ele._id, text: ele.title} })}/>
                 <Form.Group widths='equal'>
                   <Form.Field
                     id='form-input-control-first-name'
@@ -283,7 +288,7 @@ class CreatePost extends Component {
                   />
                 </Form.Group>
 
-              <Dropdown placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: {id: ele._id, flairs: ele.flairs}, text: ele.title} })}/>
+
               <Dropdown placeholder='Select Flair' onChange={this.setFlair} fluid search selection options={ [{key: -1, value: '', text: "No flair"}].concat(this.state.flairOptions.map((ele, i) => { return {key: i, value: ele, text: ele }}))}/>
               <Form.Field
                 style = {{marginTop: 20}}
