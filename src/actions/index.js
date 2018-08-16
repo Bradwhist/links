@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_POST_NONE, FETCH_SUB, FETCH_PROFILE,
+import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_POST_NONE, FETCH_SUB, FETCH_PROFILE, FETCH_SEARCH,
    LOGIN, SIGNUP, LOGOUT, SUBSCRIBE, SUBSCRIBE_FROM_SUB,
    CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT, DELETE_COMMENT,
     UPVOTE_POST, DOWNVOTE_POST, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
@@ -30,11 +30,16 @@ export const fetchUser = () => async dispatch => {
 }
 };
 // Fetch Subs
-export const fetchSubs = (userSub) => async dispatch => {
-  const res = await axios.get('http://localhost:8080/api/sub', {
+export const fetchSubs = () => async dispatch => {
+
+  const res = await axios.get('http://localhost:8080/api/sub/', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
-  })
-  dispatch({ type: FETCH_SUBS, payload: { subs: res.data, userSub: userSub }});
+  });
+  const res2 = await axios.get('http://localhost:8080/api/checkUser/', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  });
+  console.log(res2);
+  dispatch({ type: FETCH_SUBS, payload: { subs: res.data, userSub: res2.data.subscriptions }});
 }
 //Fetch Posts
 export const fetchPosts = (userId) => async dispatch => {
@@ -42,7 +47,12 @@ export const fetchPosts = (userId) => async dispatch => {
   const res = await axios.get('http://localhost:8080/api/post', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
-  dispatch({ type: FETCH_POSTS, payload: { posts: res.data, user: userId }});
+  const res2 = await axios.get('http://localhost:8080/api/checkUser', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  })
+  console.log(res2);
+  dispatch({ type: FETCH_POSTS, payload: { posts: res.data, user: userId, userSub: res2.data.subscriptions }});
+  return true;
 }
 export const fetchPost = (userId, postId) => async dispatch => {
   const res = await axios.get('http://localhost:8080/api/post/byPost/' + postId, {
@@ -101,6 +111,18 @@ export const fetchProfile = () => async dispatch => {
   dispatch({ type: FETCH_PROFILE, payload: { subscriptions: resSubs.data, posts: resPosts.data, comments: resComments.data }})
 }
 //////////////////////////////////////////////////
+export const fetchSearch = () => async dispatch => {
+  const resSubs = await axios.get('http://localhost:8080/api/sub', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  })
+  const resPosts = await axios.get('http://localhost:8080/api/post', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  })
+  let retSubs = resSubs.data.map(ele => { return {title: ele.title, id: ele._id}})
+  let retPosts = resPosts.data.map(ele => { return {title: ele.title, id: ele._id}})
+  console.log(retSubs, 'XXXX', retPosts);
+  dispatch({ type: FETCH_SEARCH, payload: { subscriptions: retSubs, posts: retPosts } })
+}
 
 export const login = (email, password) => async dispatch => {
 try {

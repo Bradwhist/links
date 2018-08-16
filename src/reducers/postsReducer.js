@@ -6,6 +6,11 @@ export default function(state = [], action) {
     case FETCH_POSTS:
       let newState = action.payload.posts;
       for (var i = 0; i < newState.length; i ++ ) {
+        if (action.payload.userSub.indexOf(newState[i].sub.id) === -1) {
+          newState[i].subscribed = false;
+        } else {
+          newState[i].subscribed = true;
+        }
         newState[i].index = i;
         newState[i].upCount = newState[i].upvotes.length;
         newState[i].downCount = newState[i].downvotes.length;

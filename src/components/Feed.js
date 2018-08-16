@@ -34,12 +34,14 @@ import {
        activeItem: 'home',
        sortParam: '',
        sortOrder: true,
+       loaded: false,
      }
    }
 
-   componentDidMount() {
+   async componentDidMount() {
      console.log(this.props);
-     this.props.fetchPosts(this.props.auth.logged._id);
+     let res = await this.props.fetchPosts(this.props.auth.logged._id);
+     this.setState({ loaded: res })
    }
 
    handleItemClick = (e, { name }) => {
@@ -108,6 +110,10 @@ import {
       newSortOrder = true;
     }
     this.setState({ sortParam: sortParam, sortOrder: newSortOrder })
+  }
+
+  goToPost(postId) {
+    this.props.history.push('/post/' + postId);
   }
 
    render() {
@@ -188,10 +194,12 @@ import {
             </Dropdown>
           </Menu.Menu>
         </Menu>
+        { this.state.loaded ?
         <StackGrid
         columnWidth={300}
         >
-        {this.props.posts.sort((a, b) => {
+        {this.props.posts.filter((ele) => ele.subscribed)
+          .sort((a, b) => {
           if (this.state.sortParam === 'time') {
             if (this.state.sortOrder) {
               return a.createdAt > b.createdAt;
@@ -218,7 +226,7 @@ import {
           return  <div className = "imgBox" key={"key" + i}>
             <img src = {ele.image} alt = {"pic" + i} className = "img" />
             <div class = "overlay"></div>
-            <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+            <div onClick = { () => this.goToPost(ele._id) }  className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
               <div className = 'likeBtn'>
                 <Button
                   icon = 'thumbs up outline'
@@ -241,6 +249,7 @@ import {
           </div>
         })}
         </StackGrid>
+      : <h1>Loading</h1>}
         {/* {this.props.posts.map((ele, i) => {
           return <div className = "imgBox"><img src = {ele.image} alt={"pic" + (i + 1)} className= "img" /></div>
         })} */}

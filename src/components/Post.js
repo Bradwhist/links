@@ -46,15 +46,17 @@ class Post extends Component {
       response: null,
       likeButtonClicked: false,
       modalOpen: false,
+      loaded: false,
     };
   }
 
-  componentWillMount() {
+  async componentDidMount() {
     // fetchPost loads in the page object to this.props
     // this.props.post.post: post title, content, and image
     // this.props.post.comments: flat array of all comments in tree regardless of depth
-    this.props.fetchPost(this.props.auth.logged._id, this.props.match.params.id)
+    let res = await this.props.fetchPost(this.props.auth.logged._id, this.props.match.params.id)
     this.setState({ navigation: this.props.match.params.commentId })
+    this.setState({ loaded: res })
   }
 
   handleOpen = () => this.setState({ modalOpen: true })
@@ -108,16 +110,13 @@ class Post extends Component {
   // createComment is function to handle submission of form for a non-root level comment
   createComment = (e, id, num) => {
     e.preventDefault();
-    console.log('REPLYCOMMENTS', this.state.replyComments, num)
     let newArr = this.state.replyComments.slice();
     newArr.push(num)
-    console.log('NEWARR', newArr)
     this.setState({
       content: '',
       replying: null,
       replyComments: newArr
     })
-    console.log('REPLYCOMMENTS', this.state.replyComments)
     return this.props.createComment(this.state.content, id);
   }
 
@@ -133,9 +132,7 @@ class Post extends Component {
   }
   // upvoteComment handles click for positive vote on comment of any level
   upvoteComment = (commentId, index) => {
-    console.log("UPVOTED")
     this.props.upvoteComment(commentId, index);
-    console.log('UPVOTED STATE', this.state.likeButtonClicked)
   }
   // downvoteComment handles click for negative vote on comment of any level
   downvoteComment(commentId, index) {
@@ -164,12 +161,10 @@ class Post extends Component {
     this.setState({ navigation: commentId })
   }
   getCommentFromId = (commentId) => {
-    console.log(commentId, this.props.post.comments);
     let checkIndex = (comment) => {
       return comment._id === commentId
     }
     let returnIndex = this.props.post.comments.findIndex(checkIndex);
-    console.log(returnIndex);
     let returnComment = this.props.post.comments[returnIndex];
     returnComment.index = returnIndex;
     return returnComment;
@@ -330,6 +325,7 @@ class Post extends Component {
       if (this.state.navigation && this.props.post.comments.length) {
       navComment = this.getCommentFromId(this.state.navigation);
 }
+      console.log(this.state.loaded);
       console.log(navComment);
       return (
         <div>
@@ -347,14 +343,14 @@ class Post extends Component {
                   <Dropdown.Header>Subs</Dropdown.Header>
                   <Dropdown.Item
                     active = {activeItem === 'allSubs'}
-                    onClick = {() => this.props.history.push('./allSubs')}>
+                    onClick = {() => this.props.history.push('/allSubs')}>
                     All Subs
                   </Dropdown.Item>
                   <Dropdown.Divider />
                   <Dropdown.Header>Posts</Dropdown.Header>
                   <Dropdown.Item
                     active = {activeItem === 'allPosts'}
-                    onClick = {() => this.props.history.push('./allPosts')}>
+                    onClick = {() => this.props.history.push('/allPosts')}>
                     All Posts
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -376,10 +372,10 @@ class Post extends Component {
                 <Dropdown icon = "plus" pointing className='link item'>
                   <Dropdown.Menu>
                     <Dropdown.Header>Category</Dropdown.Header>
-                    <Dropdown.Item onClick = {() => this.props.history.push('./createSub')}>Create a new category</Dropdown.Item>
+                    <Dropdown.Item onClick = {() => this.props.history.push('/createSub')}>Create a new category</Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Header>Post</Dropdown.Header>
-                    <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('./createPost')}>Create a new post</Dropdown.Item>
+                    <Dropdown.Item active = {activeItem === 'createPost'} onClick = {() => this.props.history.push('/createPost')}>Create a new post</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </Menu.Menu>
@@ -420,7 +416,7 @@ class Post extends Component {
 
               {/* <Button style = {{position: 'absolute', right: 5}} negative onClick = {() => this.deletePost(this.props.match.params.id)}>Delete Post</Button> */}
 
-              {this.props.post ?
+              {this.props.post && this.state.loaded ?
                 <Container>
               <Grid centered columns = {2}>
                 <Grid.Column>
@@ -622,7 +618,7 @@ class Post extends Component {
                 </Grid.Row>
               </Grid>
             </Container>
-          : <div> This post does not exist </div> }
+          : <h1>Loaded...</h1>}
             {/*this.props.post.comments.length > 0 ?
               <ul>{this.renderCommentBlock('5b736da262b180559cb157b0')}</ul> :
               null

@@ -14,11 +14,12 @@ import Sub from './components/Sub'
 import CreatePost from './components/CreatePost'
 import CreateSub from './components/CreateSub'
 import {Button, Icon, Container, Divider, Dropdown, Grid, Header, Image, List, Menu, Segment} from 'semantic-ui-react'
-import { fetchUser } from './actions'
+import { fetchUser, fetchSearch } from './actions'
 
 class App extends Component {
   componentDidMount() {
     this.props.fetchUser();
+    this.props.fetchSearch();
   }
   render() {
     return (
@@ -67,10 +68,18 @@ class App extends Component {
     );
   }
 }
-const mapStateToProps = ({auth}) => {
+const mapStateToProps = ({auth, input}) => {
   return {
     auth,
+    input
   }
 }
 
- export default connect(mapStateToProps, { fetchUser })(App);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchUser: () => dispatch(fetchUser()),
+    fetchSearch: () => dispatch(fetchSearch())
+  }
+}
+
+ export default connect(mapStateToProps, mapDispatchToProps)(App);

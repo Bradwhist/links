@@ -6,6 +6,7 @@ export const FETCH_POST_NONE = 'FETCH_POST_NONE';
 export const FETCH_COMMENTS_FP = 'FETCH_COMMENTS_FP';
 export const FETCH_SUB = 'FETCH_SUB';
 export const FETCH_PROFILE = 'FETCH_PROFILE';
+export const FETCH_SEARCH = 'FETCH_SEARCH';
 
 export const LOGIN = 'LOGIN';
 export const SIGNUP = 'SIGNUP';

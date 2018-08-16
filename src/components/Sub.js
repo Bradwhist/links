@@ -109,6 +109,10 @@ class Sub extends Component {
     this.setState({ sortParam: sortParam, sortOrder: newSortOrder })
   }
 
+  goToPost = (postId) => {
+    this.props.history.push('/post/' + postId);
+  }
+
   render() {
     const options = [
       { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
@@ -143,14 +147,14 @@ class Sub extends Component {
                  <Dropdown.Header>Subs</Dropdown.Header>
                  <Dropdown.Item
                    active = {activeItem === 'allSubs'}
-                   onClick = {() => this.props.history.push('./allSubs')}>
+                   onClick = {() => this.props.history.push('/allSubs')}>
                    All Subs
                  </Dropdown.Item>
                  <Dropdown.Divider />
                  <Dropdown.Header>Posts</Dropdown.Header>
                  <Dropdown.Item
                    active = {activeItem === 'allPosts'}
-                   onClick = {() => this.props.history.push('./allPosts')}>
+                   onClick = {() => this.props.history.push('/allPosts')}>
                    All Posts
                  </Dropdown.Item>
                </Dropdown.Menu>
@@ -224,7 +228,7 @@ class Sub extends Component {
              return <div className = "imgBox" key={i}>
                <img className = "img" src = {ele.image} alt = {"pic" + i}/>
                <div class = "overlay"></div>
-               <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+               <div onClick = { () => this.goToPost(ele._id) } className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
                <div className = 'likeBtn'>
                  <Button
                    icon = 'thumbs up outline'
