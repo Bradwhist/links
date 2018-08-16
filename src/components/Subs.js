@@ -91,12 +91,11 @@ class Sub extends Component {
   }
 
   subscribe = (subId, i) => {
+    console.log(subId, i);
   this.props.subscribe(subId, i);
   }
 
   render() {
-    console.log('rendering feed', this.props.posts);
-    console.log('rendering feed auth', this.props.auth.logged._id);
     const { activeItem } = this.state;
 
     return (
@@ -175,12 +174,17 @@ class Sub extends Component {
             columnWidth={300}
             >
               {this.props.subs.map((ele, i) => {
-                return <div className = "imgBox" key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
+                if (ele.subscribed) {
+                  return <div className = "imgBox" key={i} >
                   <img src = {ele.image} alt = {"pic" + i} className = "img"/>
-                  <div class = "overlay"></div>
+                  <div className = "overlay" onClick = {() => this.props.history.push('/sub/' + ele._id)} ></div>
                   <div className = "imgTitleBoxForSub"><h1 className = "imgTitle">{ele.title}</h1></div>
                   <Popup trigger={
                     <Button
+                    onClick={() => {
+                      this.subscribe(ele._id, i)
+                      console.log('subscribe')
+                    }}
                     className = "followBtn"
                     icon = 'minus'
                     color="teal"
@@ -201,6 +205,7 @@ class Sub extends Component {
                   <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
                   <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> } */}
               </div>}
+            }
               )}
             </StackGrid>
           </div>

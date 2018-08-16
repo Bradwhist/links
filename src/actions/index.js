@@ -31,7 +31,6 @@ export const fetchUser = () => async dispatch => {
 };
 // Fetch Subs
 export const fetchSubs = (userSub) => async dispatch => {
-  console.log(userSub);
   const res = await axios.get('http://localhost:8080/api/sub', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
@@ -68,7 +67,7 @@ return true;
 //   dispatch({ type: FETCH_COMMENTS_FP, payload: res.data });
 // }
 // Fetch subs
-export const fetchSub = (subId, match) => async dispatch => {
+export const fetchSub = (subId, match, userId) => async dispatch => {
   let postArr = [];
   const res = await axios.get('http://localhost:8080/api/sub/bySub/' + subId, {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
@@ -82,7 +81,7 @@ export const fetchSub = (subId, match) => async dispatch => {
       postArr[i] = postArr[i].data;
       console.log(i, postArr[i]);
     }
-    dispatch({ type: FETCH_SUB, payload: { sub: res.data, posts: postArr, subscribed: match }});
+    dispatch({ type: FETCH_SUB, payload: { sub: res.data, posts: postArr, subscribed: match, userId: userId }});
   } else {
     dispatch({ type: FETCH_SUB, payload: null })
   }
@@ -288,6 +287,7 @@ export const subscribe = (subId, i) => dispatch => {
     }, {
       headers: {token: JSON.parse(localStorage.getItem('user')).token }
     });
+    console.log('dispatching', i);
     dispatch({ type: SUBSCRIBE, payload: i })
   }
   catch(err){console.log(err)}

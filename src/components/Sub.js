@@ -31,7 +31,9 @@ class Sub extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      activeItem: 'subs'
+      activeItem: 'subs',
+      sortParam: '',
+      sortOrder: true,
     }
   }
 
@@ -73,7 +75,7 @@ class Sub extends Component {
 
  componentDidMount() {
    let subscribed = this.props.match.params.id === this.props.auth.logged.subscriptions;
-   this.props.fetchSub(this.props.match.params.id, subscribed);
+   this.props.fetchSub(this.props.match.params.id, subscribed, this.props.auth.logged._id);
  }
 
   upvotePostFromSub = (postId, index) => {
@@ -97,7 +99,22 @@ class Sub extends Component {
     this.props.deletePost(postId, i);
   }
 
+  setSort(sortParam) {
+    let newSortOrder = null;
+    if (this.state.sortParam === sortParam) {
+      newSortOrder = !this.state.sortOrder;
+    } else {
+      newSortOrder = true;
+    }
+    this.setState({ sortParam: sortParam, sortOrder: newSortOrder })
+  }
+
   render() {
+    const options = [
+      { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
+      { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
+      { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
+    ]
     console.log('rendering feed', this.props.posts);
     console.log('rendering feed auth', this.props.auth.logged._id);
     //   let StackGridContent = '';
@@ -109,6 +126,9 @@ class Sub extends Component {
     const { activeItem } = this.state;
      return (
        <div>
+       <Menu style = {{fontSize: 12 }} compact>
+         <Dropdown text='Sort' options={options} simple item />
+       </Menu>
          <Menu pointing inverted>
            <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
            <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
@@ -177,8 +197,31 @@ class Sub extends Component {
        <StackGrid
          columnWidth={300}
          >
-           {this.props.sub.posts.map((ele, i) => {
-             return <div className = "imgBox" key={i} onClick = {() => this.props.history.push('/post/' + ele._id)}>
+           {this.props.sub.posts.sort((a, b) => {
+             if (this.state.sortParam === 'time') {
+               if (this.state.sortOrder) {
+                 return a.createdAt > b.createdAt;
+               } else {
+                 return b.createdAt > a.createdAt;
+               }
+             }
+             if (this.state.sortParam === 'score') {
+               if (this.state.sortOrder) {
+                 return b.score - a.score;
+               } else {
+                 return a.score - b.score;
+               }
+             }
+             if (this.state.sortParam === 'replies') {
+               if (this.state.sortOrder) {
+                 return a.comments.length - b.comments.length;
+               } else {
+                 return b.comments.length - a.comments.length;
+               }
+             }
+           })
+             .map((ele, i) => {
+             return <div className = "imgBox" key={i}>
                <img className = "img" src = {ele.image} alt = {"pic" + i}/>
                <div class = "overlay"></div>
                <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
@@ -186,16 +229,18 @@ class Sub extends Component {
                  <Button
                    icon = 'thumbs up outline'
                    color = "teal"
-                   label={{ as: 'a', basic: true, content: '2,048' }}
+                   label={{ as: 'a', basic: true, content: ele.upCount }}
                    labelPosition='right'
+                   onClick={ () => this.upvotePostFromSub(ele._id, ele.index) }
                  />
                </div>
                <div className = 'dislikeBtn'>
                  <Button
                    icon = 'thumbs down outline'
                    color = "teal"
-                   label={{ as: 'a', basic: true, content: '2,048' }}
+                   label={{ as: 'a', basic: true, content: ele.downCount }}
                    labelPosition='right'
+                   onClick={ () => this.downvotePostFromSub(ele._id, ele.index) }
                  />
                </div>
                {/* <h1>{ele.score}</h1> */}
@@ -251,7 +296,7 @@ const mapStateToProps = ({auth, sub}) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
-    fetchSub: (subId, match) => dispatch(fetchSub(subId, match)),
+    fetchSub: (subId, match, userId) => dispatch(fetchSub(subId, match, userId)),
     upvotePostFromSub: (postId, index) => dispatch(upvotePostFromSub(postId, index)),
     downvotePostFromSub: (postId, index) => dispatch(downvotePostFromSub(postId, index)),
     subscribeFromSub: (subId) => dispatch(subscribeFromSub(subId)),

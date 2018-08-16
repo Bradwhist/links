@@ -53,11 +53,11 @@ export default function(state = { post: {}, comments: [] }, action) {
         let newState4 = JSON.parse(JSON.stringify(state));
         if (newState4.comments[cIndex4].upVoted) {
           newState4.comments[cIndex4].upCount --;
-          newState4.comments[cIndex4].downCount ++;
         } else if (newState4.comments[cIndex4].downVoted) {
+          newState4.comments[cIndex4].upCount ++;
           newState4.comments[cIndex4].downCount --;
         } else {
-          newState4.comments[cIndex4].downCount ++;
+          newState4.comments[cIndex4].upCount ++;
         }
         newState4.comments[cIndex4].score = action.payload.score;
         newState4.comments[cIndex4].upVoted = !newState4.comments[cIndex4].upVoted;
@@ -66,11 +66,11 @@ export default function(state = { post: {}, comments: [] }, action) {
       case DOWNVOTE_COMMENT:
         let cIndex5 = action.payload.index;
         let newState5 = JSON.parse(JSON.stringify(state));
-        if (newState5.comments[cIndex5].upVoted) {
-          newState5.comments[cIndex5].upCount --;
-          newState5.comments[cIndex5].downCount ++;
-        } else if (newState5.comments[cIndex5].downVoted) {
+        if (newState5.comments[cIndex5].downVoted) {
           newState5.comments[cIndex5].downCount --;
+        } else if (newState5.comments[cIndex5].upVoted) {
+          newState5.comments[cIndex5].downCount ++;
+          newState5.comments[cIndex5].upCount --;
         } else {
           newState5.comments[cIndex5].downCount ++;
         }
