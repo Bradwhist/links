@@ -91,6 +91,9 @@ body {
   perspective: 100px;
 }
 
+div.ui.icon.input {
+  width: 100%;
+}
 .msgBox {
   padding-top: 5%;
 }
