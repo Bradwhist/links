@@ -20,6 +20,7 @@ import {
   Image,
   Input,
   List,
+  Loader,
   Menu,
   Modal,
   Responsive,
@@ -618,7 +619,7 @@ class Post extends Component {
                 </Grid.Row>
               </Grid>
             </Container>
-          : <h1>Loaded...</h1>}
+          : <Loader active content="Loading" inline='centered' />}
             {/*this.props.post.comments.length > 0 ?
               <ul>{this.renderCommentBlock('5b736da262b180559cb157b0')}</ul> :
               null

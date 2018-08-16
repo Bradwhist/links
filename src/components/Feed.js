@@ -16,6 +16,7 @@ import {
   Image,
   Input,
   List,
+  Loader,
   Menu,
   Responsive,
   Segment,
@@ -127,9 +128,9 @@ import {
      //console.log('rendering feed auth', this.props.auth.logged._id);
      return (
        <div>
-       <Menu style = {{fontSize: 12 }} compact>
+       {/* <Menu style = {{fontSize: 12 }} compact>
          <Dropdown text='Sort' options={options} simple item />
-       </Menu>
+       </Menu> */}
         <Menu pointing inverted>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
           <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
@@ -249,7 +250,7 @@ import {
           </div>
         })}
         </StackGrid>
-      : <h1>Loading</h1>}
+      : <Loader active content="Loading" inline='centered' />}
         {/* {this.props.posts.map((ele, i) => {
           return <div className = "imgBox"><img src = {ele.image} alt={"pic" + (i + 1)} className= "img" /></div>
         })} */}

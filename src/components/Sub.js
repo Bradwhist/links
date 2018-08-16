@@ -42,9 +42,13 @@ class Sub extends Component {
     if (name === 'home') {
       this.props.history.push('/feed');
     }
-    else if (name === 'explore'){
+    else if (name === 'allSubs'){
       this.setState({ activeItem: name })
-      this.props.history.push('/explore');
+      this.props.history.push('/allSubs');
+    }
+    else if (name === 'allPosts'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/allPosts');
     }
     else if (name === 'following'){
       this.setState({ activeItem: name })
@@ -130,9 +134,9 @@ class Sub extends Component {
     const { activeItem } = this.state;
      return (
        <div>
-       <Menu style = {{fontSize: 12 }} compact>
+       {/* <Menu style = {{fontSize: 12 }} compact>
          <Dropdown text='Sort' options={options} simple item />
-       </Menu>
+       </Menu> */}
          <Menu pointing inverted>
            <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
            <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
