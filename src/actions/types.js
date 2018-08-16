@@ -16,6 +16,7 @@ export const CREATE_SUB = 'CREATE_SUB';
 export const CREATE_POST = 'CREATE_POST';
 export const CREATE_COMMENT = 'CREATE_COMMENT';
 export const CREATE_ROOT_COMMENT = 'CREATE_ROOT_COMMENT';
+export const TOGGLE_FLAIR = 'TOGGLE_FLAIR';
 
 export const UPVOTE_POST = 'UPVOTE_POST';
 export const DOWNVOTE_POST = 'DOWNVOTE_POST';

@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub,
+import _ from 'lodash'
+import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub, toggleFlair,
   subscribeFromSub } from '../actions'
 import {
   Button,
@@ -11,6 +12,7 @@ import {
   Divider,
   Dropdown,
   Grid,
+  Form,
   Header,
   Icon,
   Input,
@@ -18,6 +20,7 @@ import {
   List,
   Menu,
   Responsive,
+  Search,
   Segment,
   Sidebar,
   Visibility,
@@ -34,8 +37,44 @@ class Sub extends Component {
       activeItem: 'subs',
       sortParam: '',
       sortOrder: true,
+      isLoading: false,
+      results: [],
+      value: '',
+      newFlair: null,
+      defaultFlair: 'new tag here',
     }
   }
+
+  //////////////////////
+  // search functions
+ resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
+
+  handleResultSelect = (e, { result }) => {
+    console.log(result);
+    if (result.type === 'Post') {
+    this.props.history.push('/post/' + result.id);
+  } else {
+    this.props.history.push('/sub/' + result.id);
+  }
+    this.setState({ value: result.title })
+  }
+
+  handleSearchChange = (e, { value }) => {
+  this.setState({ isLoading: true, value })
+
+  setTimeout(() => {
+    if (this.state.value.length < 1) return this.resetComponent()
+
+    const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+    const isMatch = result => re.test(result.title)
+
+    this.setState({
+      isLoading: false,
+      results: _.filter(this.props.input.searchArr, isMatch),
+    })
+  }, 300)
+}
+///////////////////////
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name })
@@ -71,6 +110,23 @@ class Sub extends Component {
 
   createPost = () => {
     this.props.history.push('/createPost');
+  }
+
+  toggleFlair = () => {
+    this.props.toggleFlair(this.state.content, this.props.sub.sub._id);
+  }
+
+  setFlair = (e) => {
+    this.setState({
+      newFlair: e.target.value
+    })
+  }
+
+  toggleFlair = (e) => {
+    e.preventDefault();
+    //console.log(this.state.content);
+    this.props.toggleFlair(this.state.newFlair, this.props.sub.sub._id);
+    this.setState({ newFlair: null });
   }
 
  componentDidMount() {
@@ -119,14 +175,12 @@ class Sub extends Component {
       { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
       { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
     ]
-    console.log('rendering feed', this.props.posts);
-    console.log('rendering feed auth', this.props.auth.logged._id);
+    console.log(this.props.sub.sub.flairs);
     //   let StackGridContent = '';
     //   if (this.props.posts) {
     //   this.props.posts.map((ele, i) => {StackGridContent = StackGridContent + '<div key="key' + (i + 1) + '">Meow</div>'})
     // }
     //   console.log(StackGridContent);
-    console.log('subs', this.props.sub.posts)
     const { activeItem } = this.state;
      return (
        <div>
@@ -135,7 +189,15 @@ class Sub extends Component {
        </Menu>
          <Menu pointing inverted>
            <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
-           <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
+           {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
+           <Search className = 'searchInputBox'
+           loading={this.state.isLoading}
+           onResultSelect={this.handleResultSelect}
+           onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
+           results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
+           value={this.state.value}
+           {...this.props}
+           />
            <Menu.Item
              name='home'
              active={activeItem === 'home'}
@@ -197,6 +259,12 @@ class Sub extends Component {
              </Dropdown>
            </Menu.Menu>
          </Menu>
+
+         <Form reply onSubmit={(e) => this.toggleFlair(e)}>
+           <Form.TextArea value={this.state.newFlair || ''} placeholder={this.state.defaultFlair} onChange={this.setFlair} />
+           <Button content='Add Flair' labelPosition='left' icon='edit' primary />
+         </Form>
+
          { !!this.props.sub ?
        <StackGrid
          columnWidth={300}
@@ -291,10 +359,11 @@ Sub.propTypes = {
   sub: PropTypes.obj,
 };
 
-const mapStateToProps = ({auth, sub}) => {
+const mapStateToProps = ({auth, sub, input}) => {
   return {
     auth,
-    sub
+    sub,
+    input,
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -304,6 +373,7 @@ const mapDispatchToProps = (dispatch) => {
     upvotePostFromSub: (postId, index) => dispatch(upvotePostFromSub(postId, index)),
     downvotePostFromSub: (postId, index) => dispatch(downvotePostFromSub(postId, index)),
     subscribeFromSub: (subId) => dispatch(subscribeFromSub(subId)),
+    toggleFlair: (content, subId) => dispatch(toggleFlair(content, subId)),
   };
 }
 

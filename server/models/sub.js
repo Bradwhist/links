@@ -32,7 +32,11 @@ const SubSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: new Date(),
-  }
+  },
+  flairs: {
+    type: Array,
+    default: [],
+  },
 });
 
 module.exports = mongoose.model('Sub', SubSchema);

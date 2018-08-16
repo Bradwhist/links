@@ -1,4 +1,4 @@
-import { FETCH_SUB, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, SUBSCRIBE_FROM_SUB } from "../actions/types";
+import { FETCH_SUB, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, SUBSCRIBE_FROM_SUB, TOGGLE_FLAIR } from "../actions/types";
 
 export default function(state = { sub: {}, posts: [], subscribed: null }, action) {
   switch(action.type) {
@@ -55,6 +55,10 @@ export default function(state = { sub: {}, posts: [], subscribed: null }, action
         let newState3 = JSON.parse(JSON.stringify(state));
         newState3.subscribed = !newState3.subscribed;
       return newState3;
+      case TOGGLE_FLAIR:
+        let newState5 = JSON.parse(JSON.stringify(state));
+        newState5.sub.flairs = action.payload;
+        return newState5;
     default:
       return state;
   }

@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid"
 import moment from 'moment'
+import _ from 'lodash'
 import { logout, createComment, createRootComment, fetchPost, upvoteComment, downvoteComment, deletePost, deleteComment, deleteRootComment } from '../actions'
 import {
   Button,
@@ -23,6 +24,7 @@ import {
   Menu,
   Modal,
   Responsive,
+  Search,
   Segment,
   Sidebar,
   Visibility,
@@ -41,12 +43,16 @@ class Post extends Component {
       replying: null,
       navigation: false,
       showReplies: [],
-      value: 'Type something here...',
+      reply: '',
+      defaultReply: 'Type something here...',
       replyComments: [],
       response: null,
       likeButtonClicked: false,
       modalOpen: false,
       loaded: false,
+      isLoading: false,
+      results: [],
+      value: '',
     };
   }
 
@@ -58,6 +64,37 @@ class Post extends Component {
     this.setState({ navigation: this.props.match.params.commentId })
     this.setState({ loaded: res })
   }
+
+  //////////////////////
+  // search functions
+ resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
+
+  handleResultSelect = (e, { result }) => {
+    console.log(result);
+    if (result.type === 'Post') {
+    this.props.history.push('/post/' + result.id);
+  } else {
+    this.props.history.push('/sub/' + result.id);
+  }
+    this.setState({ value: result.title })
+  }
+
+  handleSearchChange = (e, { value }) => {
+  this.setState({ isLoading: true, value })
+
+  setTimeout(() => {
+    if (this.state.value.length < 1) return this.resetComponent()
+
+    const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+    const isMatch = result => re.test(result.title)
+
+    this.setState({
+      isLoading: false,
+      results: _.filter(this.props.input.searchArr, isMatch),
+    })
+  }, 300)
+}
+///////////////////////
 
   handleOpen = () => this.setState({ modalOpen: true })
 
@@ -103,6 +140,12 @@ class Post extends Component {
     })
   }
 
+  setReply = (e) => {
+    this.setState({
+      reply: e.target.value
+    })
+  }
+
   logout = () => {
     this.props.logout();
   }
@@ -112,20 +155,20 @@ class Post extends Component {
     e.preventDefault();
     let newArr = this.state.replyComments.slice();
     newArr.push(num)
+    this.props.createComment(this.state.content, id);
     this.setState({
       content: '',
       replying: null,
       replyComments: newArr
     })
-    return this.props.createComment(this.state.content, id);
   }
 
   // createRootComment handles submission of form for root level comment
   createRootComment = (e) => {
     e.preventDefault();
     //console.log(this.state.content);
-
-    this.props.createRootComment(this.state.content, this.props.match.params.id);
+    this.props.createRootComment(this.state.reply, this.props.match.params.id);
+    this.setState({ reply: '' });
   }
   goProfile = () => {
     this.props.history.push('/feed')
@@ -308,8 +351,11 @@ class Post extends Component {
         return currentTime.diff(initTime, 'years') + ' years ago';
     }
 
+    goToSub = (subId) => {
+      this.props.history.push('/sub/' + subId);
+    }
+
     render() {
-      console.log(this.getAge("2018-08-15T22:30:36.209Z"));
       // Unordered list contains comment tree.  Maps over comments, and displays all root level comments.
       // in each root comment, calls function 'renderReplies', which is recursive and displays non-root comments
       const { activeItem } = this.state;
@@ -318,20 +364,26 @@ class Post extends Component {
         { key: 2, text: 'New', value: 2 },
         { key: 3, text: 'sex', value: 3 },
       ]
-      console.log(this.state.navigation);
-      console.log("a;skdfja;sdfj", this.state.showReplies)
-      console.log('SD;FJKASF', this.props.post.comments)
+
       let navComment = null;
       if (this.state.navigation && this.props.post.comments.length) {
       navComment = this.getCommentFromId(this.state.navigation);
-}
-      console.log(this.state.loaded);
-      console.log(navComment);
+    }
+      console.log(this.props.auth.logged._id);
+      console.log(this.props.post.post)
       return (
         <div>
           <Menu pointing inverted>
             <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
-            <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
+            {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
+            <Search className = 'searchInputBox'
+            loading={this.state.isLoading}
+            onResultSelect={this.handleResultSelect}
+            onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
+            results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
+            value={this.state.value}
+            {...this.props}
+            />
             <Menu.Item
               name='home'
               active={activeItem === 'home'}
@@ -392,7 +444,7 @@ class Post extends Component {
                 </Dropdown>
               </Menu.Menu>
             </Menu>
-
+            { this.props.post.post.author && this.props.post.post.author.id === this.props.auth.logged._id ?
             <Modal
               trigger={<Button style = {{position: 'absolute', right: 5}} negative onClick={this.handleOpen}>Delete Post</Button>}
               open={this.state.modalOpen}
@@ -413,7 +465,7 @@ class Post extends Component {
                   </Button>
                 </Modal.Actions>
               </Modal>
-
+            : null }
               {/* <Button style = {{position: 'absolute', right: 5}} negative onClick = {() => this.deletePost(this.props.match.params.id)}>Delete Post</Button> */}
 
               {this.props.post && this.state.loaded ?
@@ -428,7 +480,7 @@ class Post extends Component {
                     </Header>
                   </Segment>
                 </Grid.Column>
-
+                {/* <button onClick = { () => this.goToSub(this.props.post.post.sub.id) }> Go to Sub </button> */}
                 <Grid.Row centered columns={2}>
                   { !this.state.navigation ?
                     <Grid.Column>
@@ -441,7 +493,7 @@ class Post extends Component {
                     </Header>
 
                     <Form reply onSubmit={(e) => this.createRootComment(e)}>
-                      <Form.TextArea placeholder={this.state.value} onChange={this.setContent} />
+                      <Form.TextArea value={this.state.reply || ''} placeholder={this.state.defaultReply} onChange={this.setReply} />
                       <Button content='Add Comment' labelPosition='left' icon='edit' primary />
                     </Form>
                     {this.props.post.comments.map((ele, i) => {
@@ -532,7 +584,7 @@ class Post extends Component {
                   </Header>
 
                   <Form reply onSubmit={(e) => this.createRootComment(e)}>
-                    <Form.TextArea placeholder={this.state.value} onChange={this.setContent} />
+                    <Form.TextArea placeholder={this.state.defaultReply} onChange={this.setContent} />
                     <Button content='Add Comment' labelPosition='left' icon='edit' primary />
                   </Form>
                   <button onClick={() => this.setNavigation(false)}>See All Comments</button>
@@ -643,11 +695,12 @@ class Post extends Component {
         deleteRootComment: PropTypes.func,
       };
 
-      const mapStateToProps = ({ auth, post, comments }) => {
+      const mapStateToProps = ({ auth, post, comments, input }) => {
         return {
           auth,
           post,
           comments,
+          input,
         }
       }
       const mapDispatchToProps = (dispatch) => {

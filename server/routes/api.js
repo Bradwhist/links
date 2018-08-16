@@ -57,7 +57,7 @@ router.post('/post', (req, res) => {
         title: sub.title,
       },
       createdAt: currentTime,
-      flair: '',
+      flair: req.body.flair,
     })
     newPost.save()
     .then(response => {
@@ -122,7 +122,6 @@ router.post('/rootComment', (req, res) => {
 //
 // Post comment to comments
 router.post('/comment', (req, res) => {
-
   Comment.findById(req.body.parent).exec()
   .then(comment => {
     var currentTime = new Date();
@@ -145,6 +144,22 @@ router.post('/comment', (req, res) => {
       return res.json(newComment)
     })
     .catch(err => res.send(err))
+  })
+  .catch(err => res.send(err))
+})
+//
+// Post flair to sub
+router.post('/flair', (req, res) => {
+  Sub.findById(req.body.sub).exec()
+  .then(sub => {
+    let flairIndex = sub.flairs.indexOf(req.body.flair);
+    if (flairIndex === -1) {
+      sub.flairs.push(req.body.flair);
+    } else {
+      sub.flairs.splice(flairIndex, 1);
+    }
+    sub.save();
+    res.json(sub);
   })
   .catch(err => res.send(err))
 })
@@ -323,6 +338,7 @@ router.post('/delete/post', (req, res) => {
       if (post.author.id == res.locals.user.id) {
         Post.findOneAndDelete( {_id: req.body.post} ).exec()
         .then(() => {
+          console.log(req.body.post, post._id);
           Sub.findOne({ posts: { $all: [req.body.post] } })
           .then(sub => {
             let postIndex = sub.posts.indexOf(req.body.post);
@@ -334,9 +350,9 @@ router.post('/delete/post', (req, res) => {
         })
         .catch(err => res.send(err))
       } else {
+        res.send('no match');
         console.log('no match');
       }
-      res.send('no match');
     })
     .catch(err => console.log(err));
 })

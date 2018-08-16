@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FETCH_USER, FETCH_SUBS, FETCH_POSTS, FETCH_POST, FETCH_POST_NONE, FETCH_SUB, FETCH_PROFILE, FETCH_SEARCH,
    LOGIN, SIGNUP, LOGOUT, SUBSCRIBE, SUBSCRIBE_FROM_SUB,
    CREATE_SUB, CREATE_POST, CREATE_COMMENT, CREATE_ROOT_COMMENT, DELETE_COMMENT,
-    UPVOTE_POST, DOWNVOTE_POST, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT } from './types';
+    UPVOTE_POST, DOWNVOTE_POST, UPVOTE_POST_FROM_SUB, DOWNVOTE_POST_FROM_SUB, UPVOTE_COMMENT, DOWNVOTE_COMMENT, POST, GET_INPUT, TOGGLE_FLAIR } from './types';
 
 
 // if redux-thunk sees that we're returning a function in
@@ -107,8 +107,27 @@ export const fetchProfile = () => async dispatch => {
   const resComments = await axios.get('http://localhost:8080/api/comment/bySelf', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
-  console.log('XXXX Subs: ', resSubs, 'XXXXX Posts: ', resPosts, 'XXXXX Comments: ', resComments);
-  dispatch({ type: FETCH_PROFILE, payload: { subscriptions: resSubs.data, posts: resPosts.data, comments: resComments.data }})
+  const resAllPosts = await axios.get('http://localhost:8080/api/post', {
+    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+  })
+  let mappedComments = resComments.data.map(ele => {
+    let ret = ele;
+    let checkIndex = (post) => {
+      return post._id === ele.ancestor;
+    }
+    console.log(resAllPosts.data);
+    console.log(ele.ancestor);
+    let cIndex = resAllPosts.data.findIndex(checkIndex);
+    console.log(cIndex);
+    if (cIndex !== -1) {
+    ret.postTitle = resAllPosts.data[cIndex].title
+  } else {
+    ret.postTitle = 'Deleted';
+  }
+    return ret;
+  });
+  console.log(mappedComments);
+  dispatch({ type: FETCH_PROFILE, payload: { subscriptions: resSubs.data, posts: resPosts.data, comments: mappedComments }})
 }
 //////////////////////////////////////////////////
 export const fetchSearch = () => async dispatch => {
@@ -118,10 +137,10 @@ export const fetchSearch = () => async dispatch => {
   const resPosts = await axios.get('http://localhost:8080/api/post', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
-  let retSubs = resSubs.data.map(ele => { return {title: ele.title, id: ele._id}})
-  let retPosts = resPosts.data.map(ele => { return {title: ele.title, id: ele._id}})
-  console.log(retSubs, 'XXXX', retPosts);
-  dispatch({ type: FETCH_SEARCH, payload: { subscriptions: retSubs, posts: retPosts } })
+  let retSubs = resSubs.data.map(ele => { return {title: ele.title, id: ele._id, type: 'Category' }})
+  let retPosts = resPosts.data.map(ele => { return {title: ele.title, id: ele._id, type: 'Post' }})
+  let retArr = retSubs.concat(retPosts);
+  dispatch({ type: FETCH_SEARCH, payload: retArr })
 }
 
 export const login = (email, password) => async dispatch => {
@@ -180,7 +199,7 @@ export const createSub = (title, description, image) => async dispatch => {
   catch(err){console.log(err)}
 }
 //  create new post
-export const createPost = (title, content, image, sub) => async dispatch => {
+export const createPost = (title, content, image, sub, flair) => async dispatch => {
   try {
     let token = JSON.parse(localStorage.getItem('user')).token;
     const res = await axios.post('http://localhost:8080/api/post', {
@@ -188,6 +207,7 @@ export const createPost = (title, content, image, sub) => async dispatch => {
       content,
       image,
       sub,
+      flair
     },
     {
       headers: { token }
@@ -298,6 +318,19 @@ export const downvoteComment = (commentId, index) => async dispatch => {
       headers: { token: JSON.parse(localStorage.getItem('user')).token }
     });
     dispatch({ type: DOWNVOTE_COMMENT, payload: { index: index, score: res.data } });
+  }
+  catch(err){console.log(err)}
+}
+
+export const toggleFlair = (content, subId) => async dispatch => {
+  try {
+    const res = await axios.post('http://localhost:8080/api/flair', {
+      flair: content,
+      sub: subId
+    }, {
+      headers: { token: JSON.parse(localStorage.getItem('user')).token }
+    });
+    dispatch({ type: TOGGLE_FLAIR, payload: res.data.flairs });
   }
   catch(err){console.log(err)}
 }

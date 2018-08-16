@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
+import _ from 'lodash'
 // import CreateCategory from './CreateCategory'
 import { logout, fetchPosts, upvotePost, downvotePost, setInput } from '../actions'
 import CreateSub from './CreateSub'
@@ -18,6 +19,7 @@ import {
   List,
   Menu,
   Responsive,
+  Search,
   Segment,
   Sidebar,
   Visibility,
@@ -34,6 +36,9 @@ import {
        activeItem: 'home',
        sortParam: '',
        sortOrder: true,
+       isLoading: false,
+       results: [],
+       value: '',
      }
    }
 
@@ -41,6 +46,37 @@ import {
      console.log(this.props);
      this.props.fetchPosts(this.props.auth.logged._id);
    }
+
+   //////////////////////
+   // search functions
+  resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
+
+   handleResultSelect = (e, { result }) => {
+     console.log(result);
+     if (result.type === 'Post') {
+     this.props.history.push('/post/' + result.id);
+   } else {
+     this.props.history.push('/sub/' + result.id);
+   }
+     this.setState({ value: result.title })
+   }
+
+   handleSearchChange = (e, { value }) => {
+   this.setState({ isLoading: true, value })
+
+   setTimeout(() => {
+     if (this.state.value.length < 1) return this.resetComponent()
+
+     const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+     const isMatch = result => re.test(result.title)
+
+     this.setState({
+       isLoading: false,
+       results: _.filter(this.props.input.searchArr, isMatch),
+     })
+   }, 300)
+ }
+///////////////////////
 
    handleItemClick = (e, { name }) => {
      this.setState({ activeItem: name })
@@ -130,7 +166,15 @@ import {
        </Menu>
         <Menu pointing inverted>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
-          <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
+          {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
+          <Search className = 'searchInputBox'
+          loading={this.state.isLoading}
+          onResultSelect={this.handleResultSelect}
+          onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
+          results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
+          value={this.state.value}
+          {...this.props}
+          />
           <Menu.Item
             name='home'
             active={activeItem === 'home'}
@@ -280,10 +324,11 @@ import {
 //   posts: PropTypes.array,
 // };
 
-const mapStateToProps = ({auth, posts}) => {
+const mapStateToProps = ({auth, posts, input}) => {
   return {
     auth,
-    posts
+    posts,
+    input
   }
 }
 const mapDispatchToProps = (dispatch) => {

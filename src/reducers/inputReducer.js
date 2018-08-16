@@ -1,12 +1,11 @@
 import { GET_INPUT, FETCH_SEARCH } from "../actions/types";
 
-export default function(state = { posts: [], subscriptions: [], inputVal: ''}, action) {
+export default function(state = { posts: [], subscriptions: [], searchArr: [], inputVal: ''}, action) {
   // console.log('authreducer: action', action, 'state', state);
   switch(action.type) {
     case FETCH_SEARCH:
       let newState = JSON.parse(JSON.stringify(state));
-      newState.posts = action.payload.posts;
-      newState.subscriptions = action.payload.subscriptions;
+      newState.searchArr = action.payload;
       return newState
     case GET_INPUT:
       let newState2 = JSON.parse(JSON.stringify(state));
