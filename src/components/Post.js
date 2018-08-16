@@ -260,7 +260,7 @@ class Post extends Component {
                   <Comment.Actions>
                     {this.showReplies(ele._id) ? <div>
                       <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' :'thumbs up outline postBtn'} /></Comment.Action>
-                      <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                      <Comment.Action>{ele.upCount}</Comment.Action>
                       <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
                       <Comment.Action>{ele.downCount}</Comment.Action>
                       <Comment.Action onClick = {() => this.setNavigation(ele._id)}><Icon name = 'map marker alternate'/></Comment.Action>

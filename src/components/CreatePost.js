@@ -260,7 +260,7 @@ class CreatePost extends Component {
                 content='Create a new post'
               />
               <Form>
-                <Dropdown style = {{marginBottom: 20}} placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: ele._id, text: ele.title} })}/>
+                <Dropdown style = {{marginBottom: 20}} placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: { id: ele._id, flairs: ele.flairs }, text: ele.title} })}/>
                 <Form.Group widths='equal'>
                   <Form.Field
                     id='form-input-control-first-name'
