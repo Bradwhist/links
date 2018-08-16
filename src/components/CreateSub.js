@@ -176,14 +176,18 @@ class CreateSub extends Component {
          </Menu>
 
          <Container>
-         <Grid>
-           <Grid.Column width={4}>
-             <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
-           </Grid.Column>
-           <Grid.Column width={12}>
-             <Form>
-               <Form.Group widths='equal'>
-                 <Form.Field
+           <Grid>
+             <Grid.Column width={4}>
+               <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
+             </Grid.Column>
+             <Grid.Column width={12}>
+               <Header
+                 as='h2'
+                 content='Create a new category'
+               />
+               <Form>
+                 <Form.Group widths='equal'>
+                   <Form.Field
                    id='form-input-control-first-name'
                    control={Input}
                    value={this.state.title}

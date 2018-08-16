@@ -74,7 +74,7 @@ class Explore extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchSubs(this.props.auth.logged.subscriptions);
+    this.props.fetchSubs();
   }
 
   upvotePost = (postId, index) => {
@@ -87,6 +87,11 @@ class Explore extends Component {
 
   openPost = (postId) => {
     this.props.history.push('/post/' + postId);
+  }
+
+  subscribe = (subId, i) => {
+    console.log(subId, i);
+  this.props.subscribe(subId, i);
   }
 
   render() {
@@ -104,7 +109,7 @@ class Explore extends Component {
             color='teal'
             onClick={this.handleItemClick} />
             <Menu.Menu position='right'>
-              <Dropdown text = "Explore" pointing className='link item'>
+              <Dropdown  text = "Explore" pointing className='link item'>
                 <Dropdown.Menu>
                   <Dropdown.Header>Subs</Dropdown.Header>
                   <Dropdown.Item
@@ -163,46 +168,50 @@ class Explore extends Component {
             columnWidth={300}
             >
               {this.props.subs.map((ele, i) => {
-                return <div className = "imgBox" key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
+                return <div className = "imgBox" key={i} >
                 <img src = {ele.image} alt = {"pic" + i} className = "img"/>
-                <div class = "overlay"></div>
+                <div className = "overlay" onClick = {() => this.props.history.push('/sub/' + ele._id)} ></div>
                 <div className = "imgTitleBoxForSub"><h1 className = "imgTitle">{ele.title}</h1></div>
-                { this.props.sub ?
-                  this.props.sub.subscribed ?
-                    <Popup trigger={
-                      <Button
-                        className = "followBtn"
-                        icon = 'minus'
-                        color="teal"
-                        onClick = {this.subscribe}
-                      />}
-                      content = "Press here to unfollow this sub!"
-                      inverted /> :
-                    <Popup trigger={
-                      <Button
-                        className = "followBtn"
-                        icon = 'plus'
-                        color="teal"
-                        onClick = {this.subscribe}
-                      />}
-                      content = "Press here to follow this sub!"
-                      inverted />
-
-                : null }
-
-                  {/* <div className = 'dislikeBtn'>
+                {ele.subscribed ?
+                <Popup trigger={
                   <Button
-                  icon = 'thumbs down outline'
-                  color = "teal"
-                  label={{ as: 'a', basic: true, content: '2,048' }}
-                  labelPosition='right'
-                />
-              </div> */}
+                  onClick={() => {
+                    this.subscribe(ele._id, i)
+                    console.log('subscribe')
+                  }}
+                  className = "followBtn"
+                  icon = 'minus'
+                  color="teal"
+                />}
+                  content = "Press here to unfollow this sub!"
+                  inverted />
+                :
+                <Popup trigger={
+                  <Button
+                  onClick={() => {
+                    this.subscribe(ele._id, i)
+                    console.log('subscribe')
+                  }}
+                  className = "followBtn"
+                  icon = 'plus'
+                  color="teal"
+                />}
+                  content = "Press here to follow this sub!"
+                  inverted />
+              }
+                {/* <div className = 'dislikeBtn'>
+                  <Button
+                    icon = 'thumbs down outline'
+                    color = "teal"
+                    label={{ as: 'a', basic: true, content: '2,048' }}
+                    labelPosition='right'
+                  />
+                </div> */}
               {/* </div> */}
               {/* {ele.subscribed ?
                 <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
                 <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> } */}
-              </div>}
+            </div>}
             )}
           </StackGrid>
 
@@ -251,7 +260,7 @@ const mapDispatchToProps = (dispatch) => {
     upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
     downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
     setInput: (value) => dispatch(setInput(value)),
-    fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
+    fetchSubs: () => dispatch(fetchSubs()),
     subscribe: (subId, i) => dispatch(subscribe(subId, i))
   };
 }

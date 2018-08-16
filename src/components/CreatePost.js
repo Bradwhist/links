@@ -199,7 +199,12 @@ class CreatePost extends Component {
               <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
             </Grid.Column>
             <Grid.Column width={12}>
+              <Header
+                as='h2'
+                content='Create a new post'
+              />
               <Form>
+                <Dropdown style = {{marginBottom: 20}} placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: ele._id, text: ele.title} })}/>
                 <Form.Group widths='equal'>
                   <Form.Field
                     id='form-input-control-first-name'
@@ -226,8 +231,6 @@ class CreatePost extends Component {
                     onChange={(e) => this.setContent(e)}
                   />
                 </Form.Group>
-
-              <Dropdown placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: ele._id, text: ele.title} })}/>
               <Form.Field
                 style = {{marginTop: 20}}
                 id='form-button-control-public'

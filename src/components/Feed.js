@@ -250,7 +250,7 @@ import {
           </div>
         })}
         </StackGrid>
-      : <Loader active content="Loading" inline='centered' />}
+      : <Loader active content = "Loading" inline='centered' />}
         {/* {this.props.posts.map((ele, i) => {
           return <div className = "imgBox"><img src = {ele.image} alt={"pic" + (i + 1)} className= "img" /></div>
         })} */}

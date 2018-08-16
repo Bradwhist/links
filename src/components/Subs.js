@@ -98,6 +98,7 @@ class Sub extends Component {
   render() {
     const { activeItem } = this.state;
     console.log(this.props.subs);
+    let counter = 0;
     return (
       <div>
         <Menu pointing inverted>
@@ -127,12 +128,6 @@ class Sub extends Component {
               </Dropdown.Menu>
             </Dropdown>
             </Menu.Menu>
-            {/* <Menu.Item
-              name='explore'
-              active={activeItem === 'explore'}
-              color='teal'
-              onClick={this.handleItemClick}
-            /> */}
             <Menu.Item
               name='following'
               active={activeItem === 'following'}
@@ -169,6 +164,17 @@ class Sub extends Component {
               </Dropdown>
             </Menu.Menu>
           </Menu>
+
+          {this.props.subs.map(ele => {
+            if (!ele.subscribed) {
+              counter++;
+            }
+          })}
+
+          {counter === this.props.subs.length ? <Header as='h2'>
+            No Follows
+            <Header.Subheader>Please follow a few subs to display all your followings here!</Header.Subheader>
+          </Header> : null}
 
           <StackGrid
             columnWidth={300}

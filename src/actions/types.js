@@ -31,3 +31,5 @@ export const POST = 'POST';
 export const GET_INPUT = 'GET_INPUT';
 export const SUBSCRIBE = 'SUBSCRIBE';
 export const SUBSCRIBE_FROM_SUB = 'SUBSCRIBE_FROM_SUB';
+
+export const TOGGLE_FLAIR = 'TOGGLE_FLAIR';
