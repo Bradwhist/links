@@ -40,7 +40,7 @@ class App extends Component {
         <Route exact path = '/allSubs' component={Explore} />
         <Route exact path = '/allPosts' component={allPosts} />
         <Route exact path = '/profile' component= {Profile} />
-        <Route exact path = '/post/:id' render={(props) => <Post {...props} /> } />
+        <Route exact path = '/post/:id/:commentId?' render={(props) => <Post {...props} /> } />
         <Route exact path = '/createSub' component={CreateSub} />
         <Route exact path = '/createPost' component={CreatePost} />
         <Route exact path = '/following' component={Subs} />

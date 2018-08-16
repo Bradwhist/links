@@ -19,6 +19,9 @@ const UserSchema = new mongoose.Schema({
     }],
     default: [],
   },
+  imageUrl: {
+    type: String,
+  },
   subscriptions: {
     type: [{
       type: ObjectId,
