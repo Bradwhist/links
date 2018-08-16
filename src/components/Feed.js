@@ -174,7 +174,9 @@ import {
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
 
           {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
+
           <Search className = 'searchInputBox'
+          fluid = {true}
           loading={this.state.isLoading}
           onResultSelect={this.handleResultSelect}
           onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
@@ -182,6 +184,7 @@ import {
           value={this.state.value}
           {...this.props}
           />
+
 
           <Menu.Item
             name='home'
@@ -245,6 +248,10 @@ import {
           </Menu.Menu>
         </Menu>
         { this.state.loaded ?
+          this.props.subs.length === 0 ? <Header as='h2'>
+            Customize your feed!
+            <Header.Subheader>This area will consist of all posts from subreddits that you follow! To get started, click explore and start following some subs!</Header.Subheader>
+          </Header> :
         <StackGrid
         columnWidth={300}
         >
@@ -339,11 +346,12 @@ import {
 //   posts: PropTypes.array,
 // };
 
-const mapStateToProps = ({auth, posts, input}) => {
+const mapStateToProps = ({auth, posts, input, subs}) => {
   return {
     auth,
     posts,
     input,
+    subs
   }
 }
 const mapDispatchToProps = (dispatch) => {
