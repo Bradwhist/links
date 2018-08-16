@@ -45,13 +45,17 @@ class CreatePost extends Component {
       this.setState({ activeItem: name })
       this.props.history.push('/feed');
     }
-    else if (name === 'explore'){
+    else if (name === 'allSubs'){
       this.setState({ activeItem: name })
-      this.props.history.push('/explore');
+      this.props.history.push('/allSubs');
     }
-    else if (name === 'subs'){
+    else if (name === 'allPosts'){
       this.setState({ activeItem: name })
-      this.props.history.push('/subs');
+      this.props.history.push('/allPosts');
+    }
+    else if (name === 'following'){
+      this.setState({ activeItem: name })
+      this.props.history.push('/following');
     }
     else if (name === 'profile'){
       this.setState({ activeItem: name })
@@ -126,14 +130,28 @@ class CreatePost extends Component {
             name='home'
             active={activeItem === 'home'}
             onClick={this.handleItemClick} />
+            <Menu.Menu position='right'>
+            <Dropdown text = "Explore" pointing className='link item'>
+              <Dropdown.Menu>
+                <Dropdown.Header>Subs</Dropdown.Header>
+                <Dropdown.Item
+                  active = {activeItem === 'allSubs'}
+                  onClick = {() => this.props.history.push('./allSubs')}>
+                  All Subs
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Header>Posts</Dropdown.Header>
+                <Dropdown.Item
+                  active = {activeItem === 'allPosts'}
+                  onClick = {() => this.props.history.push('./allPosts')}>
+                  All Posts
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            </Menu.Menu>
             <Menu.Item
-              name='explore'
-              active={activeItem === 'explore'}
-              onClick={this.handleItemClick}
-            />
-            <Menu.Item
-              name='subs'
-              active={activeItem === 'subs'}
+              name='following'
+              active={activeItem === 'following'}
               color='teal'
               onClick={this.handleItemClick}
             />
@@ -175,6 +193,7 @@ class CreatePost extends Component {
             </Menu.Menu>
           </Menu>
 
+          <Container>
           <Grid className = "createPostGrid">
             <Grid.Column width={4}>
               <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
@@ -210,6 +229,7 @@ class CreatePost extends Component {
 
               <Dropdown placeholder='Select Subreddit' onChange={this.setSub} fluid search selection options={this.props.subs.map(ele => { return {key: ele._id, value: ele._id, text: ele.title} })}/>
               <Form.Field
+                style = {{marginTop: 20}}
                 id='form-button-control-public'
                 control={Button}
                 content='Confirm'
@@ -218,6 +238,7 @@ class CreatePost extends Component {
             </Form>
           </Grid.Column>
         </Grid>
+        </Container>
         {/* <button onClick={this.logout}>Logout</button>
         <button onClick={this.goProfile}>Back to profile...</button>
         <form onSubmit={(e) => this.createPost(e)}>

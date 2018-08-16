@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import { logout, fetchPosts, upvotePost, downvotePost, setInput, fetchSubs, subscribe } from '../actions'
+import { logout, fetchPosts, upvotePost, downvotePost, setInput, fetchSubs } from '../actions'
 import {
   Button,
   Container,
@@ -26,11 +26,11 @@ import {
 /* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
 * such things.
 */
-class Explore extends Component {
+class AllPosts extends Component {
   constructor(props){
     super(props);
     this.state = {
-      activeItem: 'allSubs'
+      activeItem: 'allPosts'
     }
   }
 
@@ -74,7 +74,7 @@ class Explore extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchSubs(this.props.auth.logged.subscriptions);
+
   }
 
   upvotePost = (postId, index) => {
@@ -104,7 +104,7 @@ class Explore extends Component {
             color='teal'
             onClick={this.handleItemClick} />
             <Menu.Menu position='right'>
-              <Dropdown  text = "Explore" pointing className='link item'>
+              <Dropdown text = "Explore" pointing className='link item'>
                 <Dropdown.Menu>
                   <Dropdown.Header>Subs</Dropdown.Header>
                   <Dropdown.Item
@@ -162,48 +162,68 @@ class Explore extends Component {
           <StackGrid
             columnWidth={300}
             >
-              {this.props.subs.map((ele, i) => {
-                return <div className = "imgBox" key={i} onClick = {() => this.props.history.push('/sub/' + ele._id)}>
-                <img src = {ele.image} alt = {"pic" + i} className = "img"/>
+              <div className = "imgBox" key="key1">
+                <img src = "https://images.unsplash.com/photo-1533756102515-155e3863ee1c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7714524f4448bdda1d20f3cb883d2e45&auto=format&fit=crop&w=634&q=80" alt = "pic1" className = "img" />
                 <div class = "overlay"></div>
-                <div className = "imgTitleBoxForSub"><h1 className = "imgTitle">{ele.title}</h1></div>
-                { this.props.sub ?
-                  this.props.sub.subscribed ?
-                    <Popup trigger={
-                      <Button
-                        className = "followBtn"
-                        icon = 'minus'
-                        color="teal"
-                        onClick = {this.subscribe}
-                      />}
-                      content = "Press here to unfollow this sub!"
-                      inverted /> :
-                    <Popup trigger={
-                      <Button
-                        className = "followBtn"
-                        icon = 'plus'
-                        color="teal"
-                        onClick = {this.subscribe}
-                      />}
-                      content = "Press here to follow this sub!"
-                      inverted />
-
-                : null }
-
-                  {/* <div className = 'dislikeBtn'>
+                <div className = "imgTitleBox"><h1 className = "imgTitle">Insert title here</h1></div>
+                  <div className = 'likeBtn'>
+                    <Button
+                      icon = 'thumbs up outline'
+                      color = "teal"
+                      label={{ as: 'a', basic: true, content: '2,048' }}
+                      labelPosition='right'
+                      // onClick event handler here
+                    />
+                  </div>
+                  <div className = 'dislikeBtn'>
+                    <Button
+                      icon = 'thumbs down outline'
+                      color = "teal"
+                      label={{ as: 'a', basic: true, content: '2,048' }}
+                      labelPosition='right'
+                    />
+                  </div>
+              </div>
+              <div className = "imgBox" key="key2"><img src = "https://images.unsplash.com/photo-1533821312764-eb0483f98f69?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d383aa86b1a43b453dd58374919155b9&auto=format&fit=crop&w=1050&q=80" alt = "pic2" className = "img"/>
+                <div class = "overlay"></div>
+                <div className = "imgTitleBox"><h1 className = "imgTitle">Insert title here</h1></div>
+                <div className = 'likeBtn'>
                   <Button
-                  icon = 'thumbs down outline'
-                  color = "teal"
-                  label={{ as: 'a', basic: true, content: '2,048' }}
-                  labelPosition='right'
-                />
-              </div> */}
-              {/* </div> */}
-              {/* {ele.subscribed ?
-                <button onClick={() => this.subscribe(ele._id, i)}>Unsubscribe</button> :
-                <button onClick={() => this.subscribe(ele._id, i)}>Subscribe</button> } */}
-              </div>}
-            )}
+                    icon = 'thumbs up outline'
+                    color = "teal"
+                    label={{ as: 'a', basic: true, content: '2,048' }}
+                    labelPosition='right'
+                  />
+                </div>
+                <div className = 'dislikeBtn'>
+                  <Button
+                    icon = 'thumbs down outline'
+                    color = "teal"
+                    label={{ as: 'a', basic: true, content: '2,048' }}
+                    labelPosition='right'
+                  />
+                </div>
+              </div>
+              <div className = "imgBox" key="key3"><img src = "https://images.unsplash.com/photo-1533826418470-0cef7eb8bdaa?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=714f5ed2388ebfa626d8263ef243c644&auto=format&fit=crop&w=634&q=80" alt = "pic3" className = "img"/>
+                <div class = "overlay"></div>
+                <div className = "imgTitleBox"><h1 className = "imgTitle">Insert title here</h1></div>
+                <div className = 'likeBtn'>
+                  <Button
+                    icon = 'thumbs up outline'
+                    color = "teal"
+                    label={{ as: 'a', basic: true, content: '2,048' }}
+                    labelPosition='right'
+                  />
+                </div>
+                <div className = 'dislikeBtn'>
+                  <Button
+                    icon = 'thumbs down outline'
+                    color = "teal"
+                    label={{ as: 'a', basic: true, content: '2,048' }}
+                    labelPosition='right'
+                  />
+                </div>
+              </div>
           </StackGrid>
 
           {/* <div>
@@ -237,11 +257,10 @@ class Explore extends Component {
 //   posts: PropTypes.array,
 // };
 
-const mapStateToProps = ({auth, subs, sub}) => {
+const mapStateToProps = ({auth, subs}) => {
   return {
     auth,
-    subs,
-    sub
+    subs
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -252,14 +271,13 @@ const mapDispatchToProps = (dispatch) => {
     downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
     setInput: (value) => dispatch(setInput(value)),
     fetchSubs: (userSub) => dispatch(fetchSubs(userSub)),
-    subscribe: (subId, i) => dispatch(subscribe(subId, i))
   };
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Explore)
+)(AllPosts)
 
 // {this.props.posts ?
 // this.props.posts.map((ele, i) => <div key={"key" + (i + 1)}>{"key" + (i + 1)}</div> )

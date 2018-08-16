@@ -6,6 +6,7 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Feed from './components/Feed'
 import Explore from './components/Explore'
+import allPosts from './components/AllPosts'
 import Profile from './components/Profile'
 import Post from './components/Post'
 import Subs from './components/Subs'
@@ -36,18 +37,15 @@ class App extends Component {
       {this.props.auth.logged && this.props.auth.loaded ?
         <Switch>
         <Route exact path = '/feed' component={Feed} />
-        <Route exact path = '/explore' component={Explore} />
+        <Route exact path = '/allSubs' component={Explore} />
+        <Route exact path = '/allPosts' component={allPosts} />
         <Route exact path = '/profile' component= {Profile} />
         <Route exact path = '/post/:id/:commentId?' render={(props) => <Post {...props} /> } />
         <Route exact path = '/createSub' component={CreateSub} />
         <Route exact path = '/createPost' component={CreatePost} />
-        <Route exact path = '/subs' component={Subs} />
+        <Route exact path = '/following' component={Subs} />
         <Route exact path = '/sub/:id' component={Sub} />
         <Route exact path = '/profile' component= {Profile} />
-        <Route exact path = '/profile/bio' component = {Profile} />
-        <Route exact path = '/profile/posts' component = {Profile} />
-        <Route exact path = '/profile/activity' component = {Profile} />
-        <Route exact path = '/profile/links' component = {Profile} />
         <Redirect exact from = '/login' to = '/feed' />
         </Switch>
         :
