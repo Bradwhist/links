@@ -20,6 +20,7 @@ import {
   Input,
   List,
   Menu,
+  Modal,
   Responsive,
   Segment,
   Sidebar,
@@ -42,6 +43,8 @@ class Post extends Component {
       value: 'Type something here...',
       replyComments: [],
       response: null,
+      likeButtonClicked: false,
+      modalOpen: false,
     };
   }
 
@@ -53,6 +56,11 @@ class Post extends Component {
     this.setState({ navigation: this.props.match.params.commentId })
   }
 
+  handleOpen = () => this.setState({ modalOpen: true })
+
+  handleClose = () => {
+    this.setState({ modalOpen: false })
+  }
 
   handleItemClick = (e, { name }) => {
     if (name === 'home') {
@@ -116,6 +124,7 @@ class Post extends Component {
   createRootComment = (e) => {
     e.preventDefault();
     //console.log(this.state.content);
+
     this.props.createRootComment(this.state.content, this.props.match.params.id);
   }
   goProfile = () => {
@@ -123,7 +132,9 @@ class Post extends Component {
   }
   // upvoteComment handles click for positive vote on comment of any level
   upvoteComment = (commentId, index) => {
+    console.log("UPVOTED")
     this.props.upvoteComment(commentId, index);
+    console.log('UPVOTED STATE', this.state.likeButtonClicked)
   }
   // downvoteComment handles click for negative vote on comment of any level
   downvoteComment(commentId, index) {
@@ -208,23 +219,29 @@ class Post extends Component {
                 <Comment.Text>{ele.content}</Comment.Text>
                   <Comment.Actions>
                     {this.showReplies(ele._id) ? <div>
-                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name='thumbs up outline' /></Comment.Action>
-                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name='thumbs down outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' :'thumbs up outline postBtn'} /></Comment.Action>
+                      {ele.upvotes.length > 0 ? <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                      {ele.downvotes.length > 0 ? <Comment.Action>{ele.downCount}</Comment.Action> : null}
                       <Comment.Action onClick = {() => this.setNavigation(ele._id)}>Navigate to comment</Comment.Action>
                       { this.props.auth.logged._id === ele.author.id ?
-                        <Comment.Action onClick = {() => this.deleteComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
+                      <Comment.Action onClick = {() => this.deleteComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
                       <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
                       <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>Hide replies</Comment.Action></div> :
-                    ele.comments.length === 0 ? <div>
-                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name='thumbs up outline' /></Comment.Action>
-                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name='thumbs down outline' /></Comment.Action>
+                      ele.comments.length === 0 ? <div>
+                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                      {ele.upvotes.length > 0 ? <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                      {ele.downvotes.length > 0 ? <Comment.Action>{ele.downCount}</Comment.Action> : null}
                       <Comment.Action onClick = {() => this.setNavigation(ele._id)}>Navigate to comment</Comment.Action>
                       { this.props.auth.logged._id === ele.author.id ?
                         <Comment.Action onClick = {() => this.deleteComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
                       <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action></div>:
                     ele.comments.length === 1 ? <div>
-                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name='thumbs up outline' /></Comment.Action>
-                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name='thumbs down outline' /></Comment.Action>
+                      <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                      {ele.upvotes.length > 0 ? <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                      <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                      {ele.downvotes.length > 0 ? <Comment.Action>{ele.downCount}</Comment.Action> : null}
                       <Comment.Action onClick = {() => this.setNavigation(ele._id)}>Navigate to comment</Comment.Action>
                       { this.props.auth.logged._id === ele.author.id ?
                         <Comment.Action onClick = {() => this.deleteComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
@@ -299,7 +316,6 @@ class Post extends Component {
       console.log(navComment);
       return (
         <div>
-          <button onClick = {() => this.deletePost(this.props.match.params.id)}>Delete Post</button>
           <Menu pointing inverted>
             <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
             <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
@@ -327,6 +343,12 @@ class Post extends Component {
                 </Dropdown.Menu>
               </Dropdown>
               </Menu.Menu>
+              <Menu.Item
+                name='following'
+                active={activeItem === 'following'}
+                color='teal'
+                onClick={this.handleItemClick}
+              />
               <Menu.Item
                 name='profile'
                 active={activeItem === 'profile'}
@@ -357,21 +379,52 @@ class Post extends Component {
                 </Dropdown>
               </Menu.Menu>
             </Menu>
-            {this.props.post ?
-            <Container>
+
+            <Modal
+              trigger={<Button style = {{position: 'absolute', right: 5}} negative onClick={this.handleOpen}>Delete Post</Button>}
+              open={this.state.modalOpen}
+              onClose={this.handleClose}
+              basic
+              size='small'
+              >
+                <Header icon='browser' content='Warning' />
+                <Modal.Content>
+                  <h3>Are you sure you want to delete your post? It will be permanently deleted.</h3>
+                </Modal.Content>
+                <Modal.Actions>
+                  <Button onClick={this.handleClose} inverted>
+                    Cancel
+                  </Button>
+                  <Button color='red' onClick={() => this.deletePost(this.props.match.params.id)} inverted>
+                    Yes delete it
+                  </Button>
+                </Modal.Actions>
+              </Modal>
+
+              {/* <Button style = {{position: 'absolute', right: 5}} negative onClick = {() => this.deletePost(this.props.match.params.id)}>Delete Post</Button> */}
+
+              {this.props.post ?
+                <Container>
               <Grid centered columns = {2}>
                 <Grid.Column>
-                  <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+                  <Segment>
+                    <Image src={this.props.post.post.image} />
+                    <Header style = {{textAlign: 'center'}} as='h2'>
+                      {this.props.post.post.title}
+                      <Header.Subheader>{this.props.post.post.content}</Header.Subheader>
+                    </Header>
+                  </Segment>
                 </Grid.Column>
 
                 <Grid.Row centered columns={2}>
-                { !this.state.navigation ?
-                  <Grid.Column>
-                    <Header as='h3' dividing>
-                      Comments
-                      <Menu style = {{fontSize: 12, position: 'absolute', right: 10, bottom: 475}} compact>
+                  { !this.state.navigation ?
+                    <Grid.Column>
+
+                      <Header as='h3' dividing>
+                        {this.props.post.comments.length + " Comments"}
+                        {/* <Menu style = {{fontSize: 12, position: 'absolute', right: 10, bottom: 475}} compact>
                         <Dropdown text='Sort' options={options} simple item />
-                      </Menu>
+                      </Menu> */}
                     </Header>
 
                     <Form reply onSubmit={(e) => this.createRootComment(e)}>
@@ -381,6 +434,7 @@ class Post extends Component {
                     {this.props.post.comments.map((ele, i) => {
                       if (!ele.parent) {
                         return  <Comment.Group>
+                          <Segment raised>
                           <Comment>
                             <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
                             <Comment.Content>
@@ -391,31 +445,39 @@ class Post extends Component {
                               <Comment.Text>{ele.content}</Comment.Text>
                               <Comment.Actions>
                                 {this.showReplies(ele._id) ? <div>
-                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
-                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                                  {ele.upvotes.length > 0 ? <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                                  {ele.downvotes.length > 0 ? <Comment.Action>{ele.downCount}</Comment.Action> : null}
                                   <Comment.Action onClick = {() => this.setNavigation(ele._id)}>Navigate to comment</Comment.Action>
                                   { this.props.auth.logged._id === ele.author.id ?
-                                    <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
+                                  <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
                                   <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
                                   <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>Hide replies</Comment.Action></div> :
-                                ele.comments.length === 0 ? <div>
-                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
-                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  ele.comments.length === 0 ? <div>
+                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up  postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                                  {ele.upvotes.length > 0 ? <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                                  {ele.downvotes.length > 0 ? <Comment.Action>{ele.downCount}</Comment.Action> : null}
                                   <Comment.Action onClick = {() => this.setNavigation(ele._id)}>Navigate to comment</Comment.Action>
                                   { this.props.auth.logged._id === ele.author.id ?
                                     <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
                                   <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action> </div> :
-                                ele.comments.length === 1 ?  <div>
-                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
-                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  ele.comments.length === 1 ?  <div>
+                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                                  {ele.upvotes.length > 0 ? <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                                  {ele.downvotes.length > 0 ? <Comment.Action>{ele.downCount}</Comment.Action> : null}
                                   <Comment.Action onClick = {() => this.setNavigation(ele._id)}>Navigate to comment</Comment.Action>
                                   { this.props.auth.logged._id === ele.author.id ?
-                                    <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
+                                  <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
                                   <Comment.Action onClick = {() => this.replyComment(ele._id)}>Reply</Comment.Action>
                                   <Comment.Action onClick = {() => this.toggleReplies(ele._id)}>View {ele.comments.length} reply</Comment.Action> </div> :
                                 <div>
-                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, i)}><Icon name='thumbs up outline' /></Comment.Action>
-                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, i)}><Icon name='thumbs down outline' /></Comment.Action>
+                                  <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                                  {ele.upvotes.length > 0 ? <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                                  <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'}  /></Comment.Action>
+                                  {ele.downvotes.length > 0 ? <Comment.Action>{ele.downCount}</Comment.Action> : null}
                                   <Comment.Action onClick = {() => this.setNavigation(ele._id)}>Navigate to comment</Comment.Action>
                                   { this.props.auth.logged._id === ele.author.id ?
                                     <Comment.Action onClick = {() => this.deleteRootComment(ele._id, i)}>Delete Comment</Comment.Action> : null }
@@ -434,6 +496,7 @@ class Post extends Component {
                             {/* This is to render the replies based on a ternary */}
                             {this.showReplies(ele._id) ? this.renderReplies(ele.comments) : null}
                           </Comment>
+                        </Segment>
 
                         </Comment.Group>
                       }
@@ -450,9 +513,9 @@ class Post extends Component {
                 <Grid.Column>
                   <Header as='h3' dividing>
                     Comments
-                    <Menu style = {{fontSize: 12, position: 'absolute', right: 10, bottom: 475}} compact>
+                    {/* <Menu style = {{fontSize: 12, position: 'absolute', right: 10, bottom: 475}} compact>
                       <Dropdown text='Sort' options={options} simple item />
-                    </Menu>
+                    </Menu> */}
                   </Header>
 
                   <Form reply onSubmit={(e) => this.createRootComment(e)}>
@@ -473,31 +536,39 @@ class Post extends Component {
                             <Comment.Text>{navComment.content}</Comment.Text>
                             <Comment.Actions>
                               {this.showReplies(navComment._id) ? <div>
-                                <Comment.Action onClick = {() => this.upvoteComment(navComment._id, navComment.index)}><Icon name='thumbs up outline' /></Comment.Action>
-                                <Comment.Action onClick = {() => this.downvoteComment(navComment._id, navComment.index)}><Icon name='thumbs down outline' /></Comment.Action>
+                                <Comment.Action onClick = {() => this.upvoteComment(navComment._id, navComment.index)}><Icon name={navComment.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                                {navComment.upvotes.length > 0 ? <Comment.Action>{navComment.upCount}</Comment.Action> : null}
+                                <Comment.Action onClick = {() => this.downvoteComment(navComment._id, navComment.index)}><Icon name={navComment.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                                {navComment.downvotes.length > 0 ? <Comment.Action>{navComment.downCount}</Comment.Action> : null}
                                 <Comment.Action onClick = {() => this.setNavigation(navComment._id)}>Navigate to comment</Comment.Action>
-                                { this.props.auth.logged._id === navComment.author.id ?
+                                {this.props.auth.logged._id === navComment.author.id ?
                                   <Comment.Action onClick = {() => this.deleteRootComment(navComment._id, navComment.index)}>Delete Comment</Comment.Action> : null }
                                 <Comment.Action onClick = {() => this.replyComment(navComment._id)}>Reply</Comment.Action>
                                 <Comment.Action onClick = {() => this.toggleReplies(navComment._id)}>Hide replies</Comment.Action></div> :
-                              navComment.comments.length === 0 ? <div>
-                                <Comment.Action onClick = {() => this.upvoteComment(navComment._id, navComment.index)}><Icon name='thumbs up outline' /></Comment.Action>
-                                <Comment.Action onClick = {() => this.downvoteComment(navComment._id, navComment.index)}><Icon name='thumbs down outline' /></Comment.Action>
+                                navComment.comments.length === 0 ? <div>
+                                <Comment.Action onClick = {() => this.upvoteComment(navComment._id, navComment.index)}><Icon name={navComment.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                                {navComment.upvotes.length > 0 ? <Comment.Action>{navComment.upCount}</Comment.Action> : null}
+                                <Comment.Action onClick = {() => this.downvoteComment(navComment._id, navComment.index)}><Icon name={navComment.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                                {navComment.downvotes.length > 0 ? <Comment.Action>{navComment.downCount}</Comment.Action> : null}
                                 <Comment.Action onClick = {() => this.setNavigation(navComment._id)}>Navigate to comment</Comment.Action>
-                                { this.props.auth.logged._id === navComment.author.id ?
+                                {this.props.auth.logged._id === navComment.author.id ?
                                   <Comment.Action onClick = {() => this.deleteRootComment(navComment._id, navComment.index)}>Delete Comment</Comment.Action> : null }
                                 <Comment.Action onClick = {() => this.replyComment(navComment._id)}>Reply</Comment.Action> </div> :
-                              navComment.comments.length === 1 ?  <div>
-                                <Comment.Action onClick = {() => this.upvoteComment(navComment._id, navComment.index)}><Icon name='thumbs up outline' /></Comment.Action>
-                                <Comment.Action onClick = {() => this.downvoteComment(navComment._id, navComment.index)}><Icon name='thumbs down outline' /></Comment.Action>
+                                navComment.comments.length === 1 ?  <div>
+                                <Comment.Action onClick = {() => this.upvoteComment(navComment._id, navComment.index)}><Icon name={navComment.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                                {navComment.upvotes.length > 0 ? <Comment.Action>{navComment.upCount}</Comment.Action> : null}
+                                <Comment.Action onClick = {() => this.downvoteComment(navComment._id, navComment.index)}><Icon name={navComment.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                                {navComment.downvotes.length > 0 ? <Comment.Action>{navComment.downCount}</Comment.Action> : null}
                                 <Comment.Action onClick = {() => this.setNavigation(navComment._id)}>Navigate to comment</Comment.Action>
                                 { this.props.auth.logged._id === navComment.author.id ?
                                   <Comment.Action onClick = {() => this.deleteRootComment(navComment._id, navComment.index)}>Delete Comment</Comment.Action> : null }
                                 <Comment.Action onClick = {() => this.replyComment(navComment._id)}>Reply</Comment.Action>
                                 <Comment.Action onClick = {() => this.toggleReplies(navComment._id)}>View {navComment.comments.length} reply</Comment.Action> </div> :
                               <div>
-                                <Comment.Action onClick = {() => this.upvoteComment(navComment._id, navComment.index)}><Icon name='thumbs up outline' /></Comment.Action>
-                                <Comment.Action onClick = {() => this.downvoteComment(navComment._id, navComment.index)}><Icon name='thumbs down outline' /></Comment.Action>
+                                <Comment.Action onClick = {() => this.upvoteComment(navComment._id, navComment.index)}><Icon name={navComment.upVoted ? 'thumbs up postBtn' : 'thumbs up outline postBtn'} /></Comment.Action>
+                                {navComment.upvotes.length > 0 ? <Comment.Action>{navComment.upCount}</Comment.Action> : null}
+                                <Comment.Action onClick = {() => this.downvoteComment(navComment._id, navComment.index)}><Icon name={navComment.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
+                                {navComment.downvotes.length > 0 ? <Comment.Action>{navComment.downCount}</Comment.Action> : null}
                                 <Comment.Action onClick = {() => this.setNavigation(navComment._id)}>Navigate to comment</Comment.Action>
                                 { this.props.auth.logged._id === navComment.author.id ?
                                   <Comment.Action onClick = {() => this.deleteRootComment(navComment._id, navComment.index)}>Delete Comment</Comment.Action> : null }

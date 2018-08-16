@@ -178,7 +178,7 @@ class Sub extends Component {
          columnWidth={300}
          >
            {this.props.sub.posts.map((ele, i) => {
-             return <div className = "imgBox" key={i}>
+             return <div className = "imgBox" key={i} onClick = {() => this.props.history.push('/post/' + ele._id)}>
                <img className = "img" src = {ele.image} alt = {"pic" + i}/>
                <div class = "overlay"></div>
                <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
