@@ -20,6 +20,21 @@ export default function(state = { post: {}, comments: [] }, action) {
           newState.post.downVoted = true;
         }
         newState.comments.sort((a, b) => a.score < b.score);
+        for (let i = 0; i < newState.comments.length; i ++ ) {
+          newState.comments[i].index = i;
+          newState.comments[i].upCount = newState.comments[i].upvotes.length;
+          newState.comments[i].downCount = newState.comments[i].downvotes.length;
+          if (newState.comments[i].upvotes.indexOf(action.payload.user) === -1) {
+            newState.comments[i].upVoted = false;
+          } else {
+            newState.comments[i].upVoted = true;
+          }
+          if (newState.comments[i].downvotes.indexOf(action.payload.user) === -1) {
+            newState.comments[i].downVoted = false;
+          } else {
+            newState.comments[i].downVoted = true;
+          }
+        }
         return newState;
       case FETCH_POST_NONE:
         return action.payload;
@@ -34,12 +49,34 @@ export default function(state = { post: {}, comments: [] }, action) {
         newState3.upVoted = false;
       return newState3;
       case UPVOTE_COMMENT:
+        let cIndex4 = action.payload.index;
         let newState4 = JSON.parse(JSON.stringify(state));
-        newState4.comments[action.payload.index].score = action.payload.score;
+        if (newState4.comments[cIndex4].upVoted) {
+          newState4.comments[cIndex4].upCount --;
+        } else if (newState4.comments[cIndex4].downVoted) {
+          newState4.comments[cIndex4].upCount ++;
+          newState4.comments[cIndex4].downCount --;
+        } else {
+          newState4.comments[cIndex4].upCount ++;
+        }
+        newState4.comments[cIndex4].score = action.payload.score;
+        newState4.comments[cIndex4].upVoted = !newState4.comments[cIndex4].upVoted;
+        newState4.comments[cIndex4].downVoted = false;
       return newState4;
       case DOWNVOTE_COMMENT:
+        let cIndex5 = action.payload.index;
         let newState5 = JSON.parse(JSON.stringify(state));
-        newState5.comments[action.payload.index].score = action.payload.score;
+        if (newState5.comments[cIndex5].downVoted) {
+          newState5.comments[cIndex5].downCount --;
+        } else if (newState5.comments[cIndex5].upVoted) {
+          newState5.comments[cIndex5].downCount ++;
+          newState5.comments[cIndex5].upCount --;
+        } else {
+          newState5.comments[cIndex5].downCount ++;
+        }
+        newState5.comments[cIndex5].score = action.payload.score;
+        newState5.comments[cIndex5].downVoted = !newState5.comments[cIndex5].downVoted;
+        newState5.comments[cIndex5].upVoted = false;
       return newState5;
       case CREATE_ROOT_COMMENT:
         let newState6 = JSON.parse(JSON.stringify(state));

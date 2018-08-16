@@ -300,7 +300,9 @@ router.post('/vote/comment/down', (req, res) => {
 router.post('/subscribe', (req, res) => {
   User.findById(res.locals.user._id)
   .then(user => {
+    console.log(req.body.sub)
     let subIndex = user.subscriptions.indexOf(req.body.sub);
+    console.log(subIndex);
     if (subIndex === -1) {
     user.subscriptions.push(req.body.sub);
   } else {

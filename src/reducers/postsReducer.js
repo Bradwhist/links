@@ -6,6 +6,9 @@ export default function(state = [], action) {
     case FETCH_POSTS:
       let newState = action.payload.posts;
       for (var i = 0; i < newState.length; i ++ ) {
+        newState[i].index = i;
+        newState[i].upCount = newState[i].upvotes.length;
+        newState[i].downCount = newState[i].downvotes.length;
         if (newState[i].upvotes.indexOf(action.payload.user) === -1) {
           newState[i].upVoted = false;
         } else {
@@ -17,7 +20,7 @@ export default function(state = [], action) {
           newState[i].downVoted = true;
         }
       }
-      newState.sort((a, b) => a.score < b.score)
+      // newState.sort((a, b) => a.score < b.score)
       return newState;
       // let postsArr = action.payload;
       // // helper scoring function
@@ -42,16 +45,34 @@ export default function(state = [], action) {
       //
       // return postsArr.sort((a,b) => scoreFn(b) - scoreFn(a));
       case UPVOTE_POST:
+        let cIndex = action.payload.index;
         let newState2 = [ ...state ];
-        newState2[action.payload.index].upVoted = !newState2[action.payload.index].upVoted;
-        newState2[action.payload.index].downVoted = false;
-        newState2[action.payload.index].score = action.payload.score;
+        if (newState2[cIndex].downVoted) {
+          newState2[cIndex].upCount ++;
+          newState2[cIndex].downCount --;
+        } else if (newState2[cIndex].upVoted) {
+          newState2[cIndex].upCount --;
+        } else {
+          newState2[cIndex].upCount ++;
+        }
+        newState2[cIndex].upVoted = !newState2[cIndex].upVoted;
+        newState2[cIndex].downVoted = false;
+        newState2[cIndex].score = action.payload.score;
       return newState2;
       case DOWNVOTE_POST:
+        let cIndex2 = action.payload.index;
         let newState3 = [ ...state ];
-        newState3[action.payload.index].downVoted = !newState3[action.payload.index].downVoted;
-        newState3[action.payload.index].upVoted = false;
-        newState3[action.payload.index].score = action.payload.score;
+        if (newState3[cIndex2].upVoted) {
+          newState3[cIndex2].upCount --;
+          newState3[cIndex2].downCount ++;
+        } else if (newState3[cIndex2].downVoted) {
+          newState3[cIndex2].downCount --;
+        } else {
+          newState3[cIndex2].downCount ++;
+        }
+        newState3[cIndex2].downVoted = !newState3[cIndex2].downVoted;
+        newState3[cIndex2].upVoted = false;
+        newState3[cIndex2].score = action.payload.score;
       return newState3;
       default:
       return state;
