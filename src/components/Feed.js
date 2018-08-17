@@ -289,8 +289,8 @@ import {
               <Label className = 'ribbonLabel' style = {{position: 'absolute', left: -14, top: 20, zIndex: 1}} as='a' color='teal' ribbon onClick = {() => this.goToSub(ele.sub.id)}>
                 {ele.sub.title}
               </Label>
-              <div class = "overlay"></div>
-              <div onClick = { () => this.goToPost(ele._id) }  className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+              <div onClick = { () => this.goToPost(ele._id) } class = "overlay"></div>
+              <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
 
               <div className = 'likeBtn'>
                 <Button

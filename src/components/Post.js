@@ -402,12 +402,19 @@ class Post extends Component {
               {this.props.post && this.state.loaded ?
                 <Container>
 
-                  <Button style = {{backgroundColor: 'white', position: 'absolute', top: 70, left: 10}}
+                  <Button style = {{backgroundColor: '#18dbce', color: 'white', position: 'absolute', top: 70, left: 10}}
+                    animated
+                    circular
                     icon
                     onClick = {() => this.props.history.goBack()}
                     >
+                    <Button.Content visible>
                     <Icon name='angle left' />
                       Back
+                    </Button.Content>
+                    <Button.Content hidden >
+                      <Icon name='arrow left' />
+                    </Button.Content>
                   </Button>
 
                   <Modal

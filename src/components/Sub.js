@@ -17,6 +17,7 @@ import {
   Icon,
   Input,
   Image,
+  Label,
   List,
   Menu,
   Responsive,
@@ -300,8 +301,21 @@ removeFlairFilter = (i) => {
            </Menu.Menu>
          </Menu>
 
-         {/* DAN plz move these or make them look nice */}
-         <Container style = {{marginBottom: 10, width: '87%'}}>
+         <Container style = {{marginBottom: 10, width: '80%'}}>
+           <Button style = {{backgroundColor: '#18dbce', color: 'white', position: 'absolute', top: 70, left: 10}}
+             animated
+             circular
+             icon
+             onClick = {() => this.props.history.goBack()}
+             >
+             <Button.Content visible>
+             <Icon name='angle left' />
+               Back
+             </Button.Content>
+             <Button.Content hidden >
+               <Icon name='arrow left' />
+             </Button.Content>
+           </Button>
            <Segment>
              <Header as='h2'  style = {{textAlign: 'center'}}>
                <Icon name='fire' />
@@ -369,8 +383,11 @@ removeFlairFilter = (i) => {
              .map((ele, i) => {
              return <div className = "imgBox" key={i}>
                <Image fluid className = "img" src = {ele.image} alt = {"pic" + i}/>
-               <div class = "overlay"></div>
-               <div onClick = { () => this.goToPost(ele._id) } className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+               <Label className = 'ribbonLabel' style = {{position: 'absolute', left: -14, top: 20, zIndex: 1}} as='a' color='teal' ribbon onClick = {() => this.goToSub(ele.sub.id)}>
+                 {ele.sub.title}
+               </Label>
+               <div onClick = { () => this.goToPost(ele._id) } class = "overlay"></div>
+               <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
                <div className = 'likeBtn'>
                  <Button
                    icon = 'thumbs up outline'

@@ -5,7 +5,7 @@ export default function(state = { sub: {}, posts: [], subscribed: null }, action
     case FETCH_SUB:
     let newState4 = action.payload;
     console.log(action.payload.userId);
-    for (var i = 0; i < newState4.posts.length; i ++ ) {
+    for (let i = 0; i < newState4.posts.length; i ++ ) {
       newState4.posts[i].index = i;
       newState4.posts[i].upCount = newState4.posts[i].upvotes.length;
       newState4.posts[i].downCount = newState4.posts[i].downvotes.length;
