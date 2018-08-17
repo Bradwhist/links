@@ -294,12 +294,22 @@ import {
              <Grid.Column stretched width={10}>
                {/* Put a ternary in here to render content depending on what the state is */}
                <Segment>
-                 {this.state.secondActiveItem === 'bio' ? <p> This is the bio </p> : null}
+                 {this.state.secondActiveItem === 'bio' ? <h3> Daniel is a software engineer living in NYC who loves to chill. </h3> : null}
                  {this.state.secondActiveItem === 'view following' ?
-                 <ul> { this.props.profile.subscriptions.map((ele, i) => {
-                   return <li onClick={() => this.goToSub(ele._id)}>{ele.title}</li>;
-                 })}</ul>
-                 : null}
+                 this.props.profile.posts.length > 0 ?
+                 <StackGrid
+                   columnWidth={150}
+                   > {this.props.profile.subs.map((ele, i) => {
+                   return <div className = "imgBox" key={i}>
+                     <img className = "img" src = {ele.image} alt = {"pic" + i}/>
+                     <div onClick = { () => this.goToSubs(ele._id) } class = "overlay"></div>
+                     <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+                   </div>
+                 })}</StackGrid>
+                 : <Header as='h2'>
+                   You aren't following a subreddit right now
+                   <Header.Subheader>Start following to display them here!</Header.Subheader>
+                 </Header> : null}
                  {this.state.secondActiveItem === 'my posts' ?
                  this.props.profile.posts.length > 0 ?
                  <StackGrid
@@ -307,8 +317,8 @@ import {
                    > {this.props.profile.posts.map((ele, i) => {
                    return <div className = "imgBox" key={i}>
                      <img className = "img" src = {ele.image} alt = {"pic" + i}/>
-                     <div class = "overlay"></div>
-                     <div onClick = { () => this.goToPost(ele._id) } className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
+                     <div onClick = { () => this.goToPost(ele._id) }  class = "overlay"></div>
+                     <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
                    </div>
                  })}</StackGrid>
                  : <Header as='h2'>
@@ -346,7 +356,7 @@ import {
                <Card
                  image='https://www.w3schools.com/howto/img_avatar.png'
                  header='Daniel Ko'
-                 meta='Friend'
+                 meta='User'
                  description='Daniel is a software engineer living in NYC who loves to chill.'
                  extra={extra}
                />
