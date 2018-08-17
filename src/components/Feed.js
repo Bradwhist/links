@@ -245,7 +245,7 @@ import {
      return (
        <div>
         <Menu pointing inverted>
-          <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
+          <Link to = '/feed'><img src = "https://www.logolynx.com/images/logolynx/03/039ededed692e0176c366382c101e9ef.jpeg" alt = "reactlogo" style = {{marginLeft: 10, marginTop: 5, width: 70, height: 50}}/></Link>
 
           {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
 
@@ -320,7 +320,7 @@ import {
           </Menu.Menu>
         </Menu>
 
-        <Menu style = {{marginBottom: 10}} inverted compact>
+        <Menu style = {{marginBottom: 10}} compact>
           <Dropdown placeholder="Sort by" text={sortDisplay} options={options} simple item />
         </Menu>
         { this.state.loaded ?

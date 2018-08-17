@@ -130,12 +130,7 @@ import {
        console.log('comment history', name)
        this.setState({ secondActiveItem: name })
      }
-     else if (name === 'activity'){
-       console.log('activity', name)
-       this.setState({ secondActiveItem: name })
-       console.log(name, this.state, this.props.history);
-       // this.props.history.push('/profile/' + name);
-     }
+
      let _this = this;
      var timer = setInterval(function(){
 
@@ -198,8 +193,7 @@ import {
      return (
        <div>
          <Menu pointing inverted>
-           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
-           {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
+<Link to = '/feed'><img src = "https://www.logolynx.com/images/logolynx/03/039ededed692e0176c366382c101e9ef.jpeg" alt = "reactlogo" style = {{marginLeft: 10, marginTop: 5, width: 70, height: 50}}/></Link>           {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
            <Search className = 'searchInputBox'
            loading={this.state.isLoading}
            onResultSelect={this.handleResultSelect}
@@ -300,27 +294,25 @@ import {
                    active={secondActiveItem === 'comment history'}
                    color='teal'
                    onClick={this.handleItemClick} />
-                 <Menu.Item
-                   name='activity'
-                   active={secondActiveItem === 'activity'}
-                   color='teal'
-                   onClick={this.handleItemClick}
-                 />
                </Menu>
              </Grid.Column>
 
              <Grid.Column stretched width={10}>
                {/* Put a ternary in here to render content depending on what the state is */}
                <Segment>
-                 {this.state.secondActiveItem === 'bio' ? <h3> Daniel is a software engineer living in NYC who loves to chill. </h3> : null}
+                 {this.state.secondActiveItem === 'bio' ? <div>
+                 <h2>Name: </h2><h4>Daniel Ko</h4>
+                 <h2>DOB: </h2><h4>02/15/1996</h4>
+                 <h2>Brief Description</h2><h4> Daniel is a software engineer living in NYC who loves to chill. </h4>
+                </div> : null}
                  {this.state.secondActiveItem === 'view following' ?
-                 this.props.profile.posts.length > 0 ?
+                 this.props.profile.subscriptions.length > 0 ?
                  <StackGrid
                    columnWidth={150}
-                   > {this.props.profile.subs.map((ele, i) => {
+                   > {this.props.profile.subscriptions.map((ele, i) => {
                    return <div className = "imgBox" key={i}>
                      <img className = "img" src = {ele.image} alt = {"pic" + i}/>
-                     <div onClick = { () => this.goToSubs(ele._id) } class = "overlay"></div>
+                     <div onClick = { () => this.goToSub(ele._id) } class = "overlay"></div>
                      <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
                    </div>
                  })}</StackGrid>
@@ -367,7 +359,6 @@ import {
                    You have no comments right now.
                    <Header.Subheader>Create a comment on a post to see your history!</Header.Subheader>
                  </Header> : null}
-                 {this.state.secondActiveItem === 'activity' ? <p> This is the activity </p> : null}
                </Segment>
              </Grid.Column>
              <Grid.Column width={3}>
