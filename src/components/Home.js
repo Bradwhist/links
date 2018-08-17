@@ -67,6 +67,7 @@ import {
          : <div>
          <h1 style = {{color: 'white'}}> WELCOME </h1>
           <div className = "registerBox">
+            <img style = {{width: '15%', marginBottom: '3%'}} src = "https://upload.wikimedia.org/wikipedia/commons/0/08/Tealkobelogo.gif" alt="KOBE" />
               <div>
               <Input onChange= {e => this.setEmail(e)} className = "emailInput" focus icon="mail" iconPosition='left' type='email' placeholder='Email' />
               </div>

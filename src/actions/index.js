@@ -137,8 +137,8 @@ export const fetchSearch = () => async dispatch => {
   const resPosts = await axios.get('http://localhost:8080/api/post', {
     headers: { token: JSON.parse(localStorage.getItem('user')).token }
   })
-  let retSubs = resSubs.data.map(ele => { return {title: ele.title, id: ele._id, type: 'Category' }})
-  let retPosts = resPosts.data.map(ele => { return {title: ele.title, id: ele._id, type: 'Post' }})
+  let retSubs = resSubs.data.map(ele => { return {title: ele.title, id: ele._id, type: 'Category', image: ele.image }})
+  let retPosts = resPosts.data.map(ele => { return {title: ele.title, id: ele._id, type: 'Post', image: ele.image }})
   let retArr = retSubs.concat(retPosts);
   dispatch({ type: FETCH_SEARCH, payload: retArr })
 }

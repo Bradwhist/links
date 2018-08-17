@@ -37,7 +37,7 @@ import {
      super(props);
      this.state = {
        activeItem: 'home',
-       sortParam: 'score',
+       sortParam: 'Score',
        sortOrder: true,
        loaded: false,
        isLoading: false,
@@ -204,22 +204,22 @@ import {
     }
     console.log(this.state.sortParam, this.state.sortOrder)
     let sortedPosts = this.props.posts.slice();
-    if (this.state.sortParam === 'time') {
+    if (this.state.sortParam === 'Time') {
      sortedPosts.sort((a, b) => {
        return moment(a.createdAt) - moment(b.createdAt);
      })
    }
-   if (this.state.sortParam === 'score') {
+   if (this.state.sortParam === 'Score') {
     sortedPosts.sort((a, b) => {
       return b.score - a.score;
     })
   }
-  if (this.state.sortParam === 'replies') {
+  if (this.state.sortParam === 'Replies') {
    sortedPosts.sort((a, b) => {
      return b.comments.length - a.comments.length;
    })
  }
- if (this.state.sortParam === 'name') {
+ if (this.state.sortParam === 'Name') {
    sortedPosts.sort((a, b) => {
      if (a.title > b.title) {
        return 1;
@@ -235,17 +235,17 @@ import {
      console.log('rendering feed', this.props.input);
      console.log('xxx', this.state.results);
      const options = [
-       { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
-       { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
-       { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
-       { onClick: () => this.setSort('name'), key: 4, text: 'Name', value: 4 },
+       { onClick: () => this.setSort('Time'), key: 1, text: 'Time', value: 1 },
+       { onClick: () => this.setSort('Score'), key: 2, text: 'Hot', value: 2 },
+       { onClick: () => this.setSort('Replies'), key: 3, text: 'Replies', value: 3 },
+       { onClick: () => this.setSort('Name'), key: 4, text: 'Name', value: 4 },
      ]
      const { activeItem } = this.state;
      //console.log('rendering feed auth', this.props.auth.logged._id);
      return (
        <div>
         <Menu pointing inverted>
-          <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
+          <Link to = '/feed'><img src = "https://www.logolynx.com/images/logolynx/03/039ededed692e0176c366382c101e9ef.jpeg" alt = "reactlogo" style = {{marginLeft: 10, marginTop: 5, width: 70, height: 50}}/></Link>
 
           {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
 
@@ -254,7 +254,7 @@ import {
           loading={this.state.isLoading}
           onResultSelect={this.handleResultSelect}
           onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
-          results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
+          results={this.state.results.map(ele => { return { title: ele.type, description: ele.title, image: ele.image, type: ele.type } }) }
           value={this.state.value}
           {...this.props}
           />
@@ -320,7 +320,7 @@ import {
           </Menu.Menu>
         </Menu>
 
-        <Menu style = {{marginBottom: 10}} inverted compact>
+        <Menu style = {{marginBottom: 10}} compact>
           <Dropdown placeholder="Sort by" text={sortDisplay} options={options} simple item />
         </Menu>
         { this.state.loaded ?
