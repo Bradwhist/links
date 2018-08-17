@@ -409,12 +409,19 @@ class Post extends Component {
               {this.props.post && this.state.loaded ?
                 <Container>
 
-                  <Button style = {{backgroundColor: 'white', position: 'absolute', top: 70, left: 10}}
+                  <Button style = {{backgroundColor: '#18dbce', color: 'white', position: 'absolute', top: 70, left: 10}}
+                    animated
+                    circular
                     icon
-                    onClick = {() => this.props.history.pop()}
+                    onClick = {() => this.props.history.goBack()}
                     >
+                    <Button.Content visible>
                     <Icon name='angle left' />
                       Back
+                    </Button.Content>
+                    <Button.Content hidden >
+                      <Icon name='arrow left' />
+                    </Button.Content>
                   </Button>
 
                   <Modal
@@ -441,11 +448,9 @@ class Post extends Component {
               <Grid centered columns = {2}>
                 <Grid.Column>
                   <Segment>
-                    <Header style = {{textAlign: 'center'}} as='h2'>
-                      {this.props.post.post.title}
-                    </Header>
                     <Image src={this.props.post.post.image} />
                     <Header style = {{textAlign: 'center'}} as='h2'>
+                        {this.props.post.post.title}
                       <Header.Subheader>{this.props.post.post.content}</Header.Subheader>
                     </Header>
                   </Segment>
