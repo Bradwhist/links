@@ -34,10 +34,9 @@ class Login extends Component {
         <div>
         <h1 style = {{color: '#0ccece'}}> Log-in</h1>
         <div className = "loginBox">
-          <div>
+          <div className = "emailInput">
             <Input
               onChange = {(e) => this.setEmail(e)}
-              className = "emailInput"
               focus icon="mail"
               iconPosition='left'
               type='email'

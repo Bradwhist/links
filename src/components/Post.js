@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid"
 import moment from 'moment'
-import _ from 'lodash'
 import { logout, createComment, createRootComment, fetchPost, upvoteComment, downvoteComment, deletePost, deleteComment, deleteRootComment } from '../actions'
 import {
   Button,
@@ -25,7 +24,6 @@ import {
   Menu,
   Modal,
   Responsive,
-  Search,
   Segment,
   Sidebar,
   Visibility,
@@ -44,16 +42,12 @@ class Post extends Component {
       replying: null,
       navigation: false,
       showReplies: [],
-      reply: '',
-      defaultReply: 'Type something here...',
+      value: 'Type something here...',
       replyComments: [],
       response: null,
       likeButtonClicked: false,
       modalOpen: false,
       loaded: false,
-      isLoading: false,
-      results: [],
-      value: '',
     };
   }
 
@@ -65,37 +59,6 @@ class Post extends Component {
     this.setState({ navigation: this.props.match.params.commentId })
     this.setState({ loaded: res })
   }
-
-  //////////////////////
-  // search functions
- resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
-
-  handleResultSelect = (e, { result }) => {
-    console.log(result);
-    if (result.type === 'Post') {
-    this.props.history.push('/post/' + result.id);
-  } else {
-    this.props.history.push('/sub/' + result.id);
-  }
-    this.setState({ value: result.title })
-  }
-
-  handleSearchChange = (e, { value }) => {
-  this.setState({ isLoading: true, value })
-
-  setTimeout(() => {
-    if (this.state.value.length < 1) return this.resetComponent()
-
-    const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-    const isMatch = result => re.test(result.title)
-
-    this.setState({
-      isLoading: false,
-      results: _.filter(this.props.input.searchArr, isMatch),
-    })
-  }, 300)
-}
-///////////////////////
 
   handleOpen = () => this.setState({ modalOpen: true })
 
@@ -141,12 +104,6 @@ class Post extends Component {
     })
   }
 
-  setReply = (e) => {
-    this.setState({
-      reply: e.target.value
-    })
-  }
-
   logout = () => {
     this.props.logout();
   }
@@ -156,20 +113,20 @@ class Post extends Component {
     e.preventDefault();
     let newArr = this.state.replyComments.slice();
     newArr.push(num)
-    this.props.createComment(this.state.content, id);
     this.setState({
       content: '',
       replying: null,
       replyComments: newArr
     })
+    return this.props.createComment(this.state.content, id);
   }
 
   // createRootComment handles submission of form for root level comment
   createRootComment = (e) => {
     e.preventDefault();
     //console.log(this.state.content);
-    this.props.createRootComment(this.state.reply, this.props.match.params.id);
-    this.setState({ reply: '' });
+
+    this.props.createRootComment(this.state.content, this.props.match.params.id);
   }
   goProfile = () => {
     this.props.history.push('/feed')
@@ -260,7 +217,7 @@ class Post extends Component {
                   <Comment.Actions>
                     {this.showReplies(ele._id) ? <div>
                       <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' :'thumbs up outline postBtn'} /></Comment.Action>
-                      <Comment.Action>{ele.upCount}</Comment.Action>
+                      <Comment.Action>{ele.upCount}</Comment.Action> : null}
                       <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
                       <Comment.Action>{ele.downCount}</Comment.Action>
                       <Comment.Action onClick = {() => this.setNavigation(ele._id)}><Icon name = 'map marker alternate'/></Comment.Action>
@@ -352,11 +309,8 @@ class Post extends Component {
         return currentTime.diff(initTime, 'years') + ' years ago';
     }
 
-    goToSub = (subId) => {
-      this.props.history.push('/sub/' + subId);
-    }
-
     render() {
+      console.log(this.getAge("2018-08-15T22:30:36.209Z"));
       // Unordered list contains comment tree.  Maps over comments, and displays all root level comments.
       // in each root comment, calls function 'renderReplies', which is recursive and displays non-root comments
       const { activeItem } = this.state;
@@ -365,26 +319,22 @@ class Post extends Component {
         { key: 2, text: 'New', value: 2 },
         { key: 3, text: 'sex', value: 3 },
       ]
-
+      console.log(this.state.navigation);
+      console.log("a;skdfja;sdfj", this.state.showReplies)
+      console.log('SD;FJKASF', this.props.post.comments)
       let navComment = null;
       if (this.state.navigation && this.props.post.comments.length) {
       navComment = this.getCommentFromId(this.state.navigation);
-    }
-      console.log(this.props.auth.logged._id);
-      console.log(this.props.post.post)
+}
+
+        console.log('HISTORYRYRYR', this.props.history)
+      // console.log(this.state.loaded);
+      // console.log(navComment);
       return (
         <div>
           <Menu pointing inverted>
             <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
-            {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
-            <Search className = 'searchInputBox'
-            loading={this.state.isLoading}
-            onResultSelect={this.handleResultSelect}
-            onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
-            results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
-            value={this.state.value}
-            {...this.props}
-            />
+            <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
             <Menu.Item
               name='home'
               active={activeItem === 'home'}
@@ -445,28 +395,8 @@ class Post extends Component {
                 </Dropdown>
               </Menu.Menu>
             </Menu>
-            { this.props.post.post.author && this.props.post.post.author.id === this.props.auth.logged._id ?
-            <Modal
-              trigger={<Button style = {{position: 'absolute', right: 5}} negative onClick={this.handleOpen}>Delete Post</Button>}
-              open={this.state.modalOpen}
-              onClose={this.handleClose}
-              basic
-              size='small'
-              >
-                <Header icon='browser' content='Warning' />
-                <Modal.Content>
-                  <h3>Are you sure you want to delete your post? It will be permanently deleted.</h3>
-                </Modal.Content>
-                <Modal.Actions>
-                  <Button onClick={this.handleClose} inverted>
-                    Cancel
-                  </Button>
-                  <Button color='red' onClick={() => this.deletePost(this.props.match.params.id)} inverted>
-                    Yes delete it
-                  </Button>
-                </Modal.Actions>
-              </Modal>
-            : null }
+
+
               {/* <Button style = {{position: 'absolute', right: 5}} negative onClick = {() => this.deletePost(this.props.match.params.id)}>Delete Post</Button> */}
 
               {this.props.post && this.state.loaded ?
@@ -504,14 +434,16 @@ class Post extends Component {
               <Grid centered columns = {2}>
                 <Grid.Column>
                   <Segment>
-                    <Image src={this.props.post.post.image} />
                     <Header style = {{textAlign: 'center'}} as='h2'>
                       {this.props.post.post.title}
+                    </Header>
+                    <Image src={this.props.post.post.image} />
+                    <Header style = {{textAlign: 'center'}} as='h2'>
                       <Header.Subheader>{this.props.post.post.content}</Header.Subheader>
                     </Header>
                   </Segment>
                 </Grid.Column>
-                {/* <button onClick = { () => this.goToSub(this.props.post.post.sub.id) }> Go to Sub </button> */}
+
                 <Grid.Row centered columns={2}>
                   { !this.state.navigation ?
                     <Grid.Column>
@@ -524,7 +456,7 @@ class Post extends Component {
                     </Header>
 
                     <Form reply onSubmit={(e) => this.createRootComment(e)}>
-                      <Form.TextArea value={this.state.reply || ''} placeholder={this.state.defaultReply} onChange={this.setReply} />
+                      <Form.TextArea placeholder={this.state.value} onChange={this.setContent} />
                       <Button content='Add Comment' labelPosition='left' icon='edit' primary />
                     </Form>
                     {this.props.post.comments.map((ele, i) => {
@@ -639,7 +571,7 @@ class Post extends Component {
                   </Header>
 
                   <Form reply onSubmit={(e) => this.createRootComment(e)}>
-                    <Form.TextArea placeholder={this.state.defaultReply} onChange={this.setContent} />
+                    <Form.TextArea placeholder={this.state.value} onChange={this.setContent} />
                     <Button content='Add Comment' labelPosition='left' icon='edit' primary />
                   </Form>
                   {/* <button onClick={() => this.setNavigation(false)}>See All Comments</button> */}
@@ -775,12 +707,11 @@ class Post extends Component {
         deleteRootComment: PropTypes.func,
       };
 
-      const mapStateToProps = ({ auth, post, comments, input }) => {
+      const mapStateToProps = ({ auth, post, comments }) => {
         return {
           auth,
           post,
           comments,
-          input,
         }
       }
       const mapDispatchToProps = (dispatch) => {

@@ -107,8 +107,8 @@ import {
        this.setState({ secondActiveItem: name })
        this.props.history.push('/profile');
      }
-     else if (name === 'subscriptions'){
-       console.log('subscriptions', name)
+     else if (name === 'view following'){
+       console.log('view following', name)
        this.setState({ secondActiveItem: name })
      }
      else if (name === 'my posts'){
@@ -268,8 +268,8 @@ import {
                    color='teal'
                    onClick={this.handleItemClick} />
                    <Menu.Item
-                     name='subscriptions'
-                     active={secondActiveItem === 'subscriptions'}
+                     name='view following'
+                     active={secondActiveItem === 'view following'}
                      color='teal'
                      onClick={this.handleItemClick} />
                  <Menu.Item
@@ -295,7 +295,7 @@ import {
                {/* Put a ternary in here to render content depending on what the state is */}
                <Segment>
                  {this.state.secondActiveItem === 'bio' ? <p> This is the bio </p> : null}
-                 {this.state.secondActiveItem === 'subscriptions' ?
+                 {this.state.secondActiveItem === 'view following' ?
                  <ul> { this.props.profile.subscriptions.map((ele, i) => {
                    return <li onClick={() => this.goToSub(ele._id)}>{ele.title}</li>;
                  })}</ul>

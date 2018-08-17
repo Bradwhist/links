@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
-import _ from 'lodash'
 import { logout, fetchSubs, upvotePost, downvotePost, subscribe } from '../actions'
 import {
   Button,
@@ -19,7 +18,6 @@ import {
   Menu,
   Popup,
   Responsive,
-  Search,
   Segment,
   Sidebar,
   Visibility,
@@ -34,42 +32,8 @@ class Sub extends Component {
     super(props);
     this.state = {
       activeItem: 'following',
-      isLoading: false,
-      results: [],
-      value: '',
     };
   }
-
-  //////////////////////
-  // search functions
- resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
-
-  handleResultSelect = (e, { result }) => {
-    console.log(result);
-    if (result.type === 'Post') {
-    this.props.history.push('/post/' + result.id);
-  } else {
-    this.props.history.push('/sub/' + result.id);
-  }
-    this.setState({ value: result.title })
-  }
-
-  handleSearchChange = (e, { value }) => {
-  this.setState({ isLoading: true, value })
-
-  setTimeout(() => {
-    if (this.state.value.length < 1) return this.resetComponent()
-
-    const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-    const isMatch = result => re.test(result.title)
-
-    this.setState({
-      isLoading: false,
-      results: _.filter(this.props.input.searchArr, isMatch),
-    })
-  }, 300)
-}
-///////////////////////
 
   handleItemClick = (e, { name }) => {
     if (name === 'home') {
@@ -139,15 +103,7 @@ class Sub extends Component {
       <div>
         <Menu pointing inverted>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
-          {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
-          <Search className = 'searchInputBox'
-          loading={this.state.isLoading}
-          onResultSelect={this.handleResultSelect}
-          onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
-          results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
-          value={this.state.value}
-          {...this.props}
-          />
+          <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
           <Menu.Item
             name='home'
             active={activeItem === 'home'}
@@ -226,7 +182,7 @@ class Sub extends Component {
               {this.props.subs.map((ele, i) => {
                 if (ele.subscribed) {
                   return <div className = "imgBox" key={i} >
-                  <img src = {ele.image} alt = {"pic" + i} className = "img"/>
+                  <Image fluid src = {ele.image} alt = {"pic" + i} className = "img"/>
                   <div className = "overlay" onClick = {() => this.props.history.push('/sub/' + ele._id)} ></div>
                   <div className = "imgTitleBoxForSub"><h1 className = "imgTitle">{ele.title}</h1></div>
                   <Popup trigger={
@@ -273,11 +229,10 @@ class Sub extends Component {
       sub: PropTypes.obj,
     };
 
-    const mapStateToProps = ({auth, subs, input}) => {
+    const mapStateToProps = ({auth, subs}) => {
       return {
         auth,
-        subs,
-        input
+        subs
       }
     }
 

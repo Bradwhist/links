@@ -39,17 +39,12 @@ body {
   border-top-right-radius: 2.5%;
 }
 
-.emailInput {
-  width: 400px;
-}
-
 .usernameInput {
   margin-top: 3%;
-  width: 400px;
 }
 
 .pwdInput {
-  width: 400px;
+
   padding-bottom: 3%;
   padding-top: 3%;
 }
@@ -91,9 +86,6 @@ body {
   perspective: 100px;
 }
 
-div.ui.icon.input {
-  width: 100%;
-}
 .msgBox {
   padding-top: 5%;
 }
@@ -104,6 +96,14 @@ div.ui.icon.input {
   margin: 8px;
 }
 
+div.ui.icon.input {
+  width: 100%;
+}
+
+div.ui.icon.input.emailInput, div.ui.icon.input.usernameInput, div.ui.icon.input.pwdInput {
+  width: 300px;
+}
+
 .img {
   width: 92%;
 }
@@ -111,9 +111,9 @@ div.ui.icon.input {
 .overlay {
   position: absolute;
   top: 0;
-  bottom: 5px;
-  left: 4%;
-  right: 4%;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: linear-gradient(
       rgba(0, 0, 0, 0.5),
       rgba(0, 0, 0, 0.5)
@@ -125,7 +125,7 @@ div.ui.icon.input {
 
 .likeBtn {
   position: absolute;
-   left: 23%;
+   left: 15%;
    bottom: 0;
    transform: translate(-50%, -50%);
    -ms-transform: translate(-50%, -50%);
@@ -138,7 +138,7 @@ div.ui.icon.input {
 
 .dislikeBtn {
   position: absolute;
-  left: 60%;
+  left: 45%;
   bottom: 0;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
@@ -151,8 +151,8 @@ div.ui.icon.input {
 
 .imgTitleBox {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 40%;
+  bottom: 60%;
   left: 0;
   right: 0;
   opacity: 0;
@@ -180,6 +180,10 @@ div.ui.icon.input {
 /* make the title appear on hover */
 .imgBox:hover .imgTitleBox {
   opacity: 1;
+}
+
+Label {
+  opacity: 0;
 }
 
 
@@ -210,7 +214,7 @@ div.ui.icon.input {
 /* SUBS COMPONENT */
 .followBtn {
   position: absolute;
-   right: 0;
+   right: -15px;
    top: 25px;
    transform: translate(-50%, -50%);
    -ms-transform: translate(-50%, -50%);
