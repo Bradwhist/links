@@ -41,7 +41,11 @@ class Sub extends Component {
       results: [],
       value: '',
       newFlair: null,
+      flairFilters: [],
       defaultFlair: 'new tag here',
+      isFlairLoading: false,
+      flairValue: '',
+      flairResults: [],
     }
   }
 
@@ -75,6 +79,37 @@ class Sub extends Component {
   }, 300)
 }
 ///////////////////////
+//flair search
+resetFlairComponent = () => this.setState({ isFlairLoading: false, flairResults: [], flairValue: ''})
+
+handleFlairSelect = (e, { flairResult }) => {
+  let newState = this.state.flairFilters.slice();
+  newState.push(e.target.innerText.trim());
+  this.setState({flairFilters: newState});
+}
+
+changeFlairSearch = (e, { flairValue }) => {
+  this.setState({ isFlairLoading: true, flairValue: e.target.value })
+
+  setTimeout(() => {
+    if (this.state.flairValue.length < 1) return this.resetFlairComponent()
+
+    const re = new RegExp(_.escapeRegExp(this.state.flairValue), 'i')
+    const isMatch = flairResult => re.test(flairResult)
+
+    this.setState({
+      isFlairLoading: false,
+      flairResults: _.filter(this.props.sub.sub.flairs, isMatch),
+    })
+  }, 300)
+}
+
+removeFlairFilter = (i) => {
+  let newState = this.state.flairFilters.slice();
+  newState.splice(i, 1);
+  this.setState({ flairFilters: newState })
+}
+/////////////////////////
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name })
@@ -179,7 +214,8 @@ class Sub extends Component {
       { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
       { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
     ]
-    console.log(this.props.sub.sub.flairs);
+    console.log(this.state.flairFilters);
+    console.log(this.props.sub.posts);
     //   let StackGridContent = '';
     //   if (this.props.posts) {
     //   this.props.posts.map((ele, i) => {StackGridContent = StackGridContent + '<div key="key' + (i + 1) + '">Meow</div>'})
@@ -264,16 +300,39 @@ class Sub extends Component {
            </Menu.Menu>
          </Menu>
 
+         {/* DAN plz move these or make them look nice */}
          <Form reply onSubmit={(e) => this.toggleFlair(e)}>
            <Form.TextArea value={this.state.newFlair || ''} placeholder={this.state.defaultFlair} onChange={this.setFlair} />
            <Button content='Add Flair' labelPosition='left' icon='edit' primary />
          </Form>
+         <Search className = 'searchInputBox'
+         loading={this.state.isFlairLoading}
+         onResultSelect={this.handleFlairSelect}
+         onSearchChange={_.debounce(this.changeFlairSearch, 500, { leading: true })}
+         results={this.state.flairResults
+           .filter(ele => {
+             return this.state.flairFilters.indexOf(ele) === -1;
+           })
+           .map((ele, i) => { return { title: ele, id: i  } }) }
+         value={this.state.flairValue}
+         {...this.props}
+         />
+         { this.state.flairFilters.map((ele, i) => <li onClick={() => this.removeFlairFilter(i)} >{'Remove filter: ', ele}</li>) }
+         {/* end flair search components */}
 
          { !!this.props.sub ?
        <StackGrid
          columnWidth={300}
          >
-           {this.props.sub.posts.sort((a, b) => {
+           {this.props.sub.posts
+             .filter(ele => {
+               if (!this.state.flairFilters.length) {
+                 return true;
+               } else {
+                 return this.state.flairFilters.indexOf(ele.flair) !== -1;
+               }
+             })
+             .sort((a, b) => {
              if (this.state.sortParam === 'time') {
                if (this.state.sortOrder) {
                  return a.createdAt > b.createdAt;

@@ -4,7 +4,7 @@ import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
 import _ from 'lodash'
 // import CreateCategory from './CreateCategory'
-import { logout, fetchPosts, upvotePost, downvotePost, setInput } from '../actions'
+import { logout, fetchPosts, fetchSubs, upvotePost, downvotePost, setInput } from '../actions'
 import CreateSub from './CreateSub'
 import {
   Button,
@@ -46,6 +46,7 @@ import {
 
    async componentDidMount() {
      console.log(this.props);
+     this.props.fetchSubs();
      let res = await this.props.fetchPosts(this.props.auth.logged._id);
      this.setState({ loaded: res })
    }
@@ -358,6 +359,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
     fetchPosts: (userId) => dispatch(fetchPosts(userId)),
+    fetchSubs: () => dispatch(fetchSubs()),
     upvotePost: (postId, index) => dispatch(upvotePost(postId, index)),
     downvotePost: (postId, index) => dispatch(downvotePost(postId, index)),
     setInput: (value) => dispatch(setInput(value))

@@ -39,12 +39,14 @@ import {
        isLoading: false,
        results: [],
        value: '',
+       posts: [],
      }
    }
 
-   componentDidMount() {
+   async componentDidMount() {
      console.log(this.props);
-     this.props.fetchPosts(this.props.auth.logged._id);
+     let res = await this.props.fetchPosts(this.props.auth.logged._id);
+     this.setState( {posts: this.props.posts} )
    }
 
    //////////////////////
@@ -143,7 +145,32 @@ import {
     } else {
       newSortOrder = true;
     }
-    this.setState({ sortParam: sortParam, sortOrder: newSortOrder })
+    let sortedPosts = this.state.posts.slice();
+    sortedPosts.sort((a, b) => {
+      if (this.state.sortParam === 'time') {
+        if (this.state.sortOrder) {
+          return a.createdAt > b.createdAt;
+        } else {
+          return b.createdAt > a.createdAt;
+        }
+      }
+      if (this.state.sortParam === 'score') {
+        if (this.state.sortOrder) {
+          return b.score - a.score;
+        } else {
+          return a.score - b.score;
+        }
+      }
+      if (this.state.sortParam === 'replies') {
+        if (this.state.sortOrder) {
+          return a.comments.length - b.comments.length;
+        } else {
+          return b.comments.length - a.comments.length;
+        }
+      }
+    });
+
+    this.setState({ posts: sortedPosts, sortParam: sortParam, sortOrder: newSortOrder })
   }
 
   goToPost(postId) {
@@ -239,29 +266,7 @@ import {
         <StackGrid
         columnWidth={300}
         >
-        {this.props.posts.sort((a, b) => {
-          if (this.state.sortParam === 'time') {
-            if (this.state.sortOrder) {
-              return a.createdAt > b.createdAt;
-            } else {
-              return b.createdAt > a.createdAt;
-            }
-          }
-          if (this.state.sortParam === 'score') {
-            if (this.state.sortOrder) {
-              return b.score - a.score;
-            } else {
-              return a.score - b.score;
-            }
-          }
-          if (this.state.sortParam === 'replies') {
-            if (this.state.sortOrder) {
-              return a.comments.length - b.comments.length;
-            } else {
-              return b.comments.length - a.comments.length;
-            }
-          }
-        })
+        {this.state.posts
         .map((ele, i) => {
           return  <div className = "imgBox" key={"key" + i}>
             <img src = {ele.image} alt = {"pic" + i} className = "img" />

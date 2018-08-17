@@ -533,7 +533,9 @@ router.get('/currentUser', (req, res) => {
 router.get('/checkUser', (req, res) => {
   console.log('token in checkuser route', req.headers.token);
   User.findOne({ token: req.headers.token })
-  .then(user => res.json(user))
+  .then(user => {
+    res.json(user);
+  })
   .catch(err => console.log(err))
 })
 //Test Dashboard
