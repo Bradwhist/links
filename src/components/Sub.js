@@ -210,10 +210,46 @@ removeFlairFilter = (i) => {
   }
 
   render() {
+    let sortDisplay = '';
+   if (this.state.sortOrder && this.state.sortParam) {
+     sortDisplay = this.state.sortParam + ' (ascending)';
+   } else if (this.state.sortParam) {
+     sortDisplay = this.state.sortParam + ' (descending)';
+   }
+   console.log(this.state.sortParam, this.state.sortOrder)
+   let sortedPosts = this.props.sub.posts.slice();
+   if (this.state.sortParam === 'time') {
+    sortedPosts.sort((a, b) => {
+      return a.createdAt > b.createdAt;
+    })
+  }
+  if (this.state.sortParam === 'score') {
+   sortedPosts.sort((a, b) => {
+     return a.score < b.score;
+   })
+ }
+ if (this.state.sortParam === 'replies') {
+  sortedPosts.sort((a, b) => {
+    return b.comments.length - a.comments.length;
+  })
+}
+if (this.state.sortParam === 'name') {
+  sortedPosts.sort((a, b) => {
+    if (a.title > b.title) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
+}
+     if (!this.state.sortOrder) {
+       sortedPosts.reverse();
+     }
     const options = [
       { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
       { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
       { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
+      { onClick: () => this.setSort('name'), key: 4, text: 'Name', value: 4 },
     ]
     console.log(this.state.flairFilters);
     console.log(this.props.sub.posts);
@@ -225,9 +261,12 @@ removeFlairFilter = (i) => {
     const { activeItem } = this.state;
      return (
        <div>
-       {/* <Menu style = {{fontSize: 12 }} compact>
-         <Dropdown text='Sort' options={options} simple item />
-       </Menu> */}
+       <Menu compact>
+         <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
+       </Menu>
+       {/*<Menu style = {{position: 'absolute', right: 5, top: 70}} compact>
+         <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
+       </Menu>*/}
          <Menu pointing inverted>
            <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
            {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
@@ -349,7 +388,7 @@ removeFlairFilter = (i) => {
        <StackGrid
          columnWidth={300}
          >
-           {this.props.sub.posts
+           {sortedPosts
              .filter(ele => {
                if (!this.state.flairFilters.length) {
                  return true;
@@ -357,29 +396,6 @@ removeFlairFilter = (i) => {
                  return this.state.flairFilters.indexOf(ele.flair) !== -1;
                }
              })
-             .sort((a, b) => {
-             if (this.state.sortParam === 'time') {
-               if (this.state.sortOrder) {
-                 return a.createdAt > b.createdAt;
-               } else {
-                 return b.createdAt > a.createdAt;
-               }
-             }
-             if (this.state.sortParam === 'score') {
-               if (this.state.sortOrder) {
-                 return b.score - a.score;
-               } else {
-                 return a.score - b.score;
-               }
-             }
-             if (this.state.sortParam === 'replies') {
-               if (this.state.sortOrder) {
-                 return a.comments.length - b.comments.length;
-               } else {
-                 return b.comments.length - a.comments.length;
-               }
-             }
-           })
              .map((ele, i) => {
              return <div className = "imgBox" key={i}>
                <Image fluid className = "img" src = {ele.image} alt = {"pic" + i}/>
