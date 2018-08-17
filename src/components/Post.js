@@ -49,6 +49,9 @@ class Post extends Component {
       modalOpen: false,
       loaded: false,
       rootContent: '',
+      sortParam: 'time',
+      sortOrder: true,
+      reload: false,
     };
   }
 
@@ -109,6 +112,16 @@ class Post extends Component {
       rootContent: e.target.value
     })
   }
+
+  setSort(sortParam) {
+    let newSortOrder = null;
+    if (this.state.sortParam === sortParam) {
+      newSortOrder = !this.state.sortOrder;
+    } else {
+      newSortOrder = true;
+    }
+    this.setState({ sortParam: sortParam, sortOrder: newSortOrder })
+  }
   logout = () => {
     this.props.logout();
   }
@@ -122,7 +135,9 @@ class Post extends Component {
       content: '',
       replying: null,
       replyComments: newArr,
-      tempComment: ''
+      tempComment: '',
+      sortParam: 'time',
+      sortOrder: true,
     })
     return this.props.createComment(this.state.content, id);
   }
@@ -206,7 +221,6 @@ class Post extends Component {
       currentComment.index = currentIndex;
       sortedComments.push(currentComment);                           // adds new comment to array
     }
-    sortedComments.sort((a, b) => a.score < b.score);                 //sorts array of comments by score
 
     // block creates JSX that will be included in the return
     const replyComments = sortedComments.map((ele, i) => {
@@ -224,7 +238,7 @@ class Post extends Component {
                   <Comment.Actions>
                     {this.showReplies(ele._id) ? <div>
                       <Comment.Action onClick = {() => this.upvoteComment(ele._id, ele.index)}><Icon name={ele.upVoted ? 'thumbs up postBtn' :'thumbs up outline postBtn'} /></Comment.Action>
-                      <Comment.Action>{ele.upCount}</Comment.Action> : null}
+                      <Comment.Action>{ele.upCount}</Comment.Action>
                       <Comment.Action onClick = {() => this.downvoteComment(ele._id, ele.index)}><Icon name={ele.downVoted ? 'thumbs down postBtn' : 'thumbs down outline postBtn'} /></Comment.Action>
                       <Comment.Action>{ele.downCount}</Comment.Action>
                       <Comment.Action onClick = {() => this.setNavigation(ele._id)}><Icon name = 'map marker alternate'/></Comment.Action>
@@ -317,28 +331,67 @@ class Post extends Component {
     }
 
     render() {
-      console.log(this.getAge("2018-08-15T22:30:36.209Z"));
+      let sortDisplay = '';
+     if (this.state.sortOrder && this.state.sortParam) {
+       sortDisplay = this.state.sortParam + ' (ascending)';
+     } else if (this.state.sortParam) {
+       sortDisplay = this.state.sortParam + ' (descending)';
+     }
+
+     let sortComments = this.props.post.comments.slice();
+     if (this.state.sortParam === 'time') {
+       sortComments.sort((a, b) => {
+         return moment(b.createdAt) - moment(a.createdAt);
+       })
+     }
+     if (this.state.sortParam === 'score') {
+       sortComments.sort((a, b) => {
+         return b.score - a.score;
+       })
+     }
+     if (this.state.sortParam === 'replies') {
+       sortComments.sort((a, b) => {
+         return b.comments.length - a.comments.length;
+       })
+     }
+     if (this.state.sortParam === 'name') {
+       sortComments.sort((a, b) => {
+         if (a.author.name > b.author.name) {
+           return 1;
+         } else {
+           return -1;
+         }
+       });
+     }
+     if (!this.state.sortOrder) {
+       sortComments.reverse();
+     }
       // Unordered list contains comment tree.  Maps over comments, and displays all root level comments.
       // in each root comment, calls function 'renderReplies', which is recursive and displays non-root comments
       const { activeItem } = this.state;
       const options = [
-        { key: 1, text: 'Popular', value: 1 },
-        { key: 2, text: 'New', value: 2 },
-        { key: 3, text: 'sex', value: 3 },
+        { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
+        { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
+        { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
+        { onClick: () => this.setSort('name'), key: 4, text: 'Author', value: 4 },
       ]
       console.log(this.state.navigation);
       console.log("a;skdfja;sdfj", this.state.showReplies)
       console.log('SD;FJKASF', this.props.post.comments)
+      console.log('next', sortComments)
       let navComment = null;
       if (this.state.navigation && this.props.post.comments.length) {
       navComment = this.getCommentFromId(this.state.navigation);
 }
 
-        console.log('HISTORYRYRYR', this.props.history)
+        console.log('HISTORYRYRYR', this.state.sortParam, this.state.sortOrder)
       // console.log(this.state.loaded);
       // console.log(navComment);
       return (
         <div>
+        <Menu compact>
+          <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
+        </Menu>
           <Menu pointing inverted>
             <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
             <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
@@ -471,7 +524,7 @@ class Post extends Component {
                       <Form.TextArea value={this.state.rootContent} placeholder={this.state.value} onChange={this.setRootContent} />
                       <Button content='Add Comment' labelPosition='left' icon='edit' primary />
                     </Form>
-                    {this.props.post.comments.map((ele, i) => {
+                    {sortComments.map((ele, i) => {
                       if (!ele.parent) {
                         return  <Comment.Group>
                           <Segment raised>

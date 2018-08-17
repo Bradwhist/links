@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
 import _ from 'lodash'
+import moment from 'moment'
 import { logout, fetchSub, fetchPosts, upvotePostFromSub, downvotePostFromSub, toggleFlair,
   subscribeFromSub } from '../actions'
 import {
@@ -36,7 +37,7 @@ class Sub extends Component {
     super(props)
     this.state = {
       activeItem: 'subs',
-      sortParam: '',
+      sortParam: 'score',
       sortOrder: true,
       isLoading: false,
       results: [],
@@ -47,7 +48,22 @@ class Sub extends Component {
       isFlairLoading: false,
       flairValue: '',
       flairResults: [],
+      reload: false,
     }
+  }
+
+  componentDidMount() {
+    this.setState({ reload: false });
+    let _this = this;
+    var timer = setInterval(function(){
+
+      if (_this.state.reload) {
+        clearInterval(timer);
+      }
+      _this.setState({ reload: true });
+    }, 1250);
+    let subscribed = this.props.match.params.id === this.props.auth.logged.subscriptions;
+    this.props.fetchSub(this.props.match.params.id, subscribed, this.props.auth.logged._id);
   }
 
   //////////////////////
@@ -169,17 +185,32 @@ removeFlairFilter = (i) => {
     this.setState({ newFlair: null });
   }
 
- componentDidMount() {
-   let subscribed = this.props.match.params.id === this.props.auth.logged.subscriptions;
-   this.props.fetchSub(this.props.match.params.id, subscribed, this.props.auth.logged._id);
- }
+
 
   upvotePostFromSub = (postId, index) => {
+    this.setState({reload: false});
     this.props.upvotePostFromSub(postId, index);
+    let _this = this;
+    var timer = setInterval(function(){
+
+      if (_this.state.reload) {
+        clearInterval(timer);
+      }
+      _this.setState({ reload: true });
+    }, 200);
   }
 
   downvotePostFromSub = (postId, index) => {
+    this.setState({reload: false});
     this.props.downvotePostFromSub(postId, index);
+    let _this = this;
+    var timer = setInterval(function(){
+
+      if (_this.state.reload) {
+        clearInterval(timer);
+      }
+      _this.setState({ reload: true });
+    }, 200);
   }
 
   // toggle subscribe
@@ -196,6 +227,7 @@ removeFlairFilter = (i) => {
   }
 
   setSort(sortParam) {
+    this.setState({reload: false})
     let newSortOrder = null;
     if (this.state.sortParam === sortParam) {
       newSortOrder = !this.state.sortOrder;
@@ -203,6 +235,14 @@ removeFlairFilter = (i) => {
       newSortOrder = true;
     }
     this.setState({ sortParam: sortParam, sortOrder: newSortOrder })
+    let _this = this;
+    var timer = setInterval(function(){
+
+      if (_this.state.reload) {
+        clearInterval(timer);
+      }
+      _this.setState({ reload: true });
+    }, 200);
   }
 
   goToPost = (postId) => {
@@ -220,12 +260,12 @@ removeFlairFilter = (i) => {
    let sortedPosts = this.props.sub.posts.slice();
    if (this.state.sortParam === 'time') {
     sortedPosts.sort((a, b) => {
-      return a.createdAt > b.createdAt;
+      return moment(a.createdAt) - moment(b.createdAt);
     })
   }
   if (this.state.sortParam === 'score') {
    sortedPosts.sort((a, b) => {
-     return a.score < b.score;
+     return b.score - a.score;
    })
  }
  if (this.state.sortParam === 'replies') {
