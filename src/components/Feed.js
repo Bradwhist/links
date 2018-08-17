@@ -158,17 +158,57 @@ import {
   }
 
    render() {
+     let sortDisplay = '';
+    if (this.state.sortOrder && this.state.sortParam) {
+      sortDisplay = this.state.sortParam + ' (ascending)';
+    } else if (this.state.sortParam) {
+      sortDisplay = this.state.sortParam + ' (descending)';
+    }
+    console.log(this.state.sortParam, this.state.sortOrder)
+    let sortedPosts = this.props.posts.slice();
+    if (this.state.sortParam === 'time') {
+     sortedPosts.sort((a, b) => {
+       return a.createdAt > b.createdAt;
+     })
+   }
+   if (this.state.sortParam === 'score') {
+    sortedPosts.sort((a, b) => {
+      return a.score < b.score;
+    })
+  }
+  if (this.state.sortParam === 'replies') {
+   sortedPosts.sort((a, b) => {
+     return b.comments.length - a.comments.length;
+   })
+ }
+ if (this.state.sortParam === 'name') {
+   sortedPosts.sort((a, b) => {
+     if (a.title > b.title) {
+       return 1;
+     } else {
+       return -1;
+     }
+   });
+ }
+      if (!this.state.sortOrder) {
+        sortedPosts.reverse();
+      }
+
      console.log('rendering feed', this.props.input);
      console.log('xxx', this.state.results);
      const options = [
        { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
        { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
        { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
+       { onClick: () => this.setSort('name'), key: 4, text: 'Name', value: 4 },
      ]
      const { activeItem } = this.state;
      //console.log('rendering feed auth', this.props.auth.logged._id);
      return (
        <div>
+       <Menu compact>
+         <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
+       </Menu>
        {/* <Menu style = {{fontSize: 12 }} compact>
          <Dropdown text='Sort' options={options} simple item />
        </Menu> */}
@@ -257,7 +297,7 @@ import {
         <StackGrid
         columnWidth={300}
         >
-        {this.props.posts.filter((ele) => ele.subscribed)
+        {sortedPosts.filter((ele) => ele.subscribed)
           .sort((a, b) => {
           if (this.state.sortParam === 'time') {
             if (this.state.sortOrder) {

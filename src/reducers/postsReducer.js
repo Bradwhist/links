@@ -25,6 +25,9 @@ export default function(state = [], action) {
           newState[i].downVoted = true;
         }
       }
+      newState.sort((a, b) => {
+        return a.createdAt > b.createdAt;
+      })
       // newState.sort((a, b) => a.score < b.score)
       return newState;
       // let postsArr = action.payload;
@@ -50,8 +53,12 @@ export default function(state = [], action) {
       //
       // return postsArr.sort((a,b) => scoreFn(b) - scoreFn(a));
       case UPVOTE_POST:
-        let cIndex = action.payload.index;
         let newState2 = [ ...state ];
+        let checkIndex = (ele) => { return ele.index === action.payload.index }
+
+        let cIndex = newState2.findIndex(checkIndex);
+        console.log(cIndex);
+        console.log(newState2[cIndex]);
         if (newState2[cIndex].downVoted) {
           newState2[cIndex].upCount ++;
           newState2[cIndex].downCount --;
@@ -63,10 +70,13 @@ export default function(state = [], action) {
         newState2[cIndex].upVoted = !newState2[cIndex].upVoted;
         newState2[cIndex].downVoted = false;
         newState2[cIndex].score = action.payload.score;
+        console.log(newState2[cIndex]);
       return newState2;
       case DOWNVOTE_POST:
-        let cIndex2 = action.payload.index;
+
         let newState3 = [ ...state ];
+        let checkIndex2 = (ele) => { return ele.index === action.payload.index }
+        let cIndex2 = newState3.findIndex(checkIndex2);
         if (newState3[cIndex2].upVoted) {
           newState3[cIndex2].upCount --;
           newState3[cIndex2].downCount ++;

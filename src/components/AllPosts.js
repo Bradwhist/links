@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
+import naturalCompare from 'string-natural-compare';
 // import CreateCategory from './CreateCategory'
 import { logout, fetchPosts, upvotePost, downvotePost, setInput } from '../actions'
 import CreateSub from './CreateSub'
@@ -42,9 +43,7 @@ import {
    }
 
    async componentDidMount() {
-     console.log(this.props);
      let res = await this.props.fetchPosts(this.props.auth.logged._id);
-     this.setState( {posts: this.props.posts} )
    }
 
    handleItemClick = (e, { name }) => {
@@ -112,32 +111,7 @@ import {
     } else {
       newSortOrder = true;
     }
-    let sortedPosts = this.state.posts.slice();
-    sortedPosts.sort((a, b) => {
-      if (this.state.sortParam === 'time') {
-        if (this.state.sortOrder) {
-          return a.createdAt > b.createdAt;
-        } else {
-          return b.createdAt > a.createdAt;
-        }
-      }
-      if (this.state.sortParam === 'score') {
-        if (this.state.sortOrder) {
-          return b.score - a.score;
-        } else {
-          return a.score - b.score;
-        }
-      }
-      if (this.state.sortParam === 'replies') {
-        if (this.state.sortOrder) {
-          return a.comments.length - b.comments.length;
-        } else {
-          return b.comments.length - a.comments.length;
-        }
-      }
-    });
-
-    this.setState({ posts: sortedPosts, sortParam: sortParam, sortOrder: newSortOrder })
+    this.setState({ sortParam: sortParam, sortOrder: newSortOrder })
   }
 
   goToPost(postId) {
@@ -145,14 +119,53 @@ import {
   }
 
    render() {
-     console.log('rendering feed', this.props.posts, 'auth', this.props.auth);
+      let sortDisplay = '';
+     if (this.state.sortOrder && this.state.sortParam) {
+       sortDisplay = this.state.sortParam + ' (ascending)';
+     } else if (this.state.sortParam) {
+       sortDisplay = this.state.sortParam + ' (descending)';
+     }
+     console.log(this.state.sortParam, this.state.sortOrder)
+     let sortedPosts = this.props.posts.slice();
+     if (this.state.sortParam === 'time') {
+      sortedPosts.sort((a, b) => {
+        return a.createdAt > b.createdAt;
+      })
+    }
+    if (this.state.sortParam === 'score') {
+     sortedPosts.sort((a, b) => {
+       return a.score < b.score;
+     })
+   }
+   if (this.state.sortParam === 'replies') {
+    sortedPosts.sort((a, b) => {
+      return b.comments.length - a.comments.length;
+    })
+  }
+  if (this.state.sortParam === 'name') {
+    sortedPosts.sort((a, b) => {
+      if (a.title > b.title) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+  }
+       if (!this.state.sortOrder) {
+         sortedPosts.reverse();
+       }
+
      const options = [
        { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
        { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
        { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
+       { onClick: () => this.setSort('name'), key: 4, text: 'Name', value: 4 },
      ]
      const { activeItem } = this.state;
      //console.log('rendering feed auth', this.props.auth.logged._id);
+     for (let i = 0; i < sortedPosts.length; i ++) {
+       console.log(sortedPosts[i].title);
+     }
      return (
        <div>
         <Menu pointing inverted>
@@ -224,13 +237,13 @@ import {
         />
         <Divider />
         <Menu style = {{position: 'absolute', right: 5, top: 70}} compact>
-          <Dropdown text='Sort' options={options} simple item />
+          <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
         </Menu>
 
         <StackGrid
         columnWidth={300}
         >
-        {this.state.posts
+        {sortedPosts
         .map((ele, i) => {
           return  <div className = "imgBox" key={"key" + i}>
             <Image fluid src = {ele.image} alt = {"pic" + i} className = "img" />

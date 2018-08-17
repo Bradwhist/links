@@ -80,7 +80,7 @@ export default function(state = { post: {}, comments: [] }, action) {
       return newState5;
       case CREATE_ROOT_COMMENT:
         let newState6 = JSON.parse(JSON.stringify(state));
-        newState6.comments.push(action.payload);
+        newState6.comments.unshift(action.payload);
         return newState6;
 
       case CREATE_COMMENT:
@@ -91,7 +91,7 @@ export default function(state = { post: {}, comments: [] }, action) {
         let currentIndex = newState7.comments.findIndex(checkIndex);
 
         newState7.comments[currentIndex].comments.push(action.payload._id);
-        newState7.comments.push(action.payload);
+        newState7.comments.unshift(action.payload);
         return newState7;
       case DELETE_COMMENT:
         let newState8 = JSON.parse(JSON.stringify(state));

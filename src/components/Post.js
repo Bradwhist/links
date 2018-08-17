@@ -48,6 +48,7 @@ class Post extends Component {
       likeButtonClicked: false,
       modalOpen: false,
       loaded: false,
+      rootContent: '',
     };
   }
 
@@ -103,7 +104,11 @@ class Post extends Component {
       content: e.target.value
     })
   }
-
+  setRootContent = (e) => {
+    this.setState({
+      rootContent: e.target.value
+    })
+  }
   logout = () => {
     this.props.logout();
   }
@@ -116,7 +121,8 @@ class Post extends Component {
     this.setState({
       content: '',
       replying: null,
-      replyComments: newArr
+      replyComments: newArr,
+      tempComment: ''
     })
     return this.props.createComment(this.state.content, id);
   }
@@ -126,7 +132,8 @@ class Post extends Component {
     e.preventDefault();
     //console.log(this.state.content);
 
-    this.props.createRootComment(this.state.content, this.props.match.params.id);
+    this.props.createRootComment(this.state.rootContent, this.props.match.params.id);
+    this.setState({rootContent: ''})
   }
   goProfile = () => {
     this.props.history.push('/feed')
@@ -456,7 +463,7 @@ class Post extends Component {
                     </Header>
 
                     <Form reply onSubmit={(e) => this.createRootComment(e)}>
-                      <Form.TextArea placeholder={this.state.value} onChange={this.setContent} />
+                      <Form.TextArea value={this.state.rootContent} placeholder={this.state.value} onChange={this.setRootContent} />
                       <Button content='Add Comment' labelPosition='left' icon='edit' primary />
                     </Form>
                     {this.props.post.comments.map((ele, i) => {
