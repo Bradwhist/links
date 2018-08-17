@@ -404,7 +404,7 @@ class Post extends Component {
 
                   <Button style = {{backgroundColor: 'white', position: 'absolute', top: 70, left: 10}}
                     icon
-                    onClick = {() => this.props.history.pop()}
+                    onClick = {() => this.props.history.goBack()}
                     >
                     <Icon name='angle left' />
                       Back
@@ -434,11 +434,9 @@ class Post extends Component {
               <Grid centered columns = {2}>
                 <Grid.Column>
                   <Segment>
-                    <Header style = {{textAlign: 'center'}} as='h2'>
-                      {this.props.post.post.title}
-                    </Header>
                     <Image src={this.props.post.post.image} />
                     <Header style = {{textAlign: 'center'}} as='h2'>
+                        {this.props.post.post.title}
                       <Header.Subheader>{this.props.post.post.content}</Header.Subheader>
                     </Header>
                   </Segment>

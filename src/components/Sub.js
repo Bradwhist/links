@@ -42,7 +42,7 @@ class Sub extends Component {
       value: '',
       newFlair: null,
       flairFilters: [],
-      defaultFlair: 'new tag here',
+      defaultFlair: 'New tag here...',
       isFlairLoading: false,
       flairValue: '',
       flairResults: [],
@@ -301,10 +301,19 @@ removeFlairFilter = (i) => {
          </Menu>
 
          {/* DAN plz move these or make them look nice */}
-         <Form reply onSubmit={(e) => this.toggleFlair(e)}>
-           <Form.TextArea value={this.state.newFlair || ''} placeholder={this.state.defaultFlair} onChange={this.setFlair} />
-           <Button content='Add Flair' labelPosition='left' icon='edit' primary />
-         </Form>
+         <Container style = {{marginBottom: 10, width: '87%'}}>
+           <Segment>
+             <Header as='h2'  style = {{textAlign: 'center'}}>
+               <Icon name='fire' />
+               <Header.Content>
+                 Customize your Flairs
+               </Header.Content>
+             </Header>
+             <Form reply onSubmit={(e) => this.toggleFlair(e)}>
+               <Form.TextArea value={this.state.newFlair || ''} placeholder={this.state.defaultFlair} onChange={this.setFlair} />
+               <Button content='Add Flair' labelPosition='left' icon='edit' primary />
+              </Form>
+
          <Search className = 'searchInputBox'
          loading={this.state.isFlairLoading}
          onResultSelect={this.handleFlairSelect}
@@ -317,6 +326,8 @@ removeFlairFilter = (i) => {
          value={this.state.flairValue}
          {...this.props}
          />
+            </Segment>
+          </Container>
          { this.state.flairFilters.map((ele, i) => <li onClick={() => this.removeFlairFilter(i)} >{'Remove filter: ', ele}</li>) }
          {/* end flair search components */}
 
@@ -357,7 +368,7 @@ removeFlairFilter = (i) => {
            })
              .map((ele, i) => {
              return <div className = "imgBox" key={i}>
-               <img className = "img" src = {ele.image} alt = {"pic" + i}/>
+               <Image fluid className = "img" src = {ele.image} alt = {"pic" + i}/>
                <div class = "overlay"></div>
                <div onClick = { () => this.goToPost(ele._id) } className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
                <div className = 'likeBtn'>

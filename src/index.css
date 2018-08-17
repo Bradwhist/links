@@ -121,6 +121,7 @@ div.ui.icon.input.emailInput, div.ui.icon.input.usernameInput, div.ui.icon.input
   opacity: 0;
   /* transition effect. not necessary */
   transition: opacity 0.3s;
+  cursor: pointer;
 }
 
 .likeBtn {
@@ -162,6 +163,11 @@ div.ui.icon.input.emailInput, div.ui.icon.input.usernameInput, div.ui.icon.input
   color: white;
 }
 
+.ribbonLabel {
+  opacity: 0;
+  transition: opacity .2s;
+}
+
 /* make the overlay appear on hover */
 .imgBox:hover .overlay {
   opacity: 0.75;
@@ -182,8 +188,9 @@ div.ui.icon.input.emailInput, div.ui.icon.input.usernameInput, div.ui.icon.input
   opacity: 1;
 }
 
-Label {
-  opacity: 0;
+/* make the title appear on hover */
+.imgBox:hover .ribbonLabel {
+  opacity: 1;
 }
 
 

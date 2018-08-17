@@ -15,6 +15,7 @@ import {
   Icon,
   Image,
   Input,
+  Label,
   List,
   Menu,
   Responsive,
@@ -144,6 +145,10 @@ import {
     this.props.history.push('/post/' + postId);
   }
 
+  goToSub(subId) {
+    this.props.history.push('/sub/' + subId);
+  }
+
    render() {
      console.log('rendering feed', this.props.posts, 'auth', this.props.auth);
      const options = [
@@ -234,6 +239,9 @@ import {
         .map((ele, i) => {
           return  <div className = "imgBox" key={"key" + i}>
             <Image fluid src = {ele.image} alt = {"pic" + i} className = "img" />
+            <Label className = 'ribbonLabel' style = {{position: 'absolute', left: -14, top: 20, zIndex: 1}} as='a' color='teal' ribbon onClick = {() => this.goToSub(ele.sub.id)}>
+              {ele.sub.title}
+            </Label>
             <div onClick = { () => this.goToPost(ele._id) } className = "overlay"></div>
             <div className = "imgTitleBox"><h1 className = "imgTitle">{ele.title}</h1></div>
               <div className = 'likeBtn'>
