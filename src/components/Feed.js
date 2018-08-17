@@ -198,9 +198,9 @@ import {
    render() {
      let sortDisplay = '';
     if (this.state.sortOrder && this.state.sortParam) {
-      sortDisplay = this.state.sortParam + ' (ascending)';
+      sortDisplay = this.state.sortParam + ' (Ascending)';
     } else if (this.state.sortParam) {
-      sortDisplay = this.state.sortParam + ' (descending)';
+      sortDisplay = this.state.sortParam + ' (Descending)';
     }
     console.log(this.state.sortParam, this.state.sortOrder)
     let sortedPosts = this.props.posts.slice();
@@ -244,12 +244,6 @@ import {
      //console.log('rendering feed auth', this.props.auth.logged._id);
      return (
        <div>
-       <Menu compact>
-         <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
-       </Menu>
-       {/* <Menu style = {{fontSize: 12 }} compact>
-         <Dropdown text='Sort' options={options} simple item />
-       </Menu> */}
         <Menu pointing inverted>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
 
@@ -315,10 +309,8 @@ import {
           <Menu.Menu position='right'>
             <Dropdown icon = "ellipsis horizontal" pointing className='link item'>
               <Dropdown.Menu>
-                <Dropdown.Header>Categories</Dropdown.Header>
-                <Dropdown.Item>Clothing</Dropdown.Item>
-                <Dropdown.Item>Home Goods</Dropdown.Item>
-                <Dropdown.Item>Bedroom</Dropdown.Item>
+                <Dropdown.Header>Options</Dropdown.Header>
+                <Dropdown.Item>X</Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Header>Account</Dropdown.Header>
                 <Dropdown.Item>Status</Dropdown.Item>
@@ -326,6 +318,10 @@ import {
               </Dropdown.Menu>
             </Dropdown>
           </Menu.Menu>
+        </Menu>
+
+        <Menu style = {{marginBottom: 10}} inverted compact>
+          <Dropdown placeholder="Sort by" text={sortDisplay} options={options} simple item />
         </Menu>
         { this.state.loaded ?
           this.props.subs.length === 0 ? <Header as='h2'>
