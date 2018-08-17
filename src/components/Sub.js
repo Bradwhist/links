@@ -400,25 +400,29 @@ if (this.state.sortParam === 'name') {
                </Header.Content>
              </Header>
              <Form reply onSubmit={(e) => this.toggleFlair(e)}>
-               <Form.TextArea value={this.state.newFlair || ''} placeholder={this.state.defaultFlair} onChange={this.setFlair} />
-               <Search
-               style = {{width: '100%', marginBottom: 10}}
-               loading={this.state.isFlairLoading}
-               onResultSelect={this.handleFlairSelect}
-               onSearchChange={_.debounce(this.changeFlairSearch, 500, { leading: true })}
-               results={this.state.flairResults
-                 .filter(ele => {
-                   return this.state.flairFilters.indexOf(ele) === -1;
-                 })
-                 .map((ele, i) => { return { title: ele, id: i  } }) }
-               value={this.state.flairValue}
-               {...this.props}
-               />
-               <Button content='Add Flair' labelPosition='left' icon='edit' primary />
-              </Form>
+               {/* <Form.TextArea value={this.state.newFlair || ''} placeholder={this.state.defaultFlair} onChange={this.setFlair} /> */}
+               {/* <Button content='Add Flair' labelPosition='left' icon='edit' primary /> */}
+             </Form>
+              <Search
+              style = {{width: '100%', marginBottom: 10}}
+              loading={this.state.isFlairLoading}
+              onResultSelect={this.handleFlairSelect}
+              onSearchChange={_.debounce(this.changeFlairSearch, 500, { leading: true })}
+              results={this.state.flairResults
+                .filter(ele => {
+                  return this.state.flairFilters.indexOf(ele) === -1;
+                })
+                .map((ele, i) => { return { title: ele, id: i  } }) }
+              value={this.state.flairValue}
+              {...this.props}
+              />
+              {this.state.flairFilters.length > 0 ? <Segment>
+                <Header as = "h2">Filters</Header>
+            { this.state.flairFilters.map((ele, i) => <div onClick={() => this.removeFlairFilter(i)} >{'Remove filter: ', ele}</div>) }
+          </Segment> : null}
             </Segment>
           </Container>
-         { this.state.flairFilters.map((ele, i) => <li onClick={() => this.removeFlairFilter(i)} >{'Remove filter: ', ele}</li>) }
+
          {/* end flair search components */}
 
          { !!this.props.sub ?
