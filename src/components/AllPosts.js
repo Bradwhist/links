@@ -37,7 +37,7 @@ import {
      super(props);
      this.state = {
        activeItem: 'allPosts',
-       sortParam: 'score',
+       sortParam: 'Score',
        sortOrder: true,
        isLoading: false,
        results: [],
@@ -48,8 +48,9 @@ import {
    }
 
    componentDidMount() {
-     this.setState({ reload: false });
+     // this.setState({ reload: false });
      let _this = this;
+     // setting a timer here so that the page loads after .75 seconds to load all the images cleaner
      var timer = setInterval(function(){
 
        if (_this.state.reload) {
@@ -197,28 +198,28 @@ import {
    render() {
       let sortDisplay = '';
      if (this.state.sortOrder && this.state.sortParam) {
-       sortDisplay = this.state.sortParam + ' (ascending)';
+       sortDisplay = this.state.sortParam + ' (Ascending)';
      } else if (this.state.sortParam) {
-       sortDisplay = this.state.sortParam + ' (descending)';
+       sortDisplay = this.state.sortParam + ' (Descending)';
      }
      console.log(this.state.sortParam, this.state.sortOrder)
      let sortedPosts = this.props.posts.slice();
-     if (this.state.sortParam === 'time') {
+     if (this.state.sortParam === 'Time') {
       sortedPosts.sort((a, b) => {
         return moment(a.createdAt) - moment(b.createdAt);
       })
     }
-    if (this.state.sortParam === 'score') {
+    if (this.state.sortParam === 'Score') {
      sortedPosts.sort((a, b) => {
        return b.score - a.score;
      })
    }
-   if (this.state.sortParam === 'replies') {
+   if (this.state.sortParam === 'Replies') {
     sortedPosts.sort((a, b) => {
       return b.comments.length - a.comments.length;
     })
   }
-  if (this.state.sortParam === 'name') {
+  if (this.state.sortParam === 'Name') {
     sortedPosts.sort((a, b) => {
       if (a.title > b.title) {
         return 1;
@@ -232,10 +233,10 @@ import {
        }
 
      const options = [
-       { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
-       { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
-       { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
-       { onClick: () => this.setSort('name'), key: 4, text: 'Name', value: 4 },
+       { onClick: () => this.setSort('Time'), key: 1, text: 'Time', value: 1 },
+       { onClick: () => this.setSort('Score'), key: 2, text: 'Hot', value: 2 },
+       { onClick: () => this.setSort('Replies'), key: 3, text: 'Replies', value: 3 },
+       { onClick: () => this.setSort('Name'), key: 4, text: 'Name', value: 4 },
      ]
      const { activeItem } = this.state;
      //console.log('rendering feed auth', this.props.auth.logged._id);
@@ -251,7 +252,7 @@ import {
           loading={this.state.isLoading}
           onResultSelect={this.handleResultSelect}
           onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
-          results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
+          results={this.state.results.map(ele => { return { title: ele.type, description: ele.title, image: ele.image, type: ele.type } }) }
           value={this.state.value}
           {...this.props}
           />
@@ -316,8 +317,9 @@ import {
         </Menu>
 
         <Header
+          style = {{color: '#18dbce'}}
           as='h2'
-          content='POSTS'
+          content='ALL POSTS'
         />
         <Divider />
         <Menu style = {{position: 'absolute', right: 5, top: 70}} compact>
@@ -358,26 +360,6 @@ import {
           </div>
         })}
         </StackGrid>
-        {/* {this.props.posts.map((ele, i) => {
-          return <div className = "imgBox"><img src = {ele.image} alt={"pic" + (i + 1)} className= "img" /></div>
-        })} */}
-
-       {/* <div>
-       <button onClick={this.logout}>Logout</button>
-       <button onClick={this.createSub}>Create a new category</button>
-       <button onClick={this.createPost}>Create a new post</button>
-       <StackGrid
-       columnWidth={150}
-       >
-         {this.props.posts.map((ele, i) => {
-           return <div key={i}>
-           {ele.score}
-           <button onClick={() => this.upvotePost(ele._id, i)}>Big ups</button>
-           <button onClick={() => this.downvotePost(ele._id, i)}>Big downs</button>
-           <button onClick={() => this.openPost(ele._id)}>Open Post</button>
-           </div>}
-       )}
-     </StackGrid> */}
        </div>
      )
    }

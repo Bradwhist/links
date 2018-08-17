@@ -301,12 +301,10 @@ if (this.state.sortParam === 'name') {
     const { activeItem } = this.state;
      return (
        <div>
-       <Menu compact>
+       {/* <Menu compact>
          <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
-       </Menu>
-       {/*<Menu style = {{position: 'absolute', right: 5, top: 70}} compact>
-         <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
-       </Menu>*/}
+       </Menu> */}
+
          <Menu pointing inverted>
            <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
            {/*<Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />*/}
@@ -314,7 +312,7 @@ if (this.state.sortParam === 'name') {
            loading={this.state.isLoading}
            onResultSelect={this.handleResultSelect}
            onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
-           results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
+           results={this.state.results.map(ele => { return { title: ele.type, description: ele.title, image: ele.image, type: ele.type } }) }
            value={this.state.value}
            {...this.props}
            />
@@ -380,8 +378,8 @@ if (this.state.sortParam === 'name') {
            </Menu.Menu>
          </Menu>
 
-         <Container style = {{marginBottom: 10, width: '80%'}}>
-           <Button style = {{backgroundColor: '#18dbce', color: 'white', position: 'absolute', top: 70, left: 10}}
+         <Container style = {{marginBottom: 10, width: '60%'}}>
+           <Button style = {{fontSize: 20, backgroundColor: 'white', color: '#18dbce', position: 'absolute', top: 70, left: 10}}
              animated
              circular
              icon
@@ -396,7 +394,7 @@ if (this.state.sortParam === 'name') {
              </Button.Content>
            </Button>
            <Segment>
-             <Header as='h2'  style = {{textAlign: 'center'}}>
+             <Header as='h2' style = {{textAlign: 'center'}}>
                <Icon name='fire' />
                <Header.Content>
                  Customize your Flairs
@@ -404,21 +402,21 @@ if (this.state.sortParam === 'name') {
              </Header>
              <Form reply onSubmit={(e) => this.toggleFlair(e)}>
                <Form.TextArea value={this.state.newFlair || ''} placeholder={this.state.defaultFlair} onChange={this.setFlair} />
+               <Search
+               style = {{width: '100%', marginBottom: 10}}
+               loading={this.state.isFlairLoading}
+               onResultSelect={this.handleFlairSelect}
+               onSearchChange={_.debounce(this.changeFlairSearch, 500, { leading: true })}
+               results={this.state.flairResults
+                 .filter(ele => {
+                   return this.state.flairFilters.indexOf(ele) === -1;
+                 })
+                 .map((ele, i) => { return { title: ele, id: i  } }) }
+               value={this.state.flairValue}
+               {...this.props}
+               />
                <Button content='Add Flair' labelPosition='left' icon='edit' primary />
               </Form>
-
-         <Search className = 'searchInputBox'
-         loading={this.state.isFlairLoading}
-         onResultSelect={this.handleFlairSelect}
-         onSearchChange={_.debounce(this.changeFlairSearch, 500, { leading: true })}
-         results={this.state.flairResults
-           .filter(ele => {
-             return this.state.flairFilters.indexOf(ele) === -1;
-           })
-           .map((ele, i) => { return { title: ele, id: i  } }) }
-         value={this.state.flairValue}
-         {...this.props}
-         />
             </Segment>
           </Container>
          { this.state.flairFilters.map((ele, i) => <li onClick={() => this.removeFlairFilter(i)} >{'Remove filter: ', ele}</li>) }

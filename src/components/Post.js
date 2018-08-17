@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid"
 import moment from 'moment'
+import _ from 'lodash'
 import { logout, createComment, createRootComment, fetchPost, upvoteComment, downvoteComment, deletePost, deleteComment, deleteRootComment } from '../actions'
 import {
   Button,
@@ -24,6 +25,7 @@ import {
   Menu,
   Modal,
   Responsive,
+  Search,
   Segment,
   Sidebar,
   Visibility,
@@ -42,18 +44,51 @@ class Post extends Component {
       replying: null,
       navigation: false,
       showReplies: [],
-      value: 'Type something here...',
+      value: '',
       replyComments: [],
       response: null,
       likeButtonClicked: false,
       modalOpen: false,
       loaded: false,
       rootContent: '',
-      sortParam: 'time',
+      sortParam: 'Time',
       sortOrder: true,
       reload: false,
+      isLoading: false,
+      results: []
     };
   }
+
+  //////////////////////
+ // search functions
+resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
+
+ handleResultSelect = (e, { result }) => {
+   console.log(result);
+   if (result.type === 'Post') {
+   this.props.history.push('/post/' + result.id);
+ } else {
+   this.props.history.push('/sub/' + result.id);
+ }
+   this.setState({ value: result.title })
+ }
+
+ handleSearchChange = (e, { value }) => {
+ this.setState({ isLoading: true, value })
+
+ setTimeout(() => {
+   if (this.state.value.length < 1) return this.resetComponent()
+
+   const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+   const isMatch = result => re.test(result.title)
+
+   this.setState({
+     isLoading: false,
+     results: _.filter(this.props.input.searchArr, isMatch),
+   })
+ }, 300)
+}
+///////////////////////
 
   async componentDidMount() {
     // fetchPost loads in the page object to this.props
@@ -333,28 +368,28 @@ class Post extends Component {
     render() {
       let sortDisplay = '';
      if (this.state.sortOrder && this.state.sortParam) {
-       sortDisplay = this.state.sortParam + ' (ascending)';
+       sortDisplay = this.state.sortParam + ' (Ascending)';
      } else if (this.state.sortParam) {
-       sortDisplay = this.state.sortParam + ' (descending)';
+       sortDisplay = this.state.sortParam + ' (Descending)';
      }
 
      let sortComments = this.props.post.comments.slice();
-     if (this.state.sortParam === 'time') {
+     if (this.state.sortParam === 'Time') {
        sortComments.sort((a, b) => {
          return moment(b.createdAt) - moment(a.createdAt);
        })
      }
-     if (this.state.sortParam === 'score') {
+     if (this.state.sortParam === 'Score') {
        sortComments.sort((a, b) => {
          return b.score - a.score;
        })
      }
-     if (this.state.sortParam === 'replies') {
+     if (this.state.sortParam === 'Replies') {
        sortComments.sort((a, b) => {
          return b.comments.length - a.comments.length;
        })
      }
-     if (this.state.sortParam === 'name') {
+     if (this.state.sortParam === 'Name') {
        sortComments.sort((a, b) => {
          if (a.author.name > b.author.name) {
            return 1;
@@ -370,10 +405,10 @@ class Post extends Component {
       // in each root comment, calls function 'renderReplies', which is recursive and displays non-root comments
       const { activeItem } = this.state;
       const options = [
-        { onClick: () => this.setSort('time'), key: 1, text: 'Time', value: 1 },
-        { onClick: () => this.setSort('score'), key: 2, text: 'Hot', value: 2 },
-        { onClick: () => this.setSort('replies'), key: 3, text: 'Replies', value: 3 },
-        { onClick: () => this.setSort('name'), key: 4, text: 'Author', value: 4 },
+        { onClick: () => this.setSort('Time'), key: 1, text: 'Time', value: 1 },
+        { onClick: () => this.setSort('Score'), key: 2, text: 'Hot', value: 2 },
+        { onClick: () => this.setSort('Replies'), key: 3, text: 'Replies', value: 3 },
+        { onClick: () => this.setSort('Name'), key: 4, text: 'Author', value: 4 },
       ]
       console.log(this.state.navigation);
       console.log("a;skdfja;sdfj", this.state.showReplies)
@@ -389,19 +424,24 @@ class Post extends Component {
       // console.log(navComment);
       return (
         <div>
-        <Menu compact>
-          <Dropdown placeholder="search by" text={sortDisplay} options={options} simple item />
-        </Menu>
           <Menu pointing inverted>
             <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
-            <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
+            <Search className = 'searchInputBox'
+              fluid = {true}
+              loading={this.state.isLoading}
+              onResultSelect={this.handleResultSelect}
+              onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
+              results={this.state.results.map(ele => { return { title: ele.type, description: ele.title, image: ele.image, type: ele.type } }) }
+              value={this.state.value}
+              {...this.props}
+            />
             <Menu.Item
               name='home'
               active={activeItem === 'home'}
               color='teal'
               onClick={this.handleItemClick} />
               <Menu.Menu position='right'>
-              <Dropdown text = "Explore" pointing className='link item'>
+                <Dropdown text = "Explore" pointing className='link item'>
                 <Dropdown.Menu>
                   <Dropdown.Header>Subs</Dropdown.Header>
                   <Dropdown.Item
@@ -462,7 +502,7 @@ class Post extends Component {
               {this.props.post && this.state.loaded ?
                 <Container>
 
-                  <Button style = {{backgroundColor: '#18dbce', color: 'white', position: 'absolute', top: 70, left: 10}}
+                  <Button style = {{fontSize: 20, backgroundColor: 'white', color: '#18dbce', position: 'absolute', top: 70, left: 10}}
                     animated
                     circular
                     icon
@@ -518,6 +558,9 @@ class Post extends Component {
                         {/* <Menu style = {{fontSize: 12, position: 'absolute', right: 10, bottom: 475}} compact>
                         <Dropdown text='Sort' options={options} simple item />
                       </Menu> */}
+                      <Menu style = {{fontSize: '70%', position: 'absolute', right: 17, top: -18}} compact>
+                        <Dropdown placeholder="Sort by" text={sortDisplay} options={options} simple item />
+                      </Menu>
                     </Header>
 
                     <Form reply onSubmit={(e) => this.createRootComment(e)}>
@@ -772,11 +815,12 @@ class Post extends Component {
         deleteRootComment: PropTypes.func,
       };
 
-      const mapStateToProps = ({ auth, post, comments }) => {
+      const mapStateToProps = ({ auth, post, comments, input }) => {
         return {
           auth,
           post,
           comments,
+          input
         }
       }
       const mapDispatchToProps = (dispatch) => {
