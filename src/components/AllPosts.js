@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Link } from 'react-router-dom'
 import StackGrid from "react-stack-grid";
+import _ from 'lodash'
+import moment from 'moment'
 import naturalCompare from 'string-natural-compare';
 // import CreateCategory from './CreateCategory'
 import { logout, fetchPosts, upvotePost, downvotePost, setInput } from '../actions'
@@ -20,6 +22,7 @@ import {
   List,
   Menu,
   Responsive,
+  Search,
   Segment,
   Sidebar,
   Visibility,
@@ -34,18 +37,59 @@ import {
      super(props);
      this.state = {
        activeItem: 'allPosts',
-       sortParam: '',
+       sortParam: 'score',
        sortOrder: true,
        isLoading: false,
        results: [],
        value: '',
        posts: [],
+       reload: false,
      }
    }
 
-   async componentDidMount() {
-     let res = await this.props.fetchPosts(this.props.auth.logged._id);
+   componentDidMount() {
+     this.setState({ reload: false });
+     let _this = this;
+     var timer = setInterval(function(){
+
+       if (_this.state.reload) {
+         clearInterval(timer);
+       }
+       _this.setState({ reload: true });
+     }, 750);
+     this.props.fetchPosts(this.props.auth.logged._id);
    }
+
+   //////////////////////
+   // search functions
+  resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
+
+   handleResultSelect = (e, { result }) => {
+     console.log(result);
+     if (result.type === 'Post') {
+     this.props.history.push('/post/' + result.id);
+   } else {
+     this.props.history.push('/sub/' + result.id);
+   }
+     this.setState({ value: result.title })
+   }
+
+   handleSearchChange = (e, { value }) => {
+   this.setState({ isLoading: true, value })
+
+   setTimeout(() => {
+     if (this.state.value.length < 1) return this.resetComponent()
+
+     const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+     const isMatch = result => re.test(result.title)
+
+     this.setState({
+       isLoading: false,
+       results: _.filter(this.props.input.searchArr, isMatch),
+     })
+   }, 300)
+ }
+///////////////////////
 
    handleItemClick = (e, { name }) => {
      this.setState({ activeItem: name })
@@ -94,11 +138,29 @@ import {
 
 
   upvotePost(postId, index) {
+    this.setState({reload: false});
     this.props.upvotePost(postId, index);
+    let _this = this;
+    var timer = setInterval(function(){
+
+      if (_this.state.reload) {
+        clearInterval(timer);
+      }
+      _this.setState({ reload: true });
+    }, 200);
   }
 
   downvotePost(postId, index) {
+    this.setState({reload: false});
     this.props.downvotePost(postId, index);
+    let _this = this;
+    var timer = setInterval(function(){
+
+      if (_this.state.reload) {
+        clearInterval(timer);
+      }
+      _this.setState({ reload: true });
+    }, 200);
   }
 
   openPost(postId) {
@@ -106,6 +168,7 @@ import {
   }
 
   setSort(sortParam) {
+    this.setState({reload: false})
     let newSortOrder = null;
     if (this.state.sortParam === sortParam) {
       newSortOrder = !this.state.sortOrder;
@@ -113,6 +176,14 @@ import {
       newSortOrder = true;
     }
     this.setState({ sortParam: sortParam, sortOrder: newSortOrder })
+    let _this = this;
+    var timer = setInterval(function(){
+
+      if (_this.state.reload) {
+        clearInterval(timer);
+      }
+      _this.setState({ reload: true });
+    }, 200);
   }
 
   goToPost(postId) {
@@ -134,12 +205,12 @@ import {
      let sortedPosts = this.props.posts.slice();
      if (this.state.sortParam === 'time') {
       sortedPosts.sort((a, b) => {
-        return a.createdAt > b.createdAt;
+        return moment(a.createdAt) - moment(b.createdAt);
       })
     }
     if (this.state.sortParam === 'score') {
      sortedPosts.sort((a, b) => {
-       return a.score < b.score;
+       return b.score - a.score;
      })
    }
    if (this.state.sortParam === 'replies') {
@@ -169,13 +240,21 @@ import {
      const { activeItem } = this.state;
      //console.log('rendering feed auth', this.props.auth.logged._id);
      for (let i = 0; i < sortedPosts.length; i ++) {
-       console.log(sortedPosts[i].title);
+       console.log(sortedPosts[i].createdAt);
      }
      return (
        <div>
         <Menu pointing inverted>
           <Link to = '/feed'><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/640px-React-icon.svg.png" alt = "reactlogo" style = {{width: 70, height: 50}}/></Link>
-          <Input icon='search' onChange = {(e) => this.setInput(e.target.value)} placeholder='Search...' className = 'searchInputBox' />
+          <Search className = 'searchInputBox'
+          fluid = {true}
+          loading={this.state.isLoading}
+          onResultSelect={this.handleResultSelect}
+          onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
+          results={this.state.results.map(ele => { return { title: ele.type + ': ' + ele.title, id: ele.id, type: ele.type } }) }
+          value={this.state.value}
+          {...this.props}
+          />
           <Menu.Item
             name='home'
             active={activeItem === 'home'}
@@ -314,10 +393,11 @@ import {
 //   posts: PropTypes.array,
 // };
 
-const mapStateToProps = ({auth, posts}) => {
+const mapStateToProps = ({auth, posts, input}) => {
   return {
     auth,
-    posts
+    posts,
+    input
   }
 }
 const mapDispatchToProps = (dispatch) => {

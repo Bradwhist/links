@@ -36,10 +36,20 @@ import {
        isLoading: false,
        results: [],
        value: '',
+       reload: false,
      }
    }
 
    componentDidMount() {
+     this.setState({ reload: false });
+     let _this = this;
+     var timer = setInterval(function(){
+
+       if (_this.state.reload) {
+         clearInterval(timer);
+       }
+       _this.setState({ reload: true });
+     }, 750);
      this.props.fetchProfile();
    }
 
@@ -126,6 +136,14 @@ import {
        console.log(name, this.state, this.props.history);
        // this.props.history.push('/profile/' + name);
      }
+     let _this = this;
+     var timer = setInterval(function(){
+
+       if (_this.state.reload) {
+         clearInterval(timer);
+       }
+       _this.setState({ reload: true });
+     }, 200);
    }
 
    logout = () => {
